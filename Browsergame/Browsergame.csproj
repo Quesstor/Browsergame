@@ -33,8 +33,54 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Owin, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.FileSystems, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.FileSystems.3.1.0\lib\net45\Microsoft.Owin.FileSystems.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=2.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.HttpListener.2.0.2\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Hosting, Version=2.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Hosting.2.0.2\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.StaticFiles, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.StaticFiles.3.1.0\lib\net45\Microsoft.Owin.StaticFiles.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin.WebSocket, Version=1.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.WebSocket.1.7.0\lib\net45\Owin.WebSocket.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.Owin, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,11 +89,304 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\Engine\Engine.cs" />
+    <Compile Include="Game\Engine\EventEngine.cs" />
+    <Compile Include="Game\Engine\TickEngine.cs" />
+    <Compile Include="Game\Events\AddPlayer.cs" />
+    <Compile Include="Game\Events\_Event.cs" />
+    <Compile Include="Game\Models\Building.cs" />
+    <Compile Include="Game\Models\Planet.cs" />
+    <Compile Include="Game\Models\Player.cs" />
+    <Compile Include="Game\Models\Unit.cs" />
+    <Compile Include="Game\State.cs" />
+    <Compile Include="Game\Engine\StateEngine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Logger.cs" />
+    <Compile Include="Services\Security.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Webserver\Sockets\PlayerWebsockets.cs" />
+    <Compile Include="Webserver\Sockets\WebSocketPlayerConnection.cs" />
+    <Compile Include="Webserver\Controller\EmptyController.cs" />
+    <Compile Include="Webserver\Controller\LoginController.cs" />
+    <Compile Include="Webserver\Controller\IndexController.cs" />
+    <Compile Include="Webserver\AuthMiddleware.cs" />
+    <Compile Include="Webserver\ExceptionMiddleware.cs" />
+    <Compile Include="Webserver\Webserver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
+    <None Include="Webserver\static\img\icon\Freebee\Free Space Icon Set %2850 Icons, SVG &amp; PNG%29.url" />
+    <None Include="Webserver\static\img\icon\Lorcs Icons\I made 700+ RPG icons free for use for your game %28hi-res in comments%29 IndieGaming.URL" />
+    <None Include="Webserver\static\img\icon\Vorlage.psd" />
+    <None Include="Webserver\static\plugins\angular.min.js.map" />
+    <None Include="Webserver\static\plugins\bootstrap.min.css.map" />
+    <None Include="Webserver\static\plugins\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="Webserver\static\plugins\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="Webserver\static\plugins\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Webserver\static\plugins\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="Webserver\static\plugins\leaflet-src.map" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %281%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2810%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2811%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2812%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2813%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2814%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2815%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2816%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2817%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2818%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2819%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %282%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2820%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2821%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2822%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2823%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2824%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2825%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2826%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2827%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2828%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2829%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %283%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2830%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2831%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2832%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2833%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2834%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2835%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2836%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2837%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2838%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2839%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %284%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2840%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2841%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2842%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2843%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2844%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2845%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2846%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2847%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2848%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2849%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %285%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %2850%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %286%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %287%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %288%29.png" />
+    <Content Include="Webserver\static\img\icon\Freebee\Space icons %289%29.png" />
+    <Content Include="Webserver\static\img\icon\goods\2.png" />
+    <Content Include="Webserver\static\img\icon\goods\6.png" />
+    <Content Include="Webserver\static\img\icon\goods\7.png" />
+    <Content Include="Webserver\static\img\icon\goods\asd.png" />
+    <Content Include="Webserver\static\img\icon\goods\Deuterium.png" />
+    <Content Include="Webserver\static\img\icon\goods\energie.png" />
+    <Content Include="Webserver\static\img\icon\goods\energie2.png" />
+    <Content Include="Webserver\static\img\icon\goods\material.png" />
+    <Content Include="Webserver\static\img\icon\goods\metall %282%29.png" />
+    <Content Include="Webserver\static\img\icon\goods\nahrung.png" />
+    <Content Include="Webserver\static\img\icon\goods\Triebwerke.png" />
+    <Content Include="Webserver\static\img\icon\goods\wasser.png" />
+    <Content Include="Webserver\static\img\icon\Lorcs Icons\4cpmn.png" />
+    <Content Include="Webserver\static\img\icon\Lorcs Icons\8HG5T.png" />
+    <Content Include="Webserver\static\img\icon\Lorcs Icons\AMVGj.png" />
+    <Content Include="Webserver\static\img\icon\Lorcs Icons\BEcZL.png" />
+    <Content Include="Webserver\static\img\icon\Lorcs Icons\f6KKG.png" />
+    <Content Include="Webserver\static\img\icon\Lorcs Icons\FtpXZ.png" />
+    <Content Include="Webserver\static\img\icon\Lorcs Icons\GGTiF.png" />
+    <Content Include="Webserver\static\img\icon\Lorcs Icons\YWv3L.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\brick.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\coin_single_copper.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\coin_single_gold.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\coin_single_silver.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\coin_stacks_copper.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\coin_stacks_gold.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\coin_stacks_silver.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\coin_stack_copper.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\coin_stack_gold.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\coin_stack_silver.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\fruit.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\meat.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\milk.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\wheat.png" />
+    <Content Include="Webserver\static\img\icon\Pauls\wood.png" />
+    <Content Include="Webserver\static\img\icon\stars\star0.png" />
+    <Content Include="Webserver\static\img\icon\stars\star1.png" />
+    <Content Include="Webserver\static\img\icon\stars\star10.png" />
+    <Content Include="Webserver\static\img\icon\stars\star11.png" />
+    <Content Include="Webserver\static\img\icon\stars\star12.png" />
+    <Content Include="Webserver\static\img\icon\stars\star13.png" />
+    <Content Include="Webserver\static\img\icon\stars\star14.png" />
+    <Content Include="Webserver\static\img\icon\stars\star15.png" />
+    <Content Include="Webserver\static\img\icon\stars\star2.png" />
+    <Content Include="Webserver\static\img\icon\stars\star3.png" />
+    <Content Include="Webserver\static\img\icon\stars\star4.png" />
+    <Content Include="Webserver\static\img\icon\stars\star5.png" />
+    <Content Include="Webserver\static\img\icon\stars\star6.png" />
+    <Content Include="Webserver\static\img\icon\stars\star7.png" />
+    <Content Include="Webserver\static\img\icon\stars\star8.png" />
+    <Content Include="Webserver\static\img\icon\stars\star9.png" />
+    <Content Include="Webserver\static\img\icon\units\2 %282%29.png" />
+    <Content Include="Webserver\static\img\icon\units\atackicon.png" />
+    <Content Include="Webserver\static\img\icon\units\fighter.png" />
+    <Content Include="Webserver\static\img\icon\units\trader.png" />
+    <Content Include="Webserver\static\img\planet\dock\0.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\1.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\10.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\11.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\12.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\13.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\14.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\15.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\2.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\3.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\4.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\5.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\6.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\7.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\8.jpg" />
+    <Content Include="Webserver\static\img\planet\dock\9.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\0.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\1.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\10.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\11.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\12.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\13.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\14.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\2.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\3.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\4.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\5.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\6.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\7.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\8.jpg" />
+    <Content Include="Webserver\static\img\planet\industry\9.jpg" />
+    <Content Include="Webserver\static\img\planet\info\0.jpg" />
+    <Content Include="Webserver\static\img\planet\info\1.jpg" />
+    <Content Include="Webserver\static\img\planet\info\10.jpg" />
+    <Content Include="Webserver\static\img\planet\info\11.jpg" />
+    <Content Include="Webserver\static\img\planet\info\12.jpg" />
+    <Content Include="Webserver\static\img\planet\info\13.jpg" />
+    <Content Include="Webserver\static\img\planet\info\14.jpg" />
+    <Content Include="Webserver\static\img\planet\info\2.jpg" />
+    <Content Include="Webserver\static\img\planet\info\3.jpg" />
+    <Content Include="Webserver\static\img\planet\info\4.jpg" />
+    <Content Include="Webserver\static\img\planet\info\5.jpg" />
+    <Content Include="Webserver\static\img\planet\info\6.jpg" />
+    <Content Include="Webserver\static\img\planet\info\7.jpg" />
+    <Content Include="Webserver\static\img\planet\info\8.jpg" />
+    <Content Include="Webserver\static\img\planet\info\9.jpg" />
+    <Content Include="Webserver\static\img\planet\Stadt\1.jpg" />
+    <Content Include="Webserver\static\img\planet\Stadt\10.jpg" />
+    <Content Include="Webserver\static\img\planet\Stadt\11.jpg" />
+    <Content Include="Webserver\static\img\planet\Stadt\12.jpg" />
+    <Content Include="Webserver\static\img\planet\Stadt\16.jpg" />
+    <Content Include="Webserver\static\img\planet\Stadt\17.jpg" />
+    <Content Include="Webserver\static\img\planet\Stadt\3.jpg" />
+    <Content Include="Webserver\static\img\planet\Stadt\55.jpg" />
+    <Content Include="Webserver\static\img\planet\Stadt\6.jpg" />
+    <Content Include="Webserver\static\img\planet\Stadt\7.jpg" />
+    <Content Include="Webserver\static\img\planet\Stadt\9.jpg" />
+    <Content Include="Webserver\static\img\planet\units\0.jpg" />
+    <Content Include="Webserver\static\img\planet\units\1.jpg" />
+    <Content Include="Webserver\static\img\planet\units\10.jpg" />
+    <Content Include="Webserver\static\img\planet\units\11.jpg" />
+    <Content Include="Webserver\static\img\planet\units\12.jpg" />
+    <Content Include="Webserver\static\img\planet\units\13.jpg" />
+    <Content Include="Webserver\static\img\planet\units\14.jpg" />
+    <Content Include="Webserver\static\img\planet\units\15.jpg" />
+    <Content Include="Webserver\static\img\planet\units\16.jpg" />
+    <Content Include="Webserver\static\img\planet\units\17.jpg" />
+    <Content Include="Webserver\static\img\planet\units\18.jpg" />
+    <Content Include="Webserver\static\img\planet\units\19.jpg" />
+    <Content Include="Webserver\static\img\planet\units\2.jpg" />
+    <Content Include="Webserver\static\img\planet\units\21.jpg" />
+    <Content Include="Webserver\static\img\planet\units\22.jpg" />
+    <Content Include="Webserver\static\img\planet\units\23.jpg" />
+    <Content Include="Webserver\static\img\planet\units\24.jpg" />
+    <Content Include="Webserver\static\img\planet\units\25.jpg" />
+    <Content Include="Webserver\static\img\planet\units\3.jpg" />
+    <Content Include="Webserver\static\img\planet\units\4.jpg" />
+    <Content Include="Webserver\static\img\planet\units\5.jpg" />
+    <Content Include="Webserver\static\img\planet\units\6.jpg" />
+    <Content Include="Webserver\static\img\planet\units\7.jpg" />
+    <Content Include="Webserver\static\img\planet\units\8.jpg" />
+    <Content Include="Webserver\static\img\planet\units\9.jpg" />
+    <Content Include="Webserver\static\index.html" />
+    <Content Include="Webserver\static\JS\app.js" />
+    <Content Include="Webserver\static\JS\audio.js" />
+    <Content Include="Webserver\static\JS\Controller\gameCtrl.js" />
+    <Content Include="Webserver\static\JS\Controller\loginCtrl.js" />
+    <Content Include="Webserver\static\JS\Controller\mapmarkerCtrl.js" />
+    <Content Include="Webserver\static\JS\Controller\utilCtrl.js" />
+    <Content Include="Webserver\static\JS\map.js" />
+    <Content Include="Webserver\static\JS\Services\planetService.js" />
+    <Content Include="Webserver\static\JS\Services\playerService.js" />
+    <Content Include="Webserver\static\JS\Services\syncService.js" />
+    <Content Include="Webserver\static\JS\Services\tradeService.js" />
+    <Content Include="Webserver\static\JS\Services\ui\mapService.js" />
+    <Content Include="Webserver\static\JS\Services\ui\uiService.js" />
+    <Content Include="Webserver\static\JS\Services\utilService.js" />
+    <Content Include="Webserver\static\map\black.png" />
+    <Content Include="Webserver\static\music\bg\1.mp3" />
+    <Content Include="Webserver\static\music\bg\2.mp3" />
+    <Content Include="Webserver\static\music\bg\3.mp3" />
+    <Content Include="Webserver\static\music\bg\4.mp3" />
+    <Content Include="Webserver\static\music\bg\old\Achaidh Cheide.mp3" />
+    <Content Include="Webserver\static\music\bg\old\Folk Round.mp3" />
+    <Content Include="Webserver\static\music\bg\old\Long Road Ahead.mp3" />
+    <Content Include="Webserver\static\music\bg\old\Parisian.mp3" />
+    <Content Include="Webserver\static\music\bg\old\Pippin the Hunchback.mp3" />
+    <Content Include="Webserver\static\music\bg\old\Small_Sleepy_Town_0.mp3" />
+    <Content Include="Webserver\static\music\bg\old\Thatched Villagers.mp3" />
+    <Content Include="Webserver\static\music\bg\The Woodlands Opening %28mastered%29.wav" />
+    <Content Include="Webserver\static\music\Medieval_Town.mp3" />
+    <Content Include="Webserver\static\music\Medieval_Town_Music.mp3" />
+    <Content Include="Webserver\static\music\sounds\drum.mp3" />
+    <Content Include="Webserver\static\music\sounds\fighter.mp3" />
+    <Content Include="Webserver\static\music\sounds\noti.mp3" />
+    <Content Include="Webserver\static\music\sounds\noti1.mp3" />
+    <Content Include="Webserver\static\music\sounds\noti2.mp3" />
+    <Content Include="Webserver\static\music\sounds\noti4.mp3" />
+    <Content Include="Webserver\static\music\sounds\noti5.mp3" />
+    <Content Include="Webserver\static\music\sounds\produce.mp3" />
+    <Content Include="Webserver\static\music\sounds\trade.mp3" />
+    <Content Include="Webserver\static\music\sounds\trade_big.mp3" />
+    <Content Include="Webserver\static\music\sounds\trade_small.mp3" />
+    <Content Include="Webserver\static\plugins\angular-route.min.js" />
+    <Content Include="Webserver\static\plugins\angular.min.js" />
+    <Content Include="Webserver\static\plugins\bootstrap.min.css" />
+    <Content Include="Webserver\static\plugins\bootstrap.min.js" />
+    <Content Include="Webserver\static\plugins\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Webserver\static\plugins\jquery.min.js" />
+    <Content Include="Webserver\static\plugins\leaflet.css" />
+    <Content Include="Webserver\static\plugins\leaflet.js" />
+    <Content Include="Webserver\static\style.css" />
+    <Content Include="Webserver\static\templates\directives\map\debugbar.html" />
+    <Content Include="Webserver\static\templates\directives\map\navi.html" />
+    <Content Include="Webserver\static\templates\directives\map\ordermarker.html" />
+    <Content Include="Webserver\static\templates\directives\map\planetmarker.html" />
+    <Content Include="Webserver\static\templates\directives\map\selectedunitbar.html" />
+    <Content Include="Webserver\static\templates\directives\modals\audio.html" />
+    <Content Include="Webserver\static\templates\directives\modals\messages.html" />
+    <Content Include="Webserver\static\templates\directives\modals\options.html" />
+    <Content Include="Webserver\static\templates\directives\modals\planet.html" />
+    <Content Include="Webserver\static\templates\directives\modals\players.html" />
+    <Content Include="Webserver\static\templates\directives\planet\dock\dock.html" />
+    <Content Include="Webserver\static\templates\directives\planet\dock\manage.html" />
+    <Content Include="Webserver\static\templates\directives\planet\dock\trade.html" />
+    <Content Include="Webserver\static\templates\directives\planet\industry.html" />
+    <Content Include="Webserver\static\templates\directives\planet\units.html" />
+    <Content Include="Webserver\static\templates\directives\util\goodsquare.html" />
+    <Content Include="Webserver\static\templates\directives\util\price.html" />
+    <Content Include="Webserver\static\templates\directives\util\unitsquare.html" />
+    <Content Include="Webserver\static\templates\game.html" />
+    <Content Include="Webserver\static\templates\login.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

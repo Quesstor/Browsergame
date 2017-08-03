@@ -1,0 +1,31 @@
+﻿<div ng-if="unittype || unittype===0"
+     style="display:inline-block;"
+     ng-init="unit = $root.settings.units[unittype]"
+     title="{{unit.name}}">
+    <table>
+        <tr>
+            <td>
+                <div class="hoverpointer"
+                     style="background: #353f40;  border-radius:3px; padding: 5px;margin:0px 3px" 
+                     ng-click="hover=!hover">
+                    <img ng-src="{{'static/img/icon/units/'+unit.icon}}" style="height:25px;" />
+                </div>
+            </td>
+            <td style="line-height:1; font-size: 13px;">
+                <table >
+                    <tr>
+                        <td>{{quant}} {{unit.name}}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px;" ng-show="hover">
+                            <span class="glyphicon glyphicon-screenshot" title="Angriff"></span> {{unit.atack}}
+                            <span class="glyphicon glyphicon-heart" title="Leben" /> {{unit.hp}}
+                            <span class="glyphicon glyphicon-certificate" title="Schild"></span> {{unit.shieldpower}}
+                            <span class="glyphicon glyphicon-oil" title="Lagerraum" style="height:16px;"></span> {{unit.storage}}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,26 @@
+﻿<table>
+    <tr ng-click="mapService.panHome()">
+        <td></td>
+        <td><span class="glyphicon glyphicon-home"></span></td>
+    </tr>
+    <tr data-toggle="modal" data-target="#optionsmodal">
+        <td></td>
+        <td><span class="glyphicon glyphicon-cog"></span></td>
+    </tr>
+    <tr data-toggle="modal" data-target="#playersmodal">
+        <td></td>
+        <td><span class="glyphicon glyphicon-user"></span></td>
+    </tr>
+    <tr ng-click="$root.debug=!$root.debug">
+        <td></td>
+        <td><span class="glyphicon glyphicon-console"></span></td>
+    </tr>
+    <tr data-toggle="modal" data-target="#messagesmodal">
+        <td>
+            <span ng-show="playerService.newMessagesCount()>0" class="text-success" style="font-weight:bolder;">
+                {{playerService.newMessagesCount()}}
+            </span>
+        </td>
+        <td><span class="glyphicon glyphicon-envelope"></span></td>
+    </tr>
+</table>

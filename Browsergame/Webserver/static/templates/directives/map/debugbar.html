@@ -1,0 +1,37 @@
+﻿<div style="color:white; z-index: 1051; padding: 20px;position:fixed; bottom:0; right:0; width:100%; max-height: 50%; overflow:auto"
+     ng-show="$root.debug">
+    <div class="btn-group">
+        <div class="btn btn-default" ng-click="show='Settings'">
+            Settings
+        </div>
+        <div class="btn btn-default" ng-click="show='Player'">
+            Player
+        </div>
+        <div class="btn btn-default" ng-click="show='Units'">
+            Units
+        </div>
+        <div class="btn btn-default" ng-click="show='Planets'">
+            Planets
+        </div>
+        <div class="btn btn-default" ng-click="show='selectedPlanet'">
+            selectedPlanet
+        </div>
+    </div>
+    <br />
+    <div ng-show="show=='Settings'">
+        <pre style="width: 200px; float:left;">settings {{$root.settings|json}}</pre>
+        <pre style="width: 200px; float:left;">goods {{$root.settings.goods|json}}</pre>
+        <pre style="width: 200px; float:left;">buildings {{$root.settings.buildings|json}}</pre>
+        <pre style="width: 200px; float:left;">units {{$root.settings.units|json}}</pre>
+        <pre style="width: 200px; float:left;">location {{$root.settings.location|json}}</pre>
+    </div>
+    <pre ng-show="show=='Player'">{{$root.player|json}}</pre>
+    <div ng-show="show=='Units'" >
+        <pre style="width: 200px; float:left;" ng-repeat="(k,unit) in $root.units">{{k}} {{unit|json}}</pre>
+        <pre style="width: 200px; float:left;" ng-repeat="(k,order) in $root.orders">{{k}} {{order|json}}</pre>
+    </div>
+    <div ng-show="show=='Planets'">
+        <pre style="width: 200px; float:left;" ng-repeat="(k,planet) in $root.planets">{{k}} {{planet|json}}</pre>
+    </div>
+    <pre ng-show="show=='selectedPlanet'">{{$root.selectedPlanet|json}}</pre>
+</div>

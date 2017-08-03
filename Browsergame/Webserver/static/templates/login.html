@@ -1,0 +1,22 @@
+﻿<div class="container">
+    <br><br><br><br>
+    <div id="login" class="well" style="width: 500px; margin: 0 auto">
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="control-label col-sm-3" for="email">Name:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="loginname" placeholder="Name" value="Janis" ng-model="user.name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3" for="email" value="asd">Password:</label>
+                <div class="col-sm-9">
+                    <input type="password" placeholder="Password" class="form-control" ng-model="user.pw">
+                </div>
+            </div>
+        </form>
+        <div class="btn btn-primary pull-right" ng-class="{'btn-success':loginstatus=='ok'}" ng-click="login()">Login {{loginstatus=='pending'?'...':''}} {{loginstatus=='ok'?'ok':''}}</div>
+        <br>
+
+    </div>
+</div>

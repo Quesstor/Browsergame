@@ -1,0 +1,50 @@
+﻿<div ng-hide="uiService.planetHasOffers()">
+    Dieser Planet hat keine Handelsangebote
+</div>
+<table ng-show="uiService.planetHasOffers()"
+       class="table table-condensed"
+       ng-init="menge=1"
+       style="width: 100%">
+    <tr>
+        <td>Angebote</td>
+        <td><!--Pfeile--></td>
+        <td>Preis</td>
+        <td style="width:200px;"><!--Button--></td>
+        <td>Ladung</td>
+    </tr>
+    <tr ng-repeat="(id,good) in $root.planets[$root.selectedPlanet.id].goods"
+        ng-show="good.offer!=0">
+        <!--Angebote-->
+        <td style="padding: 0 4px;">
+            <goodsquare good="good" quant="Math.abs(good.offer)"></goodsquare>
+        </td>
+        <!--Pfeile-->
+        <td>
+            <span title="Wird gekauft" ng-if="good.offer<0" class="glyphicon glyphicon-chevron-left text-success" style="font-size:25px;"></span>
+            <span title="Wird verkauft" ng-if="good.offer>0" class="glyphicon glyphicon-chevron-right text-danger" style="font-size:25px;"></span>
+        </td>
+        <!--Handel-->
+        <td>
+            <price value="(good.offer<0?'':'-')+good.price*menge"></price>
+        </td>
+        <!--Button-->
+        <td style="width:200px;">
+            <div class="btn-group pull-right"
+                 ng-show="$root.selectedUnit.planet==$root.selectedPlanet.id">
+                <button class="btn btn-sm btn-default" 
+                        ng-click="menge=Math.abs(good.offer)" 
+                        ng-disabled="!tradeService.tradeOk(good, menge)">max</button>
+                <button class="btn btn-sm btn-default" style="width: 130px; text-align:left;"
+                        ng-disabled="!tradeService.tradeOk(good, menge)"
+                        ng-click="tradeService.saveTrade(good, menge); menge=1;">
+                    <input ng-click="$event.stopPropagation();" type="number" ng-model="menge" class="input-sm" min="1" />
+                    {{good.offer>0?'Kaufen':'Verkaufen'}}
+                </button>
+            </div>
+        </td>
+        <!--Ladung-->
+        <td class="square-td" style="width: 75px">
+            <goodsquare good="$root.selectedUnit.goods[id]" quant="$root.selectedUnit.goods[id].quant" />
+        </td>
+    </tr>
+</table>

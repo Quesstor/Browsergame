@@ -1,0 +1,28 @@
+﻿<div id="optionsmodal" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width: 300px">
+        <div class="modal-content">
+            <div class="modal-header" style="padding-bottom: 0">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <label>Einstellungen</label><br />
+            </div>
+            <div class="modal-body">
+                Lautstärke
+                <table class="table table-condensed">
+                    <tr>
+                        <td style="padding-top:14px;">Musik</td>
+                        <td style="padding-top:7px;">
+                            <div style="font-size: 30px">
+                                <label ng-show="BGmusic" class="pull-right"><a><span ng-click="BGmusic=false" class="glyphicon glyphicon-volume-up" onclick="document.getElementById('BGmusic').pause();"></span></a></label>
+                                <label ng-hide="BGmusic" class="pull-right"><a><span ng-click="BGmusic=true" class="glyphicon glyphicon-volume-off" onclick="document.getElementById('BGmusic').play();"></span></a></label>
+                            </div>
+                        </td>
+                        <td style="padding:0 5px;">
+                            <input type="range" min="0" max="100" ng-model="BGvolume" style="height:50px;  opacity:0.5">
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

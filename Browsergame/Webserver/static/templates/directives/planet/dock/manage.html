@@ -1,0 +1,114 @@
+﻿<table ng-show="$root.selectedUnit.planet == $root.selectedPlanet.id" class="table table-condensed">
+    <tr>
+        <td>Planet</td>
+        <td style="text-align: right">Umladen</td>
+        <td>
+            Laderaum
+            <span class="text-danger" ng-show="$root.selectedUnit.itemquantsum >= $root.settings.units[selectedUnit.type].storage">
+                {{$root.selectedUnit.itemquantsum}} / {{$root.settings.units[selectedUnit.type].storage}}
+            </span>
+        </td>
+    </tr>
+    <tr ng-repeat="(id,good) in $root.planets[$root.selectedPlanet.id].goods">
+        <!--Planet-->
+        <td class="square-td">
+            <goodsquare planetquant="good.quant" good="good" quant="" />
+        </td>
+        <!--Umladen-->
+        <td class="btn-td">
+            <div class="btn-group" style="float: right">
+                <button ng-click="menge=$root.selectedUnit.goods[good.type].quant; tradeService.movegoods(good,-Math.abs(menge));"
+                     ng-disabled="!$root.selectedUnit.goods[good.type].quant || good.quant+menge>good.storage"
+                     class="btn btn-sm btn-default">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                    max
+                </button>
+                <button ng-click="tradeService.movegoods(good,-Math.abs(menge));"
+                     ng-disabled="!$root.selectedUnit.goods[good.type].quant || $root.selectedUnit.goods[good.type].quant<menge || good.quant+menge>good.storage"
+                     class="btn btn-sm btn-default">
+                    Abladen
+                </button>
+                <button class="btn btn-sm btn-default" style="padding: 5px 2px;">
+                    <input type="number" ng-model="menge" class="input-sm" ng-click="$event.stopPropagation();"/>
+                </button>
+                <button ng-disabled="good.quant<menge || $root.selectedUnit.itemquantsum+menge>$root.settings.units[selectedUnit.type].storage"
+                     class="btn btn-sm btn-default"
+                     ng-click="tradeService.movegoods(good,Math.abs(menge));;">
+                    Aufladen 
+                </button>
+                <button ng-click="menge=$root.settings.units[selectedUnit.type].storage-$root.selectedUnit.itemquantsum; tradeService.movegoods(good,Math.abs(menge));"
+                        ng-disabled="good.quant<menge || $root.selectedUnit.itemquantsum+menge>$root.settings.units[selectedUnit.type].storage"
+                        class="btn btn-sm btn-default">
+                    max <span class="glyphicon glyphicon-chevron-right"></span>
+                </button>
+            </div>
+        </td>
+        <!--Laderaum-->
+        <td class="square-td" style="width: 50px;">
+            <goodsquare good="good" quant="$root.selectedUnit.goods[id].quant" />
+        </td>
+    </tr>
+</table>
+<table ng-hide="$root.selectedUnit.planet == $root.selectedPlanet.id" class="table table-condensed">
+    <tr>
+        <td>Planet</td>
+        <td></td>
+        <td>Angebote</td>
+        <td style="text-align: right;">Anpassen</td>
+    </tr>
+    <tr ng-repeat="(id,good) in $root.planets[$root.selectedPlanet.id].goods">
+        <!--Planet-->
+        <td class="square-td">
+            <goodsquare planetquant="good.quant" good="good" quant="" />
+        </td>
+        <!--Angebote Pfeile-->
+        <td style="padding: 4px 0 0 0; width: 30px;">
+            <span title="Zum Kauf angeboten" ng-if="good.offer<0" class="glyphicon glyphicon-chevron-left text-danger" style="font-size: 25px;"></span>
+            <span title="Zum Verkauf angeboten" ng-if="good.offer>0" class="glyphicon glyphicon-chevron-right text-success" style="font-size: 25px;"></span>
+        </td>
+        <!--Angebote-->
+        <td class="square-td">
+            <goodsquare good="good" quant="Math.abs(good.offer)" ng-show="good.offer!=0" goodprice="good.price*good.offer"></goodsquare>
+        </td>
+        <!--Verkauf-->
+        <td class="btn-td">
+            <div ng-show="editPrice" style="float: right;">
+                <div class="input-group input-group-sm" style="width: 220px;">
+                    <input class="form-control" type="number" min="1"
+                           ng-model="good.setOffer"
+                           ng-init="good.setOffer=Math.abs(good.offer||100)" />
+                    <span class="input-group-addon">Kiste{{good.setOffer>1?'n':''}}</span>
+                </div>
+                <div class="input-group input-group-sm" style="width: 220px;">
+                    <input class="form-control" type="number" min="1" ng-model="good.price" />
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-xbt" />pro Kiste</span>
+                </div>
+                <div class="btn-group">
+                    <div ng-disabled="!good.setOffer"
+                         ng-click="tradeService.setPrice(good,false); editPrice=false;"
+                         class="btn btn-sm btn-danger">
+                        <span class="glyphicon glyphicon-chevron-left" />
+                        Kaufen
+                    </div>
+                    <div ng-disabled="good.offer==0"
+                         class="btn btn-sm btn-default"
+                         ng-click="good.setOffer=0; editPrice=false; tradeService.setPrice(good);"
+                         style="padding: 5px;">
+                        <span class="glyphicon glyphicon-ban-circle" />
+                        Stop
+                    </div>
+                    <div ng-disabled="!good.setOffer"
+                         ng-click="tradeService.setPrice(good,true); editPrice=false;"
+                         class="btn btn-sm btn-success">
+                        Verkaufen
+                        <span class="glyphicon glyphicon-chevron-right" />
+                    </div>
+                </div>
+            </div>
+            <div ng-hide="editPrice" class="btn btn-sm btn-default" ng-click="editPrice=true" style="display: inline-block; float: right">
+                <span class="glyphicon glyphicon-tag" />
+                Angebote anpassen
+            </div>
+        </td>
+    </tr>
+</table>

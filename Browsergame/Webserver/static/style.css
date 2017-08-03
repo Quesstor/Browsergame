@@ -1,0 +1,240 @@
+#map {
+    color: white;
+}
+
+html, body, #map {
+    height: 100%;
+}
+
+.mapmarker {
+    white-space: nowrap;
+    padding-top: 2px 5px 2px 2px;
+}
+
+    .mapmarker:hover {
+        cursor: pointer;
+    }
+
+    .mapmarker label:hover {
+        cursor: pointer;
+    }
+
+.alert-sm {
+    padding: 5px 8px;
+    margin: 10px 0;
+}
+
+.orderball {
+    margin-top: 1px;
+    background: black;
+    display: block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50px;
+    animation: pulsate 3s ease-out infinite;
+}
+
+.atackball {
+    box-shadow: 0px 0px 1px 2px red;
+}
+
+.moveball {
+    box-shadow: 0px 0px 1px 2px white;
+}
+
+.selectedOrderball {
+}
+
+table td {
+    padding: 2px 3px;
+}
+
+@-webkit-keyframes pulsate {
+    0% {
+        transform: scale(0.5,0.5);
+        opacity: 0.5;
+    }
+
+    80% {
+        opacity: 1;
+        filter: none;
+    }
+
+    100% {
+        transform: scale(1,1);
+        opacity: 0;
+    }
+}
+
+.mapmarkertext {
+    color: white;
+    padding: 5px;
+}
+
+planetmarker {
+    width: 0;
+}
+
+.planetMarker {
+    margin: -23px 0 0 -23px;
+}
+
+    .planetMarker:hover {
+        cursor: default;
+    }
+
+.markerIcon {
+    padding: 3px 4px 4px 4px;
+    display: inline-block;
+}
+
+.planetWithUnit {
+    border-radius: 50%;
+    animation: bluepulse 3s infinite alternate;
+}
+
+.homePlanet {
+    border-radius: 50%;
+    animation: greenpulse 3s infinite alternate;
+}
+
+.selectedPlanet {
+    border-radius: 50%;
+    animation: whitepulse 1s infinite alternate;
+    z-index: 1501;
+}
+
+.nav-blackbg {
+    background: rgba(0,0,0,0.6);
+    border: none;
+}
+
+    .nav-blackbg a {
+        color: white;
+    }
+
+        .nav-blackbg a:hover {
+            color: black;
+        }
+
+    .nav-blackbg > li.acitve > a {
+        color: black;
+    }
+
+.input-sm {
+    height: 21px;
+    width: 50px;
+    margin: -2px 0;
+    padding: 2px;
+}
+
+navi {
+    z-index: 1000;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+    navi .glyphicon:hover {
+        color: white;
+        cursor: pointer;
+    }
+
+    navi .glyphicon {
+        color: rgba(255,255,255,0.8);
+        font-size: 20px;
+    }
+
+.text-blue {
+    color: #7FDBFF;
+}
+
+.text-td {
+    padding: 10px 4px 0 4px !important;
+}
+
+.btn-td {
+    padding: 4px 4px !important;
+}
+
+.square-td {
+    padding: 2px 4px !important;
+    height: 40px;
+}
+
+goodsquare, unitsquare {
+    display: block;
+    height: 35px;
+}
+
+.glyphicon {
+    font-size: 13px;
+}
+
+.fakelink:hover {
+    cursor: pointer;
+}
+
+.table-borderless td {
+    border: none !important;
+}
+
+.btn label:hover {
+    cursor: pointer;
+}
+
+.modal-body {
+    transition: all 0.5s ease 0s;
+}
+
+.coverbg {
+    transition: all 0.5s ease 0s;
+    padding: 200px 0 0 0;
+    background-size: cover;
+}
+
+.coverbgbig {
+    padding: 400px 0 0 0;
+}
+
+.hoverpointer:hover {
+    cursor: pointer;
+}
+
+.nav a:hover {
+    cursor: pointer;
+}
+
+.btn-close:hover {
+    color: #a94442;
+}
+
+@-webkit-keyframes bluepulse {
+    from {
+        box-shadow: 0px 0px 1px 2px #0066cc;
+    }
+
+    to {
+        box-shadow: 0px 0px 8px 2px #0066cc;
+    }
+}
+
+@-webkit-keyframes greenpulse {
+    from {
+        box-shadow: 0px 0px 1px 2px #449d44;
+    }
+
+    to {
+        box-shadow: 0px 0px 8px 2px #449d44;
+    }
+}
+
+@-webkit-keyframes whitepulse {
+    from {
+        box-shadow: 0px 0px 1px 2px #cccccc;
+    }
+
+    to {
+        box-shadow: 0px 0px 8px 2px #cccccc;
+    }
+}

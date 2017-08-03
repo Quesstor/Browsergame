@@ -1,0 +1,43 @@
+﻿<table class="table table-condensed"
+       ng-init="selectedUnits={}">
+    <tr>
+        <td>Einheiten</td>
+        <td><!--btn--></td>
+        <td>Ausgewählt</td>
+    </tr>
+    <tr ng-repeat="(unittype,quant) in $root.selectedPlanet.unitcounts">
+        <td class="square-td">
+            <unitsquare unittype="unittype" quant="quant" hover="true" />
+        </td>
+        <td class="btn-td">
+            <div class="btn-group">
+                <button class="btn btn-sm btn-default"
+                        ng-click="$parent.selectedUnits[unittype]=0">
+                    Alle behalten
+                </button>
+                <button class="btn btn-sm btn-default">
+                    <input type="number" class="input-sm" ng-model="$parent.selectedUnits[unittype]" ng-init="$parent.selectedUnits[unittype]=quant" min="1" max="{{quant}}" />
+                </button>
+                <button class="btn btn-sm btn-default"
+                        ng-click="$parent.selectedUnits[unittype]=quant">
+                    Alle auswählen
+                </button>
+            </div>
+        </td>
+        <td>
+            <unitsquare ng-show="$parent.selectedUnits[unittype]>0" unittype="unittype" quant="$parent.selectedUnits[unittype]" />
+        </td>
+    </tr>
+</table>
+<div style="display:table; width:100%;">
+    <div class="btn-group pull-right">
+        <button class="btn btn-sm btn-danger"
+                data-dismiss="modal"
+                ng-click="utilService.selectUnits(selectedUnits,$root.selectedPlanet)">
+            Angriffsziel auswählen
+        </button>
+    </div>
+</div>
+
+
+

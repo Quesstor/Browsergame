@@ -1,0 +1,14 @@
+﻿<div id="playersmodal" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width: 300px">
+        <div class="modal-content">
+            <div class="modal-header" style="padding-bottom: 0">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <label>Spieler</label><br />
+            </div>
+            <div class="modal-body">
+                {{$root.players.length==0?"Keine Spieler gefunden":""}}
+                <div ng-repeat="p in $root.players" ng-class="{'text-success':p.online}">{{p.name}}</div>
+            </div>
+        </div>
+    </div>
+</div>

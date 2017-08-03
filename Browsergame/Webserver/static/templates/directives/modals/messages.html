@@ -1,0 +1,23 @@
+﻿<div id="messagesmodal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="padding-bottom: 0">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <label>Nachrichten</label><br />
+            </div>
+            <div class="modal-body">
+                <div ng-repeat="message in $root.player.messages"
+                     ng-hide="message.status==2"
+                     ng-mouseenter="message.status=1"
+                     class="alert alert-sm"  
+                     ng-class="{'alert-success':message.status===0, 'alert-info':message.status==1}">
+                    <div ng-click="playerService.deleteMessage(message);" class="close">&times;</div>
+                    <b>{{message.from?message.from:"Kampfbericht"}}</b>
+                    {{message.timestamp}}
+                    <br />
+                    {{message.msg}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

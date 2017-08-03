@@ -1,0 +1,34 @@
+﻿<div ng-if="good"
+     ng-init="utilService.merge(good,$root.settings.goods[good.type])"
+     title="{{good.name}}">
+    <table style="width: 120px;">
+        <tr>
+            <td style="width: 40px;">
+                <div style="background: #{{good.rarity==0?'353f40':''+good.rarity==1?'0f7616':''+good.rarity==2?'29416a':''}}; border-radius:3px; padding: 5px;margin:0px 3px">
+                    <img ng-src="{{'static/img/icon/goods/'+good.icon}}" style="height:25px;" />
+                </div>
+            </td>
+            <td style="line-height: 1; width: 80px;">
+                <span>
+                    {{utilService.shortNumber(quant)}}
+                </span>
+                <div ng-show="planetquant!=null" ng-class="{'text-danger':planetquant<-quant}">
+                    <span class="glyphicon glyphicon-globe"></span>
+                    {{utilService.shortNumber(planetquant)}}
+                </div>
+                <div ng-show="productionspeed">
+                    <span class="glyphicon glyphicon-hourglass"></span>
+                    {{productionspeed}}
+                </div>
+                <div ng-show="ordered">
+                    <span class="glyphicon glyphicon-cog"></span>
+                    {{utilService.shortNumber(ordered)}}
+                </div>
+                <div ng-show="goodprice" ng-class="{'text-danger':goodprice<0,'text-success':goodprice>0}">
+                    <span class="glyphicon glyphicon-xbt"></span>
+                    {{utilService.shortNumber(goodprice)}}
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
