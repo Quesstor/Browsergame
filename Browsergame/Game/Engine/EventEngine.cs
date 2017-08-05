@@ -1,4 +1,6 @@
-﻿using Browsergame.Game.Models;
+﻿using Browsergame.Game.Entities;
+using Browsergame.Game.Event;
+using Browsergame.Game.Utils;
 using Browsergame.Services;
 using System;
 using System.Collections.Generic;
@@ -12,37 +14,28 @@ namespace Browsergame.Game.Engine {
     static class EventEngine {
         private static List<IEvent> eventList = new List<IEvent>();
         private static object eventListLock = new object();
-        private static AutoResetEvent tickRunning = new AutoResetEvent(false);
+        private static ManualResetEvent gettingEventsFromQueue = new ManualResetEvent(false);
 
         public static void addEvent(IEvent e) {
-            tickRunning.WaitOne();
+            gettingEventsFromQueue.WaitOne();
             lock (eventListLock) {
                 eventList.Add(e);
             }
         }
-        public static List<IEvent> tick() {
-            List<IEvent> events = new List<IEvent>();
-            tickRunning.Reset(); //Block new events from coming in eventList
+        public static void tick(out List<IEvent> eventsProcessed, out SubscriberUpdates SubscriberUpdates) {
+            eventsProcessed = new List<IEvent>();
+            gettingEventsFromQueue.Reset(); //Block new events from coming in eventList
             lock (eventListLock) { //Wait until last event is added
-                events = eventList;
+                eventsProcessed = eventList;
                 eventList = new List<IEvent>();
             }
-            tickRunning.Set(); //Allow events to be added again
-
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            gettingEventsFromQueue.Set(); //Allow events to be added again
             State state = StateEngine.getWriteState();
-            foreach (IEvent e in events) {
-                if (e.conditions(state)) e.updates(state);
+            SubscriberUpdates = new SubscriberUpdates();
+            foreach (IEvent e in eventsProcessed) {
+                if (e.conditions(state))
+                    e.changes(state, SubscriberUpdates);
             }
-            stopwatch.Stop();
-
-            //Log
-            if (events.Count > 0) {
-                string msg = String.Format("{0} events processed in {1}ms", events.Count, stopwatch.ElapsedMilliseconds);
-                Logger.log(0, Category.EventEngine, Severity.Debug, msg);
-            }
-            return events; //return events so engine can set processed to 1 after state update
         }
     }
 }

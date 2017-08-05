@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Browsergame
 {
@@ -8,11 +10,11 @@ namespace Browsergame
         static void Main(string[] args)
         {
             var webserver = new Webserver.Webserver();
-            var engine = new Game.Engine.Engine();
+            Game.Engine.Engine.init();
 
             waitForInputLoop();
             webserver.Dispose();
-            engine.Dispose();
+            Game.Engine.Engine.Stop();
         }
 
         private static void waitForInputLoop() {

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Browsergame.Game.Models
-{
-    [Serializable]
-    class Building
-    {
-
+namespace Browsergame.Game.Entities {
+    [DataContract]
+    class Building {
     }
 }

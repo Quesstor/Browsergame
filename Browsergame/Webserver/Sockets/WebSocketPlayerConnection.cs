@@ -8,9 +8,10 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 using Browsergame.Services;
-using Browsergame.Game.Models;
+using Browsergame.Game.Entities;
 using Browsergame.Game.Engine;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Browsergame.Webserver.Sockets {
     public class WebSocketPlayerConnection : WebSocketConnection {
@@ -19,7 +20,7 @@ namespace Browsergame.Webserver.Sockets {
 
         public override Task OnMessageReceived(ArraySegment<byte> message, WebSocketMessageType type) {
             string msg = Encoding.UTF8.GetString(message.Array, message.Offset, message.Count);
-
+            PlayerWebsockets.onMessageReceived(this, playerToken, msg);
             return Task.FromResult(0);
         }
 
@@ -27,17 +28,16 @@ namespace Browsergame.Webserver.Sockets {
             return SendText(Encoding.UTF8.GetBytes(str), true);
         }
         public override void OnOpen() {
-            PlayerWebsockets.addSocket(playerToken, this);
+            PlayerWebsockets.onSocketOpened(playerToken, this);
         }
         public override void OnClose(WebSocketCloseStatus? closeStatus, string closeStatusDescription) {
-            PlayerWebsockets.removeSocket(this.playerToken);
+            PlayerWebsockets.OnSocketClose(playerToken);
         }
         public override bool AuthenticateRequest(IOwinRequest request) {
             var cookies = request.Cookies;
             var token = cookies["token"];
             if (token == null) return false;
-            Player player = StateEngine.getState().getPlayer(token);
-            if (player == null) {
+            if (StateEngine.getState().getPlayer(token) == null) {
                 this.Close(WebSocketCloseStatus.InvalidPayloadData, "Authentication failed");
             }
             this.playerToken = token;

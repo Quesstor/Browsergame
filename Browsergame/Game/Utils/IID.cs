@@ -4,10 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Browsergame.Game.Models
-{
-    [Serializable]
-    class Unit
-    {
+namespace Browsergame.Game.Utils {
+    interface IID {
+        long id { get; set; }
     }
 }
