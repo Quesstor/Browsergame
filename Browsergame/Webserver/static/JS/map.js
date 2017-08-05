@@ -1,5 +1,5 @@
 ﻿$("#map").height($(window).height());
-var map = L.map('map', { zoomControl: false }).setView([65,-80], 15);
+var map = L.map('map', { zoomControl: false }).setView([0,0], 15);
 //L.tileLayer('static/map/{z}/{x}/{y}.png', {
 L.tileLayer('static/map/black.png', {
     attribution: '',
@@ -15,12 +15,10 @@ map.on('zoomend', function (e) {
     mapService.zoomlevel = e.target._animateToZoom;
 })
 .on('click', function (e) {
-    
+    //console.log(e);    
 })
 .on('moveend', function () {
-    var $rootScope = angular.element(document.querySelector('#map')).injector().get('$rootScope');
-    $rootScope.mapSync();
-    $rootScope.unitsSync();
+
 });
 //marker.setZIndexOffset(100);
 L.Marker.prototype.__setPos = L.Marker.prototype._setPos;

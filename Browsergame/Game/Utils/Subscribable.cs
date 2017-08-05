@@ -25,18 +25,18 @@ namespace Browsergame.Game.Utils {
         }
         public void updateSubscribers() {
             foreach (var sub in subscribers) {
-                PlayerWebsockets.sendMessage(sub.Key, updateData(sub.Value).toJson());
+                PlayerWebsocketConnections.sendMessage(sub.Key, getUpdateData(sub.Value).toJson());
             }
         }
         public void updateSubscribers(SubscriberLevel lvl) {
             foreach (var sub in subscribers) {
-                if(sub.Value == lvl) PlayerWebsockets.sendMessage(sub.Key, updateData(sub.Value).toJson());
+                if(sub.Value == lvl) PlayerWebsocketConnections.sendMessage(sub.Key, getUpdateData(sub.Value).toJson());
             }
         }
         public void updateSubscriber(Player player) {
             SubscriberLevel SubscriberLevel = subscribers[player];
-            PlayerWebsockets.sendMessage(player, updateData(SubscriberLevel).toJson());
+            PlayerWebsocketConnections.sendMessage(player, getUpdateData(SubscriberLevel).toJson());
         }
-        abstract public UpdateData updateData(SubscriberLevel subscriber);
+        abstract public UpdateData getUpdateData(SubscriberLevel subscriber);
     }
 }

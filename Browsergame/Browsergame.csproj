@@ -98,6 +98,7 @@
     <Compile Include="Game\Entities\Building.cs" />
     <Compile Include="Game\Entities\Item.cs" />
     <Compile Include="Game\Entities\Location.cs" />
+    <Compile Include="Game\Entities\Message.cs" />
     <Compile Include="Game\Entities\Planet.cs" />
     <Compile Include="Game\Entities\Player.cs" />
     <Compile Include="Game\Entities\Unit.cs" />
@@ -117,8 +118,10 @@
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\Security.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Webserver\Sockets\Router.cs" />
+    <Compile Include="Webserver\Sockets\Controller\SetupSocketController.cs" />
     <Compile Include="Webserver\Sockets\PlayerWebsockets.cs" />
-    <Compile Include="Webserver\Sockets\WebSocketPlayerConnection.cs" />
+    <Compile Include="Webserver\Sockets\PlayerWebsocket.cs" />
     <Compile Include="Webserver\Controller\EmptyController.cs" />
     <Compile Include="Webserver\Controller\LoginController.cs" />
     <Compile Include="Webserver\Controller\IndexController.cs" />

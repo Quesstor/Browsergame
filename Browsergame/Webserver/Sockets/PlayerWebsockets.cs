@@ -14,26 +14,26 @@ using System.Runtime.Serialization.Json;
 using System.Web.Script.Serialization;
 using Browsergame.Game.Utils;
 using Browsergame.Game;
+using Newtonsoft.Json;
+using Browsergame.Webserver.Sockets.Controller;
 
 namespace Browsergame.Webserver.Sockets {
-    static class PlayerWebsockets {
-        private static Dictionary<string, WebSocketPlayerConnection> sockets = new Dictionary<string, WebSocketPlayerConnection>();
+    static class PlayerWebsocketConnections {
+        private static Dictionary<string, PlayerWebsocket> sockets = new Dictionary<string, PlayerWebsocket>();
+
+        public static void onMessageReceived(PlayerWebsocket socket, string token, string msg) {
+            dynamic json = JsonConvert.DeserializeObject(msg);
+            Router.route(socket, json);
+        }
         public static void sendMessage(Player toPlayer, string json) {
-            if (toPlayer.isBot || !toPlayer.online) return;
-            WebSocketPlayerConnection socket;
+            if (toPlayer.isBot) return;
+            PlayerWebsocket socket;
             if (sockets.TryGetValue(toPlayer.token, out socket)) {
                 socket.sendString(json);
             }
-            else {
-                string msg = string.Format("Socket not found for Player {0}. Token: {1}. Thread: {2}. Message: {3}", toPlayer.name, toPlayer.token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId, json);
-                new Game.Event.PlayerOnline(toPlayer.id, false);
-                Logger.log(9, Category.WebSocket, Severity.Warn, msg);
-            }
         }
-        public static void onMessageReceived(WebSocketPlayerConnection socket, string token, string msg) {
-            socket.sendString("Received Msg: "+msg);
-        }
-        public static void onSocketOpened(string token, WebSocketPlayerConnection socket) {
+
+        public static void onSocketOpened(string token, PlayerWebsocket socket) {
             Player player = StateEngine.getState().getPlayer(token);
             sockets[player.token] = socket;
             new Game.Event.PlayerOnline(player.id, true);

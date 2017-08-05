@@ -16,16 +16,15 @@
     this.planetHasOffers = function(planet){
         if(!planet) planet=$rootScope.selectedPlanet;
         if(!planet) return false;
-        for(var k in planet.goods){
-            if(planet.goods[k].offer!=0) return true;
+        for(var k in planet.items){
+            if(planet.items[k].offer!=0) return true;
         }
         return false;
     }
     this.canProduce = function (building, menge) {
         if (!$rootScope.selectedPlanet) return false;
-        for (var key in building.educts) {
-            var educt = building.educts[key];
-            if ($rootScope.selectedPlanet.goods[educt.type].quant < educt.quant * menge) return false;
+        for (var educt in building.educts) {
+            if ($rootScope.selectedPlanet.items[educt].quant < educt.quant * menge) return false;
         }
         return true;
     }
@@ -33,7 +32,7 @@
         if (!$rootScope.selectedPlanet) return false;
         if ($rootScope.player.gold < building.buildPrice * (building.level + 1)) return false;
         for (type in building.buildCosts) {
-            if ($rootScope.selectedPlanet.goods[type].quant < building.buildCosts[type].quant * (building.level + 1)) return false;
+            if ($rootScope.selectedPlanet.items[type].quant < building.buildCosts[type].quant * (building.level + 1)) return false;
         }
         for (type in building.buildRequirements) {
             if ($rootScope.selectedPlanet.buildings[type].level < building.buildRequirements[type]) return false;

@@ -1,35 +1,25 @@
-﻿angular.module('app').service('syncService', function ($http, $interval, $rootScope, $compile, $location, $timeout, mapService) {
-    $rootScope.mapSync = function () {
-        if (!$rootScope.token) return false;
-        $http.post("action/sync/mapSync", { token: $rootScope.token, mapBounds: map.getBounds() })
-        .success($rootScope.updateData)
-        .error(handleError);
-    }
-    $rootScope.unitsSync = function () {
-        if (!$rootScope.token) return false;
-        $http.post("action/sync/unitsSync", { token: $rootScope.token })
-        .success($rootScope.updateData)
-        .error(handleError);
-    }
-    $rootScope.playerSync = function () {
-        if (!$rootScope.token) return;
-        $http.post("action/sync/playerSync", { token: $rootScope.token })
-        .success($rootScope.updateData)
-        .error(handleError);
+﻿angular.module('app').service('syncService', function ($http, $interval, $rootScope, $compile, $location, $timeout, mapService, $websocket) {  
+
+    $rootScope.socketError = function (data) { console.error("Socket error" + data); }
+    $rootScope.socket = $websocket('ws://127.0.0.1:21212/ws');
+    $rootScope.socket.onMessage(function (message) {
+        $rootScope.updateData(JSON.parse(message.data));
+    }).onClose($websocket.socketError).onError($rootScope.socketError)
+        .onOpen(function () {
+            $rootScope.send("setup");
+        });
+
+    $rootScope.send = function (action, data) {
+        var msg = { action: "setup", payload: data };
+        console.warn(msg);
+        $rootScope.socket.send(msg);
     }
 
-    $rootScope.planetSync = function (planetid) {
-        if (!planetid) planetid = $rootScope.selectedPlanet.id;
-        //console.log("planetSync");
-        if (!$rootScope.token) return;
-        $http.post("action/sync/planetSync", { token: $rootScope.token, planetid: planetid })
-        .success($rootScope.updateData)
-        .error(handleError);
-    }
-    
-    $rootScope.updateData = function(data) {
+    $rootScope.updateData = function (data) {
+        console.info(data);
         if (!data) { console.log("NO SYNC DATA"); return; }
         if (!$rootScope.settings) $rootScope.settings = {};
+        if (!$rootScope.players) $rootScope.players = {};
         if (!$rootScope.player) $rootScope.player = {};
         if (!$rootScope.planets) $rootScope.planets = {};
         if (!$rootScope.planet) $rootScope.planet = {};
@@ -39,6 +29,7 @@
         //console.log("updateData");
         if (data.settings) {
             angular.merge($rootScope.settings, data.settings);
+            mapService.panHome();
         }
         if (data.player) {
             angular.merge($rootScope.player, data.player);
@@ -50,12 +41,12 @@
             }
             mapService.drawAllOrders();
         }
-        if (data.planets) {
-            angular.merge($rootScope.planets, data.planets);
+        if (data.planet) {
+            $rootScope.planets[data.planet.id] = data.planet;
             mapService.drawPlanetMarker();
         }
-        if (data.planet) {
-            angular.merge($rootScope.planets[data.planet.id], data.planet);
+        if (data.players) {
+            $rootScope.players[data.players.id] = data.players;
         }
         if (data.unit) {
             angular.merge($rootScope.units[data.unit.id], data.unit);
@@ -79,20 +70,4 @@
         $location.url($location.absUrl().split("#")[0]);
         setTimeout("location.reload()", 1000);
     };
-
-    this.setup = function () {
-        $http.post("action/sync/setupsync", { token: $rootScope.token })
-        .success(function (data) {
-            if (!data) handleError();
-            $rootScope.updateData(data);
-            mapService.panHome();
-            $rootScope.mapSync();
-        })
-        .error(handleError);
-        //$interval(function () {
-        //    if ($rootScope.selectedPlanet) {
-        //        $rootScope.planetSync();
-        //    }
-        //}, 10000);
-    }
 });

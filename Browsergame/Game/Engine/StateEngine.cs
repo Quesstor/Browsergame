@@ -84,6 +84,10 @@ namespace Browsergame.Game.Engine {
                 return newState();
             }
         }
+
+        public static void resetState() {
+            writeState = newState();
+        }
         private static State newState() {
             State state = new State();
             var bot1 = state.addPlayer("Bot1", "botToken");

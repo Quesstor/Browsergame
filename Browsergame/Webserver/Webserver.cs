@@ -24,7 +24,7 @@ namespace Browsergame.Webserver
             app.Use<AuthMiddleware>();
             app.Use<ExceptionMiddleware>();
 
-            app.MapWebSocketRoute<WebSocketPlayerConnection>("/ws");
+            app.MapWebSocketRoute<PlayerWebsocket>("/ws");
             //config.Routes.MapHttpRoute(name: "Socket", routeTemplate: "socket", defaults: new { controller = "Socket" });
 
             HttpConfiguration config = new HttpConfiguration();

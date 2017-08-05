@@ -33,7 +33,7 @@ namespace Browsergame.Services {
         }
         public static Boolean authenticateRequest(IOwinRequest Request) {
             string path = Request.Path.ToString();
-            if (path == "/" || path.StartsWith("/static") || path.StartsWith("/login")) return true;
+            if (path == "/" || path == "/favicon.ico" || path.StartsWith("/static") || path.StartsWith("/login")) return true;
 
             var token = Request.Cookies.FirstOrDefault(c => c.Key == "token").Value;
             if (token == null) {

@@ -9,15 +9,16 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Entities {
     [DataContract(IsReference = true)]
-    class Player : Subscribable,IID {
+    class Player : Subscribable, IID {
         [DataMember] public long id { get; set; }
         [DataMember] public string name;
         [DataMember] public string token;
         [DataMember] public int money;
-        [DataMember] public bool online=false;
+        [DataMember] public bool online = false;
 
         [DataMember] public List<Planet> planets = new List<Planet>();
         [DataMember] public List<Unit> units = new List<Unit>();
+        [DataMember] public List<Message> messages = new List<Message>();
         [DataMember] public HashSet<Subscribable> subscriptions = new HashSet<Subscribable>();
         [DataMember] public bool isBot = false;
 
@@ -27,13 +28,18 @@ namespace Browsergame.Game.Entities {
             this.money = money;
         }
 
-        public override UpdateData updateData(SubscriberLevel subscriber) {
-            var data = new UpdateData("Player");
+        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
+            string key;
+            if (subscriber == SubscriberLevel.Other) { key = "Players"; }
+            else { key = "Player"; }
+            UpdateData data = new UpdateData(key);
+
             data["id"] = id;
             data["name"] = name;
             data["online"] = online;
             if (subscriber == SubscriberLevel.Owner) {
                 data["money"] = money;
+                data["messages"] = messages;
             }
             return data;
         }

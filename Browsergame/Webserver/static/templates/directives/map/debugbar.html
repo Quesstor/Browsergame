@@ -7,6 +7,9 @@
         <div class="btn btn-default" ng-click="show='Player'">
             Player
         </div>
+        <div class="btn btn-default" ng-click="show='Players'">
+            Players
+        </div>
         <div class="btn btn-default" ng-click="show='Units'">
             Units
         </div>
@@ -19,13 +22,14 @@
     </div>
     <br />
     <div ng-show="show=='Settings'">
-        <pre style="width: 200px; float:left;">settings {{$root.settings|json}}</pre>
-        <pre style="width: 200px; float:left;">goods {{$root.settings.goods|json}}</pre>
+        <pre style="width: 200px; float:left;">all settings {{$root.settings|json}}</pre>
+        <pre style="width: 200px; float:left;">items {{$root.settings.items|json}}</pre>
         <pre style="width: 200px; float:left;">buildings {{$root.settings.buildings|json}}</pre>
         <pre style="width: 200px; float:left;">units {{$root.settings.units|json}}</pre>
         <pre style="width: 200px; float:left;">location {{$root.settings.location|json}}</pre>
     </div>
     <pre ng-show="show=='Player'">{{$root.player|json}}</pre>
+    <pre ng-show="show=='Players'">{{$root.players|json}}</pre>
     <div ng-show="show=='Units'" >
         <pre style="width: 200px; float:left;" ng-repeat="(k,unit) in $root.units">{{k}} {{unit|json}}</pre>
         <pre style="width: 200px; float:left;" ng-repeat="(k,order) in $root.orders">{{k}} {{order|json}}</pre>

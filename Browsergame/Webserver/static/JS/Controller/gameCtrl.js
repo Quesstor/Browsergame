@@ -3,12 +3,6 @@
     $rootScope.token = $cookies.get("token");
     $scope.mapService = mapService;
 
-    $scope.socketError = function (data) {console.error("Socket error" + data);}
-    $scope.socket = $websocket('ws://127.0.0.1:21212/ws');
-    $scope.socket.onMessage(function (message) {
-        console.log("WebSocket Message: " + message.data);
-    }).onClose($scope.socketError).onError($scope.socketError);
-
     //syncService.setup();
 
     if ($("#BGmusic").attr("autoplay")) document.getElementById("BGmusic").play();

@@ -5,11 +5,15 @@ using Browsergame.Services;
 using Browsergame.Game.Utils;
 using System.Threading.Tasks;
 using Browsergame.Game.Event;
+using Browsergame.Game.Entities;
 
 namespace Browsergame.Game.Engine {
     static class Engine {
         private static int tickcount = 1;
         public static void init() {
+            Building.makeSettings();
+            Unit.makeSettings();
+            Item.makeSettings();
             StateEngine.init();
             TickEngine.init();
         }

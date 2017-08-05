@@ -1,4 +1,3 @@
-'use strict';
 var app = angular.module('app', ['ngRoute', 'ngCookies', 'ngWebSocket']);
 app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.
@@ -33,7 +32,7 @@ app.directive("navi", function () { return { templateUrl: '/static/templates/dir
 app.directive("selectedunitbar", function () { return { templateUrl: '/static/templates/directives/map/selectedunitbar.html' } });
 app.directive("debugbar", function () { return { templateUrl: '/static/templates/directives/map/debugbar.html' } });
 app.directive("price", function () { return { templateUrl: '/static/templates/directives/util/price.html', scope: { value: '=' }, controller: 'utilCtrl' } });
-app.directive("goodsquare", function () { return { templateUrl: '/static/templates/directives/util/goodsquare.html', scope: { good: "=", quant: "=", planetquant: "=", productionspeed: "=", ordered: "=", goodprice: "=" }, controller: 'utilCtrl' } });
+app.directive("itemsquare", function () { return { templateUrl: '/static/templates/directives/util/itemsquare.html', scope: { item: "=", quant: "=", planetquant: "=", productionspeed: "=", ordered: "=", itemprice: "=" }, controller: 'utilCtrl' } });
 app.directive("unitsquare", function () { return { templateUrl: '/static/templates/directives/util/unitsquare.html', scope: { unittype: "=", quant: "=", hover: "="}, controller: 'utilCtrl' } });
 app.directive("planetmarker", function () { return { templateUrl: '/static/templates/directives/map/planetmarker.html', scope: { planet: '=' }, controller: 'mapmarkerCtrl' } });
 app.directive("ordermarker", function () { return { templateUrl: '/static/templates/directives/map/ordermarker.html', scope: { order: '=' }, controller: 'mapmarkerCtrl' } });

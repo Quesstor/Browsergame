@@ -14,7 +14,7 @@
         //Draw missing Marker
         angular.forEach($rootScope.planets, function (planet, id) {
             if (!marker.planets[id]) {
-                marker.planets[id] = L.marker([planet.location.lat, planet.location.lng], {
+                marker.planets[id] = L.marker([planet.location.x, planet.location.y], {
                     icon: L.divIcon({
                         html: '<planetmarker planet="$root.planets[' + id + ']"></planetmarker>',
                         className: 'mapmarker planetMarker angularCompile',
@@ -51,11 +51,11 @@
         var ordercorlor = { 0: "white", 1: "red" }
         mapService.drawPolyLine("order" + order.id, startlocation, targetlocation, ordercorlor[order.type]);
 
-        var backVector = { lat: startlocation.lat - targetlocation.lat, lng: startlocation.lng - targetlocation.lng };
+        var backVector = { lat: startlocation.x - targetlocation.x, lng: startlocation.y - targetlocation.y };
         var backVectorLength = Math.sqrt(Math.pow(backVector.lat, 2) + Math.pow(backVector.lng, 2));
         var normedBackVector = { lat: backVector.lat / backVectorLength, lng: backVector.lng / backVectorLength };
         var distanceLeft = order.duration * order.movespeed;
-        marker.order[order.id] = L.marker([targetlocation.lat + normedBackVector.lat * distanceLeft, targetlocation.lng + normedBackVector.lng * distanceLeft], {
+        marker.order[order.id] = L.marker([targetlocation.x + normedBackVector.lat * distanceLeft, targetlocation.y + normedBackVector.lng * distanceLeft], {
             icon: L.divIcon({
                 html: "<ordermarker order='$root.orders[" + order.id + "]' style='display:block; margin: -11px 0 0 -12px;'></ordermarker>",
                 className: 'mapmarker angularCompile ',
@@ -78,8 +78,8 @@
             } else { //Update marker
                 var distanceLeft = order.duration * order.movespeed;
                 var newLocation = {
-                    lat: marker.order[order.id].targetlocation.lat + marker.order[order.id].normedBackVector.lat * distanceLeft,
-                    lng: marker.order[order.id].targetlocation.lng + marker.order[order.id].normedBackVector.lng * distanceLeft
+                    lat: marker.order[order.id].targetlocation.x + marker.order[order.id].normedBackVector.lat * distanceLeft,
+                    lng: marker.order[order.id].targetlocation.y + marker.order[order.id].normedBackVector.lng * distanceLeft
                 }
                 marker.order[order.id].setLatLng(new L.LatLng(newLocation.lat, newLocation.lng));
             }
@@ -96,7 +96,7 @@
         }
     }
     this.panHome = function () {
-        map.panTo(new L.LatLng($rootScope.settings.location.lat, $rootScope.settings.location.lng));
+        map.panTo(new L.LatLng($rootScope.settings.location.x, $rootScope.settings.location.y));
     }
     this.drawUnitLine = function (unit) {
         this.drawPolyLine(unit.id, unit.location, $rootScope.planets[unit.targetplanet].location);

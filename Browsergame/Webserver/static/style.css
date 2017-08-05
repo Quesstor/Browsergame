@@ -46,7 +46,7 @@ html, body, #map {
 }
 
 table td {
-    padding: 2px 3px;
+    padding: 0 3px;
 }
 
 @-webkit-keyframes pulsate {
@@ -162,7 +162,7 @@ navi {
     height: 40px;
 }
 
-goodsquare, unitsquare {
+itemsquare, unitsquare {
     display: block;
     height: 35px;
 }

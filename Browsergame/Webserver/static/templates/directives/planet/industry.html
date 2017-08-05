@@ -36,21 +36,21 @@
         </td>
         <!--Produkte-->
         <td class="square-td">
-            <goodsquare ng-repeat="product in building.goodProducts" good="product" planetquant="$root.selectedPlanet.goods[product.type].quant" quant="'+'+product.quant * building.level"></goodsquare>
+            <itemsquare ng-repeat="product in building.itemProducts" item="product" planetquant="$root.selectedPlanet.items[product.type].quant" quant="'+'+product.quant * building.level"></itemsquare>
             <unitsquare ng-repeat="unit in building.unitProducts" unittype="unit"></unitsquare>
         </td>
         <!--Kosten-->
         <td class="square-td" style="width:100px;">
             <div ng-show="showProduce">
-                <goodsquare ng-repeat="educt in building.educts" good="educt" 
-                            planetquant="$root.selectedPlanet.goods[educt.type].quant" quant="'-'+educt.quant*(menge||1)"></goodsquare>
+                <itemsquare ng-repeat="educt in building.educts" item="educt" 
+                            planetquant="$root.selectedPlanet.items[educt.type].quant" quant="'-'+educt.quant*(menge||1)"></itemsquare>
             </div>
             <div ng-show="showUpgrade" style="padding-bottom: 10px;">
                 <price value="-$root.settings.buildings[building.type].buildPrice * (building.level+1)" ng-show="showUpgrade"></price>
                 <br />
-                <goodsquare ng-repeat="goodcost in $root.settings.buildings[building.type].buildCosts"
-                            good="goodcost" planetquant="$root.selectedPlanet.goods[goodcost.type].quant" quant="-goodcost.quant*(building.level+1)"
-                            ng-class="{'text-danger':$root.selectedPlanet.goods[goodcost.type].quant<goodcost.quant*(building.level+1)}"></goodsquare>
+                <itemsquare ng-repeat="itemcost in $root.settings.buildings[building.type].buildCosts"
+                            item="itemcost" planetquant="$root.selectedPlanet.items[itemcost.type].quant" quant="-itemcost.quant*(building.level+1)"
+                            ng-class="{'text-danger':$root.selectedPlanet.items[itemcost.type].quant<itemcost.quant*(building.level+1)}"></itemsquare>
                 <table class="table table-condensed text-danger" style="margin:0">
                     <tr ng-repeat="(type,level) in building.buildRequirements" ng-show="$root.selectedPlanet.buildings[type].level < level">
                         <td>{{$root.settings.buildings[type].name}}</td>

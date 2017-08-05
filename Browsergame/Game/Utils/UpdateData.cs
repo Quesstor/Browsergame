@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +12,18 @@ namespace Browsergame.Game.Utils {
         private string key;
         private Dictionary<string, object> dict;
         public UpdateData(string key) {
-            this.key = key;
+            this.key = key.ToLower();
             dict = new Dictionary<string, object>();
 
         }
         public string toJson() {
             var dict = new Dictionary<string, object>();
             dict[key] = this.dict;
-            string json = new JavaScriptSerializer().Serialize(dict);
+            string json = JsonConvert.SerializeObject(dict);
             return json;
         }
 
+        public Dictionary<string, object> getDict() { return dict; }
 
         public object this[string key] { get => ((IDictionary<string, object>)dict)[key]; set => ((IDictionary<string, object>)dict)[key] = value; }
 

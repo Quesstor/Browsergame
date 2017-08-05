@@ -1,11 +1,11 @@
-﻿<div ng-if="good"
-     ng-init="utilService.merge(good,$root.settings.goods[good.type])"
-     title="{{good.name}}">
+﻿<div ng-if="item"
+     ng-init="utilService.merge(item,$root.settings.items[item.type])"
+     title="{{item.name}}">
     <table style="width: 120px;">
         <tr>
             <td style="width: 40px;">
-                <div style="background: #{{good.rarity==0?'353f40':''+good.rarity==1?'0f7616':''+good.rarity==2?'29416a':''}}; border-radius:3px; padding: 5px;margin:0px 3px">
-                    <img ng-src="{{'static/img/icon/goods/'+good.icon}}" style="height:25px;" />
+                <div style="box-shadow:inset 0 0 2px 2px {{utilService.itemColor(item.rarity)}}; border-radius:3px; padding: 5px;margin:0px 3px">
+                    <img ng-src="{{'static/img/icon/items/'+item.type+'.png'}}" style="height:25px;" />
                 </div>
             </td>
             <td style="line-height: 1; width: 80px;">
@@ -24,9 +24,9 @@
                     <span class="glyphicon glyphicon-cog"></span>
                     {{utilService.shortNumber(ordered)}}
                 </div>
-                <div ng-show="goodprice" ng-class="{'text-danger':goodprice<0,'text-success':goodprice>0}">
+                <div ng-show="itemprice" ng-class="{'text-danger':itemprice<0,'text-success':itemprice>0}">
                     <span class="glyphicon glyphicon-xbt"></span>
-                    {{utilService.shortNumber(goodprice)}}
+                    {{utilService.shortNumber(itemprice)}}
                 </div>
             </td>
         </tr>

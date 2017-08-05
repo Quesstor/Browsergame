@@ -7,12 +7,12 @@
         {{$root.units[$root.selectedUnitKey].name}}
         <br />
         <table>
-            <tr ng-repeat="good in $root.units[$root.selectedUnitKey].goods">
+            <tr ng-repeat="item in $root.units[$root.selectedUnitKey].items">
                 <td >
-                    <goodsquare ng-show="good.quant>0" good="good" />
+                    <itemsquare ng-show="item.quant>0" item="item" />
                 </td>
                 <td>
-                    <price value="good.priceMean"></price>
+                    <price value="item.priceMean"></price>
                 </td>
             </tr>
         </table>

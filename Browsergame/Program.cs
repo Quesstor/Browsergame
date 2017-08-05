@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Browsergame.Game.Engine;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,10 +26,14 @@ namespace Browsergame
                         Console.WriteLine("Commands:");
                         Console.WriteLine("\th: Help");
                         Console.WriteLine("\tg: Open Game");
+                        Console.WriteLine("\tr: Reset Game");
                         Console.WriteLine("\tEnter: Shutdown Server");
                         break;
                     case "G":
                         Process.Start(Settings.webserverUrl); break;
+                    case "R":
+                        StateEngine.resetState();
+                        break;
                     default: break;
                 }
                 input = Console.ReadLine();
