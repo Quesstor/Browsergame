@@ -10,18 +10,20 @@ using Browsergame.Game.Entities;
 namespace Browsergame.Game.Event {
     class PlayerOnline : Event {
         private bool newOnlineStatus;
-        public PlayerOnline(long initiator, bool newOnlineStatus) : base(initiator) {
+        private long playerID;
+
+        public PlayerOnline(long playerID, bool newOnlineStatus) {
             this.newOnlineStatus = newOnlineStatus;
+            this.playerID = playerID;
             register();
         }
 
-        public override void changes(State state, SubscriberUpdates updates) {
-            Player player = state.getPlayer(initiatorID);
+        public override void execute() {
+            Player player = getPlayer(playerID, SubscriberLevel.Other);
             player.online = newOnlineStatus;
-            updates.Add(player, SubscriberLevel.Other);
         }
 
-        public override bool conditions(State state) {
+        public override bool conditions() {
             return true;
         }
     }

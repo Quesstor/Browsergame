@@ -22,19 +22,24 @@ namespace Browsergame.Game.Engine {
                 eventList.Add(e);
             }
         }
-        public static void tick(out List<IEvent> eventsProcessed, out SubscriberUpdates SubscriberUpdates) {
-            eventsProcessed = new List<IEvent>();
+        public static void tick(out List<IEvent> processingEvents, out SubscriberUpdates SubscriberUpdates) {
+            processingEvents = new List<IEvent>();
             gettingEventsFromQueue.Reset(); //Block new events from coming in eventList
             lock (eventListLock) { //Wait until last event is added
-                eventsProcessed = eventList;
+                processingEvents = eventList;
                 eventList = new List<IEvent>();
             }
             gettingEventsFromQueue.Set(); //Allow events to be added again
             State state = StateEngine.getWriteState();
             SubscriberUpdates = new SubscriberUpdates();
-            foreach (IEvent e in eventsProcessed) {
-                if (e.conditions(state))
-                    e.changes(state, SubscriberUpdates);
+            foreach (IEvent e in processingEvents) {
+                e.state = state;
+
+                //chech conditions and execute event
+                if (e.conditions()) {
+                    e.execute();
+                    SubscriberUpdates.Union(e.updates);
+                }
             }
         }
     }

@@ -11,21 +11,22 @@ namespace Browsergame.Game.Event {
         private string name;
         private string token;
 
-        public NewPlayer(long initiator, string name, string token) : base(initiator) {
+        public NewPlayer(long initiator, string name, string token) {
             this.name = name;
             this.token = token;
             register();
         }
 
-        public override bool conditions(State state) {
+        public override bool conditions() {
             return true;
         }
 
-        public override void changes(State state, SubscriberUpdates updates) {
-            Player player = state.addPlayer(name, token);
-            Planet planet = state.addPlanet(string.Format("Homeplanet of {0}", name), player);
-            updates.Add(player, SubscriberLevel.Other);
-            updates.Add(planet, SubscriberLevel.Other);
+        public override void execute() {
+            Player player = addPlayer(name, token);
+            Planet planet = addPlanet(string.Format("Homeplanet of {0}", name), player);
+            getPlayer(player.id, SubscriberLevel.Other);
+            getPlanet(planet.id, SubscriberLevel.Other);
+
         }
     }
 }

@@ -29,19 +29,9 @@ namespace Browsergame.Game.Engine {
             SubscriberUpdates SubscriberUpdates;
 
             EventEngine.tick(out eventsProcessed, out SubscriberUpdates);
-            StateEngine.tick();
-
-            if (tickcount % Settings.persistenSaveEveryXTick == 0)
-                StateEngine.persistentSaveAsync();
-
-            int updateCount = 0;
+            StateEngine.tick(tickcount);
             foreach (IEvent e in eventsProcessed) { e.processed.Set(); }
-            foreach (SubscriberLevel sLevel in SubscriberUpdates.updates.Keys) {
-                foreach(Subscribable subscribable in SubscriberUpdates.updates[sLevel]) {
-                    subscribable.updateSubscribers(sLevel);
-                    updateCount += 1;
-                }
-            }
+            SubscriberUpdates.updateSubscribers();
 
             stopwatch.Stop();
 
@@ -49,7 +39,7 @@ namespace Browsergame.Game.Engine {
             if (eventsProcessed.Count > 0) {
                 string eventNames = "Events: ";
                 foreach (IEvent e in eventsProcessed) eventNames += e.GetType().Name + " ";
-                string msg = String.Format("{0} events processed and {1} SubscriberUpdates sent in {2}ms", eventsProcessed.Count, updateCount, stopwatch.ElapsedMilliseconds);
+                string msg = String.Format("{0} events processed and {1} SubscriberUpdates sent in {2}ms", eventsProcessed.Count, SubscriberUpdates.getAllSubscribables().Count, stopwatch.ElapsedMilliseconds);
                 Logger.log(0, Category.EventEngine, Severity.Debug, msg);
                 Logger.log(0, Category.EventEngine, Severity.Debug, eventNames);
             }

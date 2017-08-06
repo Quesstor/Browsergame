@@ -20,7 +20,7 @@ namespace Browsergame.Game.Entities {
         [DataMember] public List<Planet> planets = new List<Planet>();
         [DataMember] public List<Unit> units = new List<Unit>();
         [DataMember] public List<Message> messages = new List<Message>();
-        [DataMember] public HashSet<Subscribable> subscriptions = new HashSet<Subscribable>();
+        [DataMember] public Dictionary<SubscriberLevel, HashSet<Subscribable>> subscriptions = new Dictionary<SubscriberLevel, HashSet<Subscribable>>();
         [DataMember] public bool isBot = false;
 
         public Player(string name, string token, int money) {
@@ -45,8 +45,8 @@ namespace Browsergame.Game.Entities {
             return data;
         }
 
-        public override IEvent onDemandCalculation(SubscriberLevel lvl) {
-            return null;
+        public override void onDemandCalculation() {
+            return;
         }
     }
 }

@@ -3,8 +3,6 @@
     $rootScope.token = $cookies.get("token");
     $scope.mapService = mapService;
 
-    //syncService.setup();
-
     if ($("#BGmusic").attr("autoplay")) document.getElementById("BGmusic").play();
     $scope.BGmusic = $("#BGmusic").attr("autoplay");
     $scope.$watch('BGvolume', function () {

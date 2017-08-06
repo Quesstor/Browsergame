@@ -50,8 +50,8 @@ namespace Browsergame.Game.Entities {
             }
         }
 
-        public override IEvent onDemandCalculation(SubscriberLevel lvl) {
-            return null;
+        public override void onDemandCalculation() {
+            return;
         }
 
         public class Setting {

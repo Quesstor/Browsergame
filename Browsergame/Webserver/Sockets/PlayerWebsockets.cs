@@ -16,6 +16,7 @@ using Browsergame.Game.Utils;
 using Browsergame.Game;
 using Newtonsoft.Json;
 using Browsergame.Webserver.Sockets.Controller;
+using Browsergame.Game.Event;
 
 namespace Browsergame.Webserver.Sockets {
     static class PlayerWebsocketConnections {
@@ -36,7 +37,7 @@ namespace Browsergame.Webserver.Sockets {
         public static void onSocketOpened(string token, PlayerWebsocket socket) {
             Player player = StateEngine.getState().getPlayer(token);
             sockets[player.token] = socket;
-            new Game.Event.PlayerOnline(player.id, true);
+            IEvent e = new Game.Event.PlayerOnline(player.id, true);
             string msg = string.Format("Socket opened to {0}. Token: {1}. Thread: {2}", player.name, token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);
             Logger.log(0, Category.WebSocket, Severity.Debug, msg);
         }

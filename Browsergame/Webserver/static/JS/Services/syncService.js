@@ -10,21 +10,46 @@
         });
 
     $rootScope.send = function (action, data) {
-        var msg = { action: "setup", payload: data };
+        var msg = { action: action, payload: data };
         console.warn(msg);
         $rootScope.socket.send(msg);
+    }
+
+    $rootScope.productionIntervall;
+    $rootScope.startProductionUpdates = function () {
+        if ($rootScope.productionIntervall) $interval.cancel($rootScope.productionIntervall);
+        $rootScope.productionIntervall = $interval($rootScope.productionUpdate, 1000);
+    }
+    $rootScope.productionUpdate = function () {
+        angular.forEach($rootScope.planets, function (planet, key) {
+            if (planet.buildings) {
+                angular.forEach(planet.buildings, function (building, key) {
+                    var products = $rootScope.settings.buildings[key].itemProducts;
+                    var productionFactor = building.lvl * planet.productionMinutes * $rootScope.settings.productionsPerMinute;
+                    angular.forEach(products, function (productionAmount, product) {
+                        planet.items[product].quant += productionAmount * productionFactor;
+                    });
+                });
+                planet.productionMinutes = 1/60;
+            }
+        });
     }
 
     $rootScope.updateData = function (data) {
         console.info(data);
         if (!data) { console.log("NO SYNC DATA"); return; }
-        if (!$rootScope.settings) $rootScope.settings = {};
-        if (!$rootScope.players) $rootScope.players = {};
-        if (!$rootScope.player) $rootScope.player = {};
-        if (!$rootScope.planets) $rootScope.planets = {};
-        if (!$rootScope.planet) $rootScope.planet = {};
-        if (!$rootScope.units) $rootScope.units = {};
-        if (!$rootScope.orders) $rootScope.orders = {};
+        if (data.setup) {
+            $rootScope.settings = {};
+            $rootScope.players = {};
+            $rootScope.player = {};
+            $rootScope.planets = {};
+            $rootScope.planet = {};
+            $rootScope.units = {};
+            $rootScope.orders = {};
+            for (k in data.setup) { $rootScope.updateData(data.setup[k]); }
+            $rootScope.startProductionUpdates();
+        }
+
 
         //console.log("updateData");
         if (data.settings) {
@@ -63,11 +88,5 @@
         }
         if ($rootScope.selectedPlanet) $rootScope.selectedPlanet = $rootScope.planets[$rootScope.selectedPlanet.id];
         if ($rootScope.selectedUnit) $rootScope.selectedUnit = $rootScope.units[$rootScope.selectedUnit.id];
-    };
-
-    function handleError(data) {
-        console.warn("SYNC ERROR");
-        $location.url($location.absUrl().split("#")[0]);
-        setTimeout("location.reload()", 1000);
     };
 });

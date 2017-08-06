@@ -17,33 +17,34 @@ namespace Browsergame.Game.Utils {
         [DataMember] private Dictionary<SubscriberLevel, HashSet<Player>> subscribers = new Dictionary<SubscriberLevel, HashSet<Player>>();
         public void addSubscription(Player player, SubscriberLevel level) {
             if (!subscribers.ContainsKey(level)) subscribers[level] = new HashSet<Player>();
+            if (!player.subscriptions.ContainsKey(level)) player.subscriptions[level] = new HashSet<Subscribable>();
             subscribers[level].Add(player);
-            player.subscriptions.Add(this);
+            player.subscriptions[level].Add(this);
         }
         public void removeSubscription(Player player, SubscriberLevel level) {
             subscribers[level].Remove(player);
-            player.subscriptions.Remove(this);
+            player.subscriptions[level].Remove(this);
         }
 
+        public void updateSubscriber(Player player) {
+            foreach (SubscriberLevel lvl in subscribers.Keys) {
+                if (subscribers[lvl].Contains(player)) {
+                    PlayerWebsocketConnections.sendMessage(player, getUpdateData(lvl).toJson());
+                }
+            }
+        }
         public void updateSubscribers() {
-            foreach(SubscriberLevel lvl in subscribers.Keys) {
+            foreach (SubscriberLevel lvl in subscribers.Keys) {
                 Task.Run(() => updateSubscribers(lvl));
             }
         }
-        public async void updateSubscribers(SubscriberLevel lvl) {
-            await Task.Run(() => waitForOnDemandCalculation(lvl));
+        public void updateSubscribers(SubscriberLevel lvl) {
             foreach (Player player in subscribers[lvl]) {
                 PlayerWebsocketConnections.sendMessage(player, getUpdateData(lvl).toJson());
             }
         }
 
-        private void waitForOnDemandCalculation(SubscriberLevel lvl) {
-            IEvent e = onDemandCalculation(lvl);
-            if (e == null) return;
-            e.processed.WaitOne();
-        }
-
-        abstract public IEvent onDemandCalculation(SubscriberLevel lvl);
+        abstract public void onDemandCalculation();
         abstract public UpdateData getUpdateData(SubscriberLevel subscriber);
     }
 }

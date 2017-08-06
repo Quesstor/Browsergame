@@ -4,17 +4,17 @@
     <table style="width: 120px;">
         <tr>
             <td style="width: 40px;">
-                <div style="box-shadow:inset 0 0 2px 2px {{utilService.itemColor(item.rarity)}}; border-radius:3px; padding: 5px;margin:0px 3px">
+                <div style="box-shadow:inset 0 0 2px 2px {{uiService.itemColor(item.rarity)}}; border-radius:3px; padding: 5px;margin:0px 3px">
                     <img ng-src="{{'static/img/icon/items/'+item.type+'.png'}}" style="height:25px;" />
                 </div>
             </td>
             <td style="line-height: 1; width: 80px;">
                 <span>
-                    {{utilService.shortNumber(quant)}}
+                    {{utilService.shortNumber(quant)}} {{$root.settings.items[item.type].rarity}}
                 </span>
                 <div ng-show="planetquant!=null" ng-class="{'text-danger':planetquant<-quant}">
                     <span class="glyphicon glyphicon-globe"></span>
-                    {{utilService.shortNumber(planetquant)}}
+                    {{utilService.shortNumber(Math.floor(planetquant))}}
                 </div>
                 <div ng-show="productionspeed">
                     <span class="glyphicon glyphicon-hourglass"></span>

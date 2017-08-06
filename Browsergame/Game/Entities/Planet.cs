@@ -27,13 +27,14 @@ namespace Browsergame.Game.Entities {
         public Planet(string name, Player owner, Location location) {
             Random rand = new Random();
             this.name = name;
-            this.info = string.Format("This is {0}s Planet",owner.name);
+            this.info = string.Format("This is {0}s Planet", owner.name);
             this.owner = owner;
             this.location = location;
             this.population = 100;
             lastProduced = DateTime.Now;
             owner.planets.Add(this);
             type = rand.Next(0, 10);
+            buildings[BuildingType.WaterPurification].lvl = 1;
         }
 
         public override UpdateData getUpdateData(SubscriberLevel subscriber) {
@@ -49,6 +50,7 @@ namespace Browsergame.Game.Entities {
                 data["buildings"] = buildings;
                 data["items"] = items;
                 data["population"] = population;
+                data["productionMinutes"] = (DateTime.Now - lastProduced).TotalMinutes;
             }
             return data;
         }
@@ -60,11 +62,19 @@ namespace Browsergame.Game.Entities {
             return buildings[BuildingType];
         }
 
-
-        public override IEvent onDemandCalculation(SubscriberLevel lvl) {
-            if(lvl == SubscriberLevel.Owner)
-                return new Event.Production(0, this.id);
-            return null;
+        public override void onDemandCalculation() {
+            var minutes = (int)Math.Floor((DateTime.Now - lastProduced).TotalMinutes);
+            var productionCycles = minutes * Settings.productionsPerMinute;
+            if (productionCycles > 0) {
+                foreach (var build in this.buildings) {
+                    Building building = build.Value;
+                    foreach (var production in building.setting.itemProducts) {
+                        var amount = production.Value * productionCycles * building.lvl;
+                        this.getItem(production.Key).quant += amount;
+                    }
+                }
+                this.lastProduced = this.lastProduced.AddMinutes(minutes);
+            }
         }
     }
 }

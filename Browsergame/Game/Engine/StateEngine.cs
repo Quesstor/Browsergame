@@ -17,7 +17,7 @@ namespace Browsergame.Game.Engine {
 
         public static void init() {
             writeState = loadState(Settings.persistenSavePath);
-            tick(); //once to fill readstate
+            tick(1); //once to fill readstate
         }
         public static State getState() {
             return readState;
@@ -26,7 +26,7 @@ namespace Browsergame.Game.Engine {
             return writeState;
         }
 
-        public static void tick() {
+        public static void tick(int tickcount) {
             //DeepCopy writestate into readstate, now no changes are made in writestate -> Engine.tick() is single-threaded
             using (var ms = new MemoryStream()) {
                 DataContractSerializer serializer = new DataContractSerializer(typeof(State));
@@ -34,6 +34,7 @@ namespace Browsergame.Game.Engine {
                 ms.Position = 0;
                 readState = (State)serializer.ReadObject(ms);
             }
+            if (tickcount % Settings.persistenSaveEveryXTick == 0) persistentSaveAsync();
         }
         public static void Dispose() {
             Logger.log(11, Category.StateEngine, Severity.Info, "Making persistent save before shutting down.");

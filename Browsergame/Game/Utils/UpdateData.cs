@@ -16,11 +16,13 @@ namespace Browsergame.Game.Utils {
             dict = new Dictionary<string, object>();
 
         }
-        public string toJson() {
+        public Dictionary<string, object> toDictWithKey() {
             var dict = new Dictionary<string, object>();
             dict[key] = this.dict;
-            string json = JsonConvert.SerializeObject(dict);
-            return json;
+            return dict;
+        }
+        public string toJson() {
+            return JsonConvert.SerializeObject(toDictWithKey());
         }
 
         public Dictionary<string, object> getDict() { return dict; }

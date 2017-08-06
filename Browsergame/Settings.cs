@@ -13,5 +13,8 @@ namespace Browsergame
 
         public static string persistenSavePath = "../../Game/state.xml";
         public static int persistenSaveEveryXTick = 20;
+
+        public static int productionsPerMinute = 1;
+
     }
 }

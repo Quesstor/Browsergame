@@ -1,4 +1,6 @@
 ﻿using Browsergame.Game.Utils;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,7 @@ namespace Browsergame.Game.Entities {
     [DataContract]
     class Item {
         [DataMember] public int quant = 0;
+        [JsonConverter(typeof(StringEnumConverter))]
         [DataMember] public ItemType type;
         public static Dictionary<ItemType, Setting> settings = new Dictionary<ItemType, Setting>();
 
