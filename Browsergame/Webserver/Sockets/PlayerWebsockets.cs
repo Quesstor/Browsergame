@@ -37,8 +37,6 @@ namespace Browsergame.Webserver.Sockets {
             Player player = StateEngine.getState().getPlayer(token);
             sockets[player.token] = socket;
             new Game.Event.PlayerOnline(player.id, true);
-            foreach(Subscribable s in player.subscriptions) { s.updateSubscriber(player); }
-
             string msg = string.Format("Socket opened to {0}. Token: {1}. Thread: {2}", player.name, token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);
             Logger.log(0, Category.WebSocket, Severity.Debug, msg);
         }

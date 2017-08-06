@@ -96,12 +96,14 @@
     <Compile Include="Game\Engine\EventEngine.cs" />
     <Compile Include="Game\Engine\TickEngine.cs" />
     <Compile Include="Game\Entities\Building.cs" />
+    <Compile Include="Game\Entities\Item - Copy.cs" />
     <Compile Include="Game\Entities\Item.cs" />
     <Compile Include="Game\Entities\Location.cs" />
     <Compile Include="Game\Entities\Message.cs" />
     <Compile Include="Game\Entities\Planet.cs" />
     <Compile Include="Game\Entities\Player.cs" />
     <Compile Include="Game\Entities\Unit.cs" />
+    <Compile Include="Game\Event\Production.cs" />
     <Compile Include="Game\Event\PlayerOnline.cs" />
     <Compile Include="Game\Utils\SubscriberUpdates.cs" />
     <Compile Include="Game\State.cs" />

@@ -1,4 +1,5 @@
-﻿using Browsergame.Game.Utils;
+﻿using Browsergame.Game.Event;
+using Browsergame.Game.Utils;
 using Owin.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,10 @@ namespace Browsergame.Game.Entities {
                 data["messages"] = messages;
             }
             return data;
+        }
+
+        public override IEvent onDemandCalculation(SubscriberLevel lvl) {
+            return null;
         }
     }
 }

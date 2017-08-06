@@ -1,4 +1,5 @@
-﻿using Browsergame.Game.Utils;
+﻿using Browsergame.Game.Event;
+using Browsergame.Game.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,11 @@ namespace Browsergame.Game.Entities {
         [DataMember] public Location location;
         [DataMember] public Player owner;
         [DataMember] public int type;
-        [DataMember] public int population = 0;
+        [DataMember] public int population;
+        [DataMember] public DateTime lastProduced;
 
         [DataMember] public Dictionary<ItemType, Item> items = Item.newItemDict();
+        [DataMember] public Dictionary<ItemType, Offer> offers = new Dictionary<ItemType, Offer>();
         [DataMember] public Dictionary<BuildingType, Building> buildings = Building.newBuildingList();
 
 
@@ -28,6 +31,7 @@ namespace Browsergame.Game.Entities {
             this.owner = owner;
             this.location = location;
             this.population = 100;
+            lastProduced = DateTime.Now;
             owner.planets.Add(this);
             type = rand.Next(0, 10);
         }
@@ -50,7 +54,17 @@ namespace Browsergame.Game.Entities {
         }
 
         public Item getItem(ItemType ItemType) {
-            throw new NotImplementedException();
+            return items[ItemType];
+        }
+        public Building getBuilding(BuildingType BuildingType) {
+            return buildings[BuildingType];
+        }
+
+
+        public override IEvent onDemandCalculation(SubscriberLevel lvl) {
+            if(lvl == SubscriberLevel.Owner)
+                return new Event.Production(0, this.id);
+            return null;
         }
     }
 }

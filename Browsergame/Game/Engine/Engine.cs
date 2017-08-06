@@ -47,8 +47,11 @@ namespace Browsergame.Game.Engine {
 
             //Log
             if (eventsProcessed.Count > 0) {
+                string eventNames = "Events: ";
+                foreach (IEvent e in eventsProcessed) eventNames += e.GetType().Name + " ";
                 string msg = String.Format("{0} events processed and {1} SubscriberUpdates sent in {2}ms", eventsProcessed.Count, updateCount, stopwatch.ElapsedMilliseconds);
                 Logger.log(0, Category.EventEngine, Severity.Debug, msg);
+                Logger.log(0, Category.EventEngine, Severity.Debug, eventNames);
             }
 
             var ms = stopwatch.ElapsedMilliseconds;

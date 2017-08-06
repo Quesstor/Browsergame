@@ -11,21 +11,25 @@ using System.Threading.Tasks;
 namespace Browsergame.Game.Event {
 
     interface IEvent {
-        AutoResetEvent processed { get;}
+        ManualResetEvent processed { get;}
         long initiatorID { get; set; }
         bool conditions(State state);
         void changes(State state, SubscriberUpdates subscriberUpdates);
+        void register();
     }
     abstract class Event : IEvent  {
-        AutoResetEvent processed = new AutoResetEvent(false);
-        AutoResetEvent IEvent.processed { get => processed; }
+        ManualResetEvent processed = new ManualResetEvent(false);
+        ManualResetEvent IEvent.processed { get => processed; }
         public long initiatorID { get; set; }
         public abstract bool conditions(State state);
         public abstract void changes(State state, SubscriberUpdates subscriberUpdates);
+        public bool isRegistered = false;
         public Event(long initiatorID) {
             this.initiatorID = initiatorID;
         }
         public void register() {
+            if (isRegistered) return;
+            isRegistered = true;
             EventEngine.addEvent(this);
         }
     }

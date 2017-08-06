@@ -13,12 +13,15 @@ namespace Browsergame.Game.Entities {
     class Building {
         [DataMember] public BuildingType type;
         [DataMember] public int lvl;
-        public static Dictionary<BuildingType, Setting> settings = new Dictionary<BuildingType, Setting>();
 
         public Building(BuildingType type) {
             this.type = type;
             this.lvl = 0;
         }
+
+        public Setting setting { get => Building.settings[this.type]; }
+
+        public static Dictionary<BuildingType, Setting> settings = new Dictionary<BuildingType, Setting>();
 
         public static Dictionary<BuildingType, Building> newBuildingList() {
             var dict = new Dictionary<BuildingType, Building>();

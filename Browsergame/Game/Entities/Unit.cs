@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Browsergame.Game.Event;
 
 namespace Browsergame.Game.Entities {
     enum UnitType {
@@ -47,6 +48,10 @@ namespace Browsergame.Game.Entities {
                 }
                 settings.Add(t, setting);
             }
+        }
+
+        public override IEvent onDemandCalculation(SubscriberLevel lvl) {
+            return null;
         }
 
         public class Setting {

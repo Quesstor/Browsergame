@@ -16,6 +16,12 @@ namespace Browsergame.Webserver.Sockets.Controller {
             settings.Add("buildings", Building.settings);
             settings.Add("units", Unit.settings);
             settings.Add("items", Item.settings);
+            var initData = new List<UpdateData>();
+            foreach (Subscribable s in player.subscriptions) {
+                //TODO get Data
+                s.updateSubscribers();
+            }
+
             socket.sendData(settings);
         }
     }

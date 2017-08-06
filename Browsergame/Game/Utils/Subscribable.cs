@@ -1,4 +1,5 @@
 ﻿using Browsergame.Game.Entities;
+using Browsergame.Game.Event;
 using Browsergame.Webserver.Sockets;
 using System;
 using System.Collections.Generic;
@@ -13,30 +14,36 @@ namespace Browsergame.Game.Utils {
     }
     [DataContract(IsReference = true)]
     abstract class Subscribable {
-        [DataMember] private Dictionary<Player, SubscriberLevel> subscribers = new Dictionary<Player, SubscriberLevel>();
-        public void addSubscription(Player player, SubscriberLevel sub) {
-            subscribers[player] = sub;
-            if (!player.subscriptions.Contains(this))
-                player.subscriptions.Add(this);
+        [DataMember] private Dictionary<SubscriberLevel, HashSet<Player>> subscribers = new Dictionary<SubscriberLevel, HashSet<Player>>();
+        public void addSubscription(Player player, SubscriberLevel level) {
+            if (!subscribers.ContainsKey(level)) subscribers[level] = new HashSet<Player>();
+            subscribers[level].Add(player);
+            player.subscriptions.Add(this);
         }
-        public void removeSubscription(Player player) {
-            subscribers.Remove(player);
+        public void removeSubscription(Player player, SubscriberLevel level) {
+            subscribers[level].Remove(player);
             player.subscriptions.Remove(this);
         }
+
         public void updateSubscribers() {
-            foreach (var sub in subscribers) {
-                PlayerWebsocketConnections.sendMessage(sub.Key, getUpdateData(sub.Value).toJson());
+            foreach(SubscriberLevel lvl in subscribers.Keys) {
+                Task.Run(() => updateSubscribers(lvl));
             }
         }
-        public void updateSubscribers(SubscriberLevel lvl) {
-            foreach (var sub in subscribers) {
-                if(sub.Value == lvl) PlayerWebsocketConnections.sendMessage(sub.Key, getUpdateData(sub.Value).toJson());
+        public async void updateSubscribers(SubscriberLevel lvl) {
+            await Task.Run(() => waitForOnDemandCalculation(lvl));
+            foreach (Player player in subscribers[lvl]) {
+                PlayerWebsocketConnections.sendMessage(player, getUpdateData(lvl).toJson());
             }
         }
-        public void updateSubscriber(Player player) {
-            SubscriberLevel SubscriberLevel = subscribers[player];
-            PlayerWebsocketConnections.sendMessage(player, getUpdateData(SubscriberLevel).toJson());
+
+        private void waitForOnDemandCalculation(SubscriberLevel lvl) {
+            IEvent e = onDemandCalculation(lvl);
+            if (e == null) return;
+            e.processed.WaitOne();
         }
+
+        abstract public IEvent onDemandCalculation(SubscriberLevel lvl);
         abstract public UpdateData getUpdateData(SubscriberLevel subscriber);
     }
 }
