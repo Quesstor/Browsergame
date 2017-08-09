@@ -10,17 +10,16 @@
         <td>Kosten</td>
         <td></td>
     </tr>
-    <tr ng-repeat="(bid,building) in $root.selectedPlanet.buildings"
-        ng-show="uiService.showBuilding(building)"
-        ng-init="utilService.merge($root.selectedPlanet.buildings,$root.settings.buildings)"
-        ng-class="{'text-muted':building.level==0 && !building.upgradeDuration}">
+    <tr ng-repeat="(type,building) in buildings()"
+        ng-show="showBuilding(building)"
+        ng-class="{'text-muted':building.lvl==0 && !building.upgradeDuration}">
         <!--Level-->
-        <td class="text-td">{{building.level || 0}}</td>
+        <td class="text-td">{{building.lvl || 0}}</td>
         <!--Name-->
         <td class="text-td">{{building.name}}</td>
         <!--Geschwindigkeit-->
         <td style="padding: 4px 8px 0 8px; line-height: 1; min-width: 45px;">
-            <div ng-show="building.level>0">
+            <div ng-show="building.lvl>0">
                 <div ng-show="building.productionDuration">
                     <span class="glyphicon glyphicon-hourglass"></span>{{building.productionDuration}}
                 </div>
@@ -36,23 +35,22 @@
         </td>
         <!--Produkte-->
         <td class="square-td">
-            <itemsquare ng-repeat="product in building.itemProducts" item="product" planetquant="$root.selectedPlanet.items[product.type].quant" quant="'+'+product.quant * building.level"></itemsquare>
+            <itemsquare ng-repeat="(type,quant) in building.itemProducts" item="{type:type}" quant="quant * building.lvl"></itemsquare>
             <unitsquare ng-repeat="unit in building.unitProducts" unittype="unit"></unitsquare>
         </td>
-        <!--Kosten-->
         <td class="square-td" style="width:100px;">
+            <!--Educts-->
             <div ng-show="showProduce">
-                <itemsquare ng-repeat="educt in building.educts" item="educt" 
-                            planetquant="$root.selectedPlanet.items[educt.type].quant" quant="'-'+educt.quant*(menge||1)"></itemsquare>
+                <itemsquare ng-repeat="(type,quant) in building.educts" item="{type:type}" quant="quant"></itemsquare>
             </div>
+            <!--Build Costs-->
             <div ng-show="showUpgrade" style="padding-bottom: 10px;">
-                <price value="-$root.settings.buildings[building.type].buildPrice * (building.level+1)" ng-show="showUpgrade"></price>
-                <br />
-                <itemsquare ng-repeat="itemcost in $root.settings.buildings[building.type].buildCosts"
-                            item="itemcost" planetquant="$root.selectedPlanet.items[itemcost.type].quant" quant="-itemcost.quant*(building.level+1)"
-                            ng-class="{'text-danger':$root.selectedPlanet.items[itemcost.type].quant<itemcost.quant*(building.level+1)}"></itemsquare>
+                <price value="-building.buildPrice * (building.lvl+1)" ng-show="showUpgrade"></price>
+                <br /> 
+                <itemsquare ng-repeat="(type,quant) in building.buildCosts" item="{type:type}" quant="-quant*(building.lvl+1)"
+                            ng-class="{'text-danger':$root.selectedPlanet.items[itemcost.type].quant<itemcost.quant*(building.lvl+1)}"></itemsquare>
                 <table class="table table-condensed text-danger" style="margin:0">
-                    <tr ng-repeat="(type,level) in building.buildRequirements" ng-show="$root.selectedPlanet.buildings[type].level < level">
+                    <tr ng-repeat="(type,level) in building.buildRequirements" ng-show="$root.selectedPlanet.buildings[type].lvl < level">
                         <td>{{$root.settings.buildings[type].name}}</td>
                         <td>Level {{level}}</td>
                     </tr>
@@ -63,7 +61,7 @@
         <td class="btn-td">
             <div style="float: right">
                 <div ng-hide="showUpgrade || showProduce || building.upgradeDuration">
-                    <div ng-click="$parent.showProduce=true" ng-if="building.educts.length>0 && building.level>0" 
+                    <div ng-click="$parent.showProduce=true" ng-if="building.educts.length>0 && building.lvl>0" 
                          ng-class="{'btn-primary':building.ordered==0 && building.educts.length>0}"
                          class="btn btn-sm btn-default">
                         <span class="glyphicon glyphicon-cog"></span>
@@ -71,7 +69,7 @@
                     </div>
                     <div ng-click="showUpgrade=true" class="btn btn-sm btn-default">
                         <span class="glyphicon glyphicon-open"></span>
-                        {{building.level==0?'Bauen':'Investieren'}}
+                        {{building.lvl==0?'Bauen':'Investieren'}}
                     </div>
                 </div>
                 <div class="btn-group" ng-show="showProduce" style="width: 180px;">

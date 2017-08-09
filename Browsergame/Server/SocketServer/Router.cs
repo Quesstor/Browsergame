@@ -34,7 +34,7 @@ namespace Browsergame.Server.SocketServer {
 
             Type StaticClass = Type.GetType(controller);
             if(StaticClass==null) {
-                string msg = string.Format("Failed to find SocketServer.Controller '{0}' for socketMessage {1}", message.controller, socketMessage);
+                string msg = string.Format("Failed to find {0} for socketMessage {1}", controller, socketMessage);
                 Logger.log(30, Category.WebSocket, Severity.Error, msg);
                 return;
             }

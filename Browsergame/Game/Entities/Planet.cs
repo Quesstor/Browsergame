@@ -64,17 +64,17 @@ namespace Browsergame.Game.Entities {
         }
 
         public override void onDemandCalculation() {
-            var minutes = (int)Math.Floor((DateTime.Now - lastProduced).TotalMinutes);
-            var productionCycles = minutes * Settings.productionsPerMinute;
+            double TotalMilliseconds = (int)Math.Floor((DateTime.Now - lastProduced).TotalMilliseconds);
+            double productionCycles = TotalMilliseconds * 0.001  * Settings.productionsPerMinute / 60;
             if (productionCycles > 0) {
                 foreach (var build in this.buildings) {
                     Building building = build.Value;
                     foreach (var production in building.setting.itemProducts) {
-                        var amount = production.Value * productionCycles * building.lvl;
+                        double amount = production.Value * building.lvl * productionCycles ;
                         this.getItem(production.Key).quant += amount;
                     }
                 }
-                this.lastProduced = this.lastProduced.AddMinutes(minutes);
+                this.lastProduced = this.lastProduced.AddMilliseconds(TotalMilliseconds);
             }
         }
     }

@@ -33,5 +33,9 @@ namespace Browsergame.Game.Utils {
             foreach (SubscriberLevel l in dict.Keys) set.UnionWith(dict[l]);
             return set;
         }
+        public bool contains(SubscriberLevel SubscriberLevel, Subscribable Subscribable) {
+            if (!dict.ContainsKey(SubscriberLevel)) return false;
+            return dict[SubscriberLevel].Contains(Subscribable);
+        }
     }
 }

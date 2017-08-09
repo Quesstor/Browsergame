@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Utils {
     enum SubscriberLevel {
-        Owner, Other
+        Owner, Other, None
     }
     [DataContract(IsReference = true)]
     abstract class Subscribable {

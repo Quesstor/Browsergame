@@ -13,6 +13,7 @@ namespace Browsergame.Game.Entities {
     class Building {
         [DataMember] public BuildingType type;
         [DataMember] public int lvl;
+        [DataMember] public DateTime upgradesAt = DateTime.MaxValue;
 
         public Building(BuildingType type) {
             this.type = type;
@@ -38,11 +39,11 @@ namespace Browsergame.Game.Entities {
                 switch (type) {
                     case BuildingType.DeuteriumCollector:
                         setting.buildCosts.Add(ItemType.Metal, 100);
-                        setting.educts.Add(ItemType.Deuterium, 5);
+                        setting.educts.Add(ItemType.Deuterium, 20);
                         setting.itemProducts.Add(ItemType.Deuterium, 10); break;
                     case BuildingType.WaterPurification:
                         setting.buildCosts.Add(ItemType.Metal, 100);
-                        setting.itemProducts.Add(ItemType.Water, 1); break;
+                        setting.itemProducts.Add(ItemType.Water, 50); break;
                 }
                 settings.Add(type, setting);
             }
@@ -55,9 +56,9 @@ namespace Browsergame.Game.Entities {
             public Dictionary<UnitType, int> unitProducts = new Dictionary<UnitType, int>();
 
             public Dictionary<BuildingType, int> buildRequirements = new Dictionary<BuildingType, int>();
-            public int buildTime = 0;
+            public int buildTimeInSeconds = 10;
             public Dictionary<ItemType, int> buildCosts = new Dictionary<ItemType, int>();
-            public int buildPrice = 0;
+            public int buildPrice = 100;
         }
     }
 }

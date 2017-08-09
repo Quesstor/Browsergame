@@ -24,6 +24,9 @@ namespace Browsergame.Game.Event {
         public override void execute() {
             Player player = addPlayer(name, token);
             Planet planet = addPlanet(string.Format("Homeplanet of {0}", name), player);
+            foreach(Item item in planet.items.Values) {
+                item.quant = 1000;
+            }
             getPlayer(player.id, SubscriberLevel.Other);
             getPlanet(planet.id, SubscriberLevel.Other);
 

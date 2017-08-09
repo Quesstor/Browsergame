@@ -38,6 +38,11 @@ namespace Browsergame.Game.Event {
             isRegistered = true;
             EventEngine.addEvent(this);
         }
+        public void register(DateTime executionTime) {
+            if (isRegistered) return;
+            isRegistered = true;
+            EventEngine.addTimedEvent(executionTime, this);
+        }
 
 
         protected Player getPlayer(long playerID, SubscriberLevel updateSubscribersWithThisLevel) {
@@ -63,8 +68,10 @@ namespace Browsergame.Game.Event {
         }
 
         private void gettingSubscribable(Subscribable s, SubscriberLevel updateSubscribersWithThisLevel) {
-            Logger.log(41, Category.EventEngine, Severity.Debug, "On Demand calculation " + s.ToString());
-            s.onDemandCalculation();
+            if (!updates.contains(updateSubscribersWithThisLevel, s)) {
+                Logger.log(41, Category.EventEngine, Severity.Debug, "On Demand calculation " + s.ToString());
+                s.onDemandCalculation();
+            }
             updates.Add(updateSubscribersWithThisLevel, s);
         }
     }

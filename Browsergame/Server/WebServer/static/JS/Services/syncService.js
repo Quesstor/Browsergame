@@ -54,15 +54,14 @@
     syncService.productionUpdateHandler;
     syncService.startProductionUpdates = function () {
         if (syncService.productionUpdateHandler) $interval.cancel(syncService.productionIntervall);
-        syncService.productionUpdateHandler = $interval(syncService.productionUpdate, 1000);
+        syncService.productionUpdateHandler = $interval(syncService.productionUpdate, 100);
     }
     syncService.productionUpdate = function () {
-        console.log("productionUpdate");
         angular.forEach($rootScope.planets, function (planet, key) {
             if (planet.buildings) {
                 angular.forEach(planet.buildings, function (building, key) {
                     var products = $rootScope.settings.buildings[key].itemProducts;
-                    var productionFactor = building.lvl * planet.productionMinutes * $rootScope.settings.productionsPerMinute;
+                    var productionFactor = building.lvl * planet.productionMinutes * $rootScope.settings.productionsPerMinute / 10;
                     angular.forEach(products, function (productionAmount, product) {
                         planet.items[product].quant += productionAmount * productionFactor;
                     });

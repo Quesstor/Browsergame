@@ -1,20 +1,19 @@
 ﻿<div ng-if="item"
-     ng-init="utilService.merge(item,$root.settings.items[item.type])"
-     title="{{item.name}}">
+     title="{{settings().name}}">
     <table style="width: 120px;">
         <tr>
             <td style="width: 40px;">
-                <div style="box-shadow:inset 0 0 2px 2px {{uiService.itemColor(item.rarity)}}; border-radius:3px; padding: 5px;margin:0px 3px">
+                <div style="box-shadow:inset 0 0 2px 2px {{uiService.itemColor(settings().rarity)}}; border-radius:3px; padding: 5px;margin:0px 3px">
                     <img ng-if="item.type" ng-src="{{'img/icon/items/'+item.type+'.png'}}" style="height:25px;" />
                 </div>
             </td>
             <td style="line-height: 1; width: 80px;">
                 <span>
-                    {{utilService.shortNumber(quant)}} {{item.rarity}}
+                    {{utilService.shortNumber(quant)}}
                 </span>
-                <div ng-show="planetquant!=null" ng-class="{'text-danger':planetquant<-quant}">
+                <div ng-show="!hideplanetquant && $root.selectedPlanet" ng-class="{'text-danger':planetquant<-quant}">
                     <span class="glyphicon glyphicon-globe"></span>
-                    {{utilService.shortNumber(Math.floor(planetquant))}}
+                    {{utilService.shortNumber(Math.floor($root.selectedPlanet.items[item.type].quant))}}
                 </div>
                 <div ng-show="productionspeed">
                     <span class="glyphicon glyphicon-hourglass"></span>

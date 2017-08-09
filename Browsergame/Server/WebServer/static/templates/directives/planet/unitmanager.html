@@ -12,7 +12,7 @@
     <tr ng-repeat="(id,item) in $root.planets[$root.selectedPlanet.id].items">
         <!--Planet-->
         <td class="square-td">
-            <itemsquare planetquant="item.quant" item="item" quant="" />
+            <itemsquare item="item" quant="item.quant" />
         </td>
         <!--Umladen-->
         <td class="btn-td">

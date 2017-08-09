@@ -22,8 +22,8 @@
                         ng-if="uiService.playerHasUnitOnPlanet($root.selectedPlanet, 'Fighter') || $root.selectedPlanet.owner == $root.player.id">
                         <a><span class="glyphicon glyphicon-align-justify"></span> Flotte</a>
                     </li>
-                    <li ng-class="{'active':$parent.show=='industrymodal'}"
-                        ng-click="$parent.show='industrymodal'"
+                    <li ng-class="{'active':$parent.show=='buildings'}"
+                        ng-click="$parent.show='buildings'"
                         ng-if="$root.selectedPlanet.owner == $root.player.id">
                         <a><span class="glyphicon glyphicon-oil"></span> Industrie </a>
                     </li>
@@ -53,7 +53,7 @@
                 <unitsmodal ng-show="show=='unitsmodal'"></unitsmodal>
                 <manager ng-show="show=='manager'" 
                            ng-if="uiService.playerHasUnitOnPlanet($root.selectedPlanet, 'Händler') || $root.selectedPlanet.owner == $root.player.id"></manager>
-                <industrymodal ng-show="show=='industrymodal'"></industrymodal>
+                <buildings ng-show="show=='buildings'"></buildings>
             </div>
         </div>
     </div>

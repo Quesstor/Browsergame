@@ -26,7 +26,7 @@ app.directive("pricemanager", function () { return { templateUrl: '/templates/di
 app.directive("trademanager", function () { return { templateUrl: '/templates/directives/planet/trademanager.html', controller: 'utilCtrl' } });
 app.directive("unitlist", function () { return { templateUrl: '/templates/directives/planet/unitlist.html', controller: 'utilCtrl' } });
 
-app.directive("industrymodal", function () { return { templateUrl: '/templates/directives/planet/industry.html', controller: 'utilCtrl' } });
+app.directive("buildings", function () { return { templateUrl: '/templates/directives/planet/buildings.html', controller: 'buildings' } });
 app.directive("unitsmodal", function () { return { templateUrl: '/templates/directives/planet/units.html', controller: 'utilCtrl' } });
 
 
@@ -35,7 +35,7 @@ app.directive("selectedunitbar", function () { return { templateUrl: '/templates
 app.directive("debugbar", function () { return { templateUrl: '/templates/directives/map/debugbar.html' } });
 app.directive("price", function () { return { templateUrl: '/templates/directives/util/price.html', scope: { value: '=' }, controller: 'utilCtrl' } });
 app.directive("itemsquare", function () { return { templateUrl: '/templates/directives/util/itemsquare.html', 
-                scope: { item: "=", quant: "=", planetquant: "=", productionspeed: "=", ordered: "=", itemprice: "=" }, controller: 'itemsquare' } });
+                scope: { item: "=", quant: "=", hideplanetquant: "=", productionspeed: "=", ordered: "=", itemprice: "=" }, controller: 'itemsquare' } });
 app.directive("unitsquare", function () { return { templateUrl: '/templates/directives/util/unitsquare.html', scope: { unittype: "=", quant: "=", hover: "="}, controller: 'utilCtrl' } });
 app.directive("planetmarker", function () { return { templateUrl: '/templates/directives/map/planetmarker.html', scope: { planet: '=' }, controller: 'mapmarkerCtrl' } });
 app.directive("ordermarker", function () { return { templateUrl: '/templates/directives/map/ordermarker.html', scope: { order: '=' }, controller: 'mapmarkerCtrl' } });
