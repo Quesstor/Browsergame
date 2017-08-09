@@ -23,8 +23,6 @@ namespace Browsergame.Server.WebServer
         {
 
             app.Use<ExceptionMiddleware>();
-            app.Use<AuthMiddleware>();
-            app.Use<ExceptionMiddleware>();
 
             HttpConfiguration config = new HttpConfiguration();
             //config.Routes.MapHttpRoute(name: "Default", routeTemplate: "", defaults: new { controller = "Index" });
@@ -51,7 +49,7 @@ namespace Browsergame.Server.WebServer
         public WebServer()
         {
             startWebserver();
-            Logger.log(0, Category.Webserver, Severity.Info, "Server started at "+ Settings.webserverUrl);
+            Logger.log(18, Category.Webserver, Severity.Info, "Server started at "+ Settings.webserverUrl);
 
         }
         private void startWebserver()

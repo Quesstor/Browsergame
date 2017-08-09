@@ -126,15 +126,13 @@
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\Security.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Server\SocketServer\FleckWebsocket.cs" />
+    <Compile Include="Server\SocketServer\PlayerWebsocket.cs" />
     <Compile Include="Server\SocketServer\Router.cs" />
     <Compile Include="Server\SocketServer\Controller\SetupSocketController.cs" />
-    <Compile Include="Server\SocketServer\PlayerWebsockets.cs" />
-    <Compile Include="Server\SocketServer\PlayerWebsocket.cs" />
+    <Compile Include="Server\SocketServer\PlayerWebsocketConnections.cs" />
     <Compile Include="Server\WebServer\Controller\EmptyController.cs" />
     <Compile Include="Server\WebServer\Controller\LoginController.cs" />
     <Compile Include="Server\WebServer\Controller\IndexController.cs" />
-    <Compile Include="Server\WebServer\AuthMiddleware.cs" />
     <Compile Include="Server\WebServer\ExceptionMiddleware.cs" />
     <Compile Include="Server\WebServer\Webserver.cs" />
   </ItemGroup>

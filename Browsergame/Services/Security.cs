@@ -1,5 +1,6 @@
 ﻿using Browsergame.Game;
 using Browsergame.Game.Engine;
+using Fleck;
 using Microsoft.Owin;
 using System;
 using System.Collections.Generic;
@@ -38,17 +39,26 @@ namespace Browsergame.Services {
             var token = Request.Cookies.FirstOrDefault(c => c.Key == "token").Value;
             return isTokenOK(token, path);
         }
-        public static bool isTokenOK(string token, string requestPathForLogging)
+        public static bool authenticateRequest(IWebSocketConnection socket) {
+            var cookies = socket.ConnectionInfo.Cookies;
+            if (!cookies.ContainsKey("token")) {
+                Logger.log(19, Category.Security, Severity.Warn, String.Format("Token missing requesting {0}", socket.ConnectionInfo.Host));
+                return false;
+            }
+            var token = cookies["token"];
+            return isTokenOK(token, socket.ConnectionInfo.Host);
+        }
+        private static bool isTokenOK(string token, string requestPathForLogging)
         {
             if (token == null)
             {
-                Logger.log(5, Category.Security, Severity.Warn, String.Format("Token missing requesting {0}", requestPathForLogging));
+                Logger.log(20, Category.Security, Severity.Warn, String.Format("Token missing requesting {0}", requestPathForLogging));
                 return false;
             }
             State state = StateEngine.getState();
             if (state.getPlayer(token) == null)
             {
-                Logger.log(5, Category.Security, Severity.Warn, String.Format("Token wrong requesting {0}", requestPathForLogging));
+                Logger.log(21, Category.Security, Severity.Warn, String.Format("Token wrong requesting {0}", requestPathForLogging));
                 return false;
             }
             //Token exists

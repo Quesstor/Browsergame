@@ -5,9 +5,7 @@
             .then(function (r) {
                 $scope.loginstatus = "ok";
                 $cookies.put("token", r.data);
-                $websocket('ws://127.0.0.1:2121');
-
-                //$location.path('/game');
+                $location.path('/game');
             });
     };
 });

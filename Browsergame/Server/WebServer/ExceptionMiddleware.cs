@@ -21,7 +21,7 @@ namespace Browsergame.Server.WebServer {
             catch (Exception ex) {
                 var msg = String.Format("Request to '{0}' failed\r\n{1}\r\n\r\n", context.Request.Path, ex.ToString());
                 context.Response.StatusCode = 500;
-                Logger.log(4, Category.Webserver, Severity.Error, msg);
+                Logger.log(17, Category.Webserver, Severity.Error, msg);
             }
         }
     }

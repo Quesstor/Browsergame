@@ -1,7 +1,7 @@
 ﻿angular.module('app').service('syncService', function ($http, $interval, $rootScope, $compile, $location, $timeout, mapService, $websocket) {  
 
     $rootScope.socketError = function (data) { console.error("Socket error" + data); }
-    $rootScope.socket = $websocket('ws://127.0.0.1:21212/ws');
+    $rootScope.socket = $websocket('ws://127.0.0.1:2121');
     $rootScope.socket.onMessage(function (message) {
         $rootScope.updateData(JSON.parse(message.data));
     }).onClose($websocket.socketError).onError($rootScope.socketError)

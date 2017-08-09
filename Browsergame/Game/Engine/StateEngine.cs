@@ -37,7 +37,7 @@ namespace Browsergame.Game.Engine {
             if (tickcount % Settings.persistenSaveEveryXTick == 0) persistentSaveAsync();
         }
         public static void Dispose() {
-            Logger.log(11, Category.StateEngine, Severity.Info, "Making persistent save before shutting down.");
+            Logger.log(4, Category.StateEngine, Severity.Info, "Making persistent save before shutting down.");
             isSavingLock.WaitOne();
             peristentSave();
         }
@@ -45,14 +45,14 @@ namespace Browsergame.Game.Engine {
         public static Task persistentSaveAsync() {
             return Task.Run(() => {
                 if (!isSavingLock.WaitOne(0)) {
-                    Logger.log(10, Category.StateEngine, Severity.Warn, "persistentSave still in progress");
+                    Logger.log(5, Category.StateEngine, Severity.Warn, "persistentSave still in progress");
                     return;
                 }
                 try {
                     peristentSave();
                 }
                 catch (Exception e) {
-                    Logger.log(12, Category.StateEngine, Severity.Error, e.ToString());
+                    Logger.log(6, Category.StateEngine, Severity.Error, e.ToString());
                 }
                 finally {
                     isSavingLock.Set();
@@ -77,11 +77,11 @@ namespace Browsergame.Game.Engine {
                     DataContractSerializer serializer = new DataContractSerializer(typeof(State));
                     state = (State)serializer.ReadObject(fs);
                 }
-                Logger.log(12, Category.StateEngine, Severity.Info, string.Format("State {0} loaded", path));
+                Logger.log(7, Category.StateEngine, Severity.Info, string.Format("State {0} loaded", path));
                 return state;
             }
             catch (Exception e) {
-                Logger.log(13, Category.StateEngine, Severity.Error, "Failed to load state: " + e.ToString());
+                Logger.log(8, Category.StateEngine, Severity.Error, "Failed to load state: " + e.ToString());
                 return newState();
             }
         }

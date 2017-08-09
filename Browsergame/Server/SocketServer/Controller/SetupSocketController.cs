@@ -31,7 +31,7 @@ namespace Browsergame.Server.SocketServer.Controller {
 
             var setup = new Dictionary<string, object>();
             setup["setup"] = data;
-            socket.sendString(JsonConvert.SerializeObject(setup));
+            socket.Send(JsonConvert.SerializeObject(setup));
         }
     }
 }
