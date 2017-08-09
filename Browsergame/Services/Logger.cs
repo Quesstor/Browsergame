@@ -13,7 +13,7 @@ namespace Browsergame.Services
     }
     enum Category
     {
-        Service, TickEngine, EventEngine, Webserver, WebSocket, Security, StateEngine, Engine
+        Service, TickEngine, EventEngine, Webserver, SocketServer, WebSocket, Security, StateEngine, Engine
     }
     static class Logger
     {
@@ -26,7 +26,7 @@ namespace Browsergame.Services
                 switch (severity)
                 {
                     case Severity.Debug: Console.ForegroundColor = ConsoleColor.Gray; break;
-                    case Severity.Info: Console.ForegroundColor = ConsoleColor.White; break;
+                    //case Severity.Info: Console.ForegroundColor = ConsoleColor.White; break;
                     case Severity.Warn: Console.ForegroundColor = ConsoleColor.Yellow; Console.Beep(); break;
                     case Severity.Error: Console.ForegroundColor = ConsoleColor.Red; Console.Beep(); break;
                 }

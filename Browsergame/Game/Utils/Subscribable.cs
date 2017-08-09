@@ -1,6 +1,6 @@
 ﻿using Browsergame.Game.Entities;
 using Browsergame.Game.Event;
-using Browsergame.Webserver.Sockets;
+using Browsergame.Server.SocketServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;

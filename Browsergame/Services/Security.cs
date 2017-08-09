@@ -36,13 +36,19 @@ namespace Browsergame.Services {
             if (path == "/" || path == "/favicon.ico" || path.StartsWith("/static") || path.StartsWith("/login")) return true;
 
             var token = Request.Cookies.FirstOrDefault(c => c.Key == "token").Value;
-            if (token == null) {
-                Logger.log(5, Category.Security, Severity.Warn, String.Format("Token missing requesting {0}", path));
+            return isTokenOK(token, path);
+        }
+        public static bool isTokenOK(string token, string requestPathForLogging)
+        {
+            if (token == null)
+            {
+                Logger.log(5, Category.Security, Severity.Warn, String.Format("Token missing requesting {0}", requestPathForLogging));
                 return false;
             }
             State state = StateEngine.getState();
-            if (state.getPlayer(token) == null) {
-                Logger.log(5, Category.Security, Severity.Warn, String.Format("Token wrong requesting {0}", path));
+            if (state.getPlayer(token) == null)
+            {
+                Logger.log(5, Category.Security, Severity.Warn, String.Format("Token wrong requesting {0}", requestPathForLogging));
                 return false;
             }
             //Token exists

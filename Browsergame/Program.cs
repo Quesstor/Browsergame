@@ -10,11 +10,13 @@ namespace Browsergame
     {
         static void Main(string[] args)
         {
-            var webserver = new Webserver.Webserver();
+            var webserver = new Server.WebServer.WebServer();
+            var socketServer = new Server.SocketServer.SocketServer();
             Game.Engine.Engine.init();
 
             waitForInputLoop();
             webserver.Dispose();
+            socketServer.Dispose();
             Game.Engine.Engine.Stop();
         }
 
