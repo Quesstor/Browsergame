@@ -1,4 +1,5 @@
 ﻿using Browsergame.Game.Engine;
+using Browsergame.Server.SocketServer;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -34,7 +35,10 @@ namespace Browsergame
                     case "G":
                         Process.Start(Settings.webserverUrl); break;
                     case "R":
+                        PlayerWebsocketConnections.closeAll();
+                        Thread.Sleep(3000);
                         StateEngine.resetState();
+                        Console.WriteLine("Game reset done");
                         break;
                     default: break;
                 }

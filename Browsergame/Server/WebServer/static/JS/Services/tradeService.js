@@ -1,12 +1,5 @@
-﻿angular.module('app').service('tradeService', function ($http, $rootScope, $compile) {
+﻿angular.module('app').service('tradeService', function ($http, $rootScope, $compile, syncService) {
     var tradeService = this;
-    var successFunction = function (data) {
-        if (data) {
-            if (data.error) console.warn(data.error);
-            else playSound("noti");
-            $rootScope.updateData(data);
-        }
-    };
     this.moveitems = function (item, quant) {
         var tradeData = { token: $rootScope.token, planetid: $rootScope.selectedPlanet.id, unitid: $rootScope.selectedUnit.id, itemtype: item.type, quant: quant, price: 0 };
         $http.post("action/action/trade", tradeData)
@@ -21,12 +14,11 @@
         .success(successFunction)
         .error(function (data) { alert("Der Händler konnte seine Waren nicht handeln."); });
     };
-    this.setPrice = function (item, sell) {
-        if (sell) var offer = Math.abs(item.setOffer);
-        else offer = -Math.abs(item.setOffer);
-        $http.post("action/action/setPrice", { token: $rootScope.token, planetid: $rootScope.selectedPlanet.id, itemType: item.type, price: item.price, offer: offer })
-        .success(successFunction)
-        .error(function () { alert("Fehler beim Einstellen der Waren."); });
+    this.setOffer = function (offer, sell) {
+        if (sell) var quant = Math.abs(offer.setQuant);
+        else quant = -Math.abs(offer.setQuant);
+        console.warn(offer);
+        syncService.send("setOffer", { planetid: $rootScope.selectedPlanet.id, itemType: offer.type, price: offer.setPrice, quant: quant })
     }
     this.tradeOk = function (item, menge) {
         if (!$rootScope.selectedUnit) return false;

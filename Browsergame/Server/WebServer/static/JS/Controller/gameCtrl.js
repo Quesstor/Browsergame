@@ -48,5 +48,6 @@
             });
         }
     }, 1000);
+    syncService.connect();
 });
 

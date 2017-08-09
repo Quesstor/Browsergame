@@ -56,7 +56,7 @@
         <td>Angebote</td>
         <td style="text-align: right;">Anpassen</td>
     </tr>
-    <tr ng-repeat="(id,item) in $root.planets[$root.selectedPlanet.id].items">
+    <tr ng-repeat="(key,item) in $root.selectedPlanet.items" ng-init="offer = $root.selectedPlanet.offers[key]">
         <!--Planet-->
         <td class="square-td">
             <itemsquare planetquant="item.quant" item="item" quant="" />
@@ -68,44 +68,44 @@
         </td>
         <!--Angebote-->
         <td class="square-td">
-            <itemsquare item="item" quant="Math.abs(item.offer)" ng-show="item.offer!=0" itemprice="item.price*item.offer"></itemsquare>
+            <itemsquare item="item" quant="Math.abs(offer.quant)" itemprice="offer.price"></itemsquare>
         </td>
         <!--Verkauf-->
         <td class="btn-td">
             <div ng-show="editPrice" style="float: right;">
                 <div class="input-group input-group-sm" style="width: 220px;">
                     <input class="form-control" type="number" min="1"
-                           ng-model="item.setOffer"
-                           ng-init="item.setOffer=Math.abs(item.offer||100)" />
-                    <span class="input-group-addon">Kiste{{item.setOffer>1?'n':''}}</span>
+                           ng-model="offer.setQuant"
+                           ng-init="offer.setQuant=Math.abs(offer.quant||0)" />
+                    <span class="input-group-addon">Kiste{{offer.setQuant>1?'n':''}}</span>
                 </div>
                 <div class="input-group input-group-sm" style="width: 220px;">
-                    <input class="form-control" type="number" min="1" ng-model="item.price" />
+                    <input class="form-control" type="number" min="1" ng-model="offer.setPrice" />
                     <span class="input-group-addon"><span class="glyphicon glyphicon-xbt" />pro Kiste</span>
                 </div>
                 <div class="btn-group">
-                    <div ng-disabled="!item.setOffer"
-                         ng-click="tradeService.setPrice(item,false); editPrice=false;"
+                    <div ng-disabled="!offer.setQuant"
+                         ng-click="tradeService.setOffer(offer,false); editPrice=false;"
                          class="btn btn-sm btn-danger">
                         <span class="glyphicon glyphicon-chevron-left" />
                         Kaufen
                     </div>
-                    <div ng-disabled="item.offer==0"
+                    <div ng-disabled="offer.quant==0"
                          class="btn btn-sm btn-default"
-                         ng-click="item.setOffer=0; editPrice=false; tradeService.setPrice(item);"
+                         ng-click="offer.setQuant=0; editPrice=false; tradeService.setOffer(offer);"
                          style="padding: 5px;">
                         <span class="glyphicon glyphicon-ban-circle" />
                         Stop
                     </div>
-                    <div ng-disabled="!item.setOffer"
-                         ng-click="tradeService.setPrice(item,true); editPrice=false;"
+                    <div ng-disabled="!offer.setQuant"
+                         ng-click="tradeService.setOffer(offer,true); editPrice=false;"
                          class="btn btn-sm btn-success">
                         Verkaufen
                         <span class="glyphicon glyphicon-chevron-right" />
                     </div>
                 </div>
             </div>
-            <div ng-hide="editPrice" class="btn btn-sm btn-default" ng-click="editPrice=true" style="display: inline-block; float: right">
+            <div ng-hide="editPrice" class="btn btn-sm btn-default" ng-click="editPrice=true" style="display: inline-block; float: right;">
                 <span class="glyphicon glyphicon-tag" />
                 Angebote anpassen
             </div>

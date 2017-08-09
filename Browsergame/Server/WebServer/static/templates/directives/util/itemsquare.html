@@ -5,12 +5,12 @@
         <tr>
             <td style="width: 40px;">
                 <div style="box-shadow:inset 0 0 2px 2px {{uiService.itemColor(item.rarity)}}; border-radius:3px; padding: 5px;margin:0px 3px">
-                    <img ng-src="{{'static/img/icon/items/'+item.type+'.png'}}" style="height:25px;" />
+                    <img ng-src="{{'img/icon/items/'+item.type+'.png'}}" style="height:25px;" />
                 </div>
             </td>
             <td style="line-height: 1; width: 80px;">
                 <span>
-                    {{utilService.shortNumber(quant)}} {{$root.settings.items[item.type].rarity}}
+                    {{utilService.shortNumber(quant)}}
                 </span>
                 <div ng-show="planetquant!=null" ng-class="{'text-danger':planetquant<-quant}">
                     <span class="glyphicon glyphicon-globe"></span>

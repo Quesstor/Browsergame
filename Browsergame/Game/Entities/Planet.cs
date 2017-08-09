@@ -20,7 +20,7 @@ namespace Browsergame.Game.Entities {
         [DataMember] public DateTime lastProduced;
 
         [DataMember] public Dictionary<ItemType, Item> items = Item.newItemDict();
-        [DataMember] public Dictionary<ItemType, Offer> offers = new Dictionary<ItemType, Offer>();
+        [DataMember] public Dictionary<ItemType, Offer> offers = Offer.newOfferDict();
         [DataMember] public Dictionary<BuildingType, Building> buildings = Building.newBuildingList();
 
 
@@ -49,6 +49,7 @@ namespace Browsergame.Game.Entities {
             if (subscriber == SubscriberLevel.Owner) {
                 data["buildings"] = buildings;
                 data["items"] = items;
+                data["offers"] = offers;
                 data["population"] = population;
                 data["productionMinutes"] = (DateTime.Now - lastProduced).TotalMinutes;
             }

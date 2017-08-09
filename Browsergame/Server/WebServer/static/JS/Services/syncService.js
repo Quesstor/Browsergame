@@ -1,42 +1,6 @@
 ﻿angular.module('app').service('syncService', function ($http, $interval, $rootScope, $compile, $location, $timeout, mapService, $websocket) {  
-
-    $rootScope.socketError = function (data) { console.error("Socket error" + data); }
-    $rootScope.socket = $websocket('ws://127.0.0.1:2121');
-    $rootScope.socket.onMessage(function (message) {
-        $rootScope.updateData(JSON.parse(message.data));
-    }).onClose($websocket.socketError).onError($rootScope.socketError)
-        .onOpen(function () {
-            $rootScope.send("setup");
-        });
-
-    $rootScope.send = function (action, data) {
-        var msg = { action: action, payload: data };
-        console.warn(msg);
-        $rootScope.socket.send(msg);
-    }
-
-    $rootScope.productionIntervall;
-    $rootScope.startProductionUpdates = function () {
-        if ($rootScope.productionIntervall) $interval.cancel($rootScope.productionIntervall);
-        $rootScope.productionIntervall = $interval($rootScope.productionUpdate, 1000);
-    }
-    $rootScope.productionUpdate = function () {
-        angular.forEach($rootScope.planets, function (planet, key) {
-            if (planet.buildings) {
-                angular.forEach(planet.buildings, function (building, key) {
-                    var products = $rootScope.settings.buildings[key].itemProducts;
-                    var productionFactor = building.lvl * planet.productionMinutes * $rootScope.settings.productionsPerMinute;
-                    angular.forEach(products, function (productionAmount, product) {
-                        planet.items[product].quant += productionAmount * productionFactor;
-                    });
-                });
-                planet.productionMinutes = 1/60;
-            }
-        });
-    }
-
-    $rootScope.updateData = function (data) {
-        console.info(data);
+    var syncService = this;
+    syncService.updateData = function (data) {
         if (!data) { console.log("NO SYNC DATA"); return; }
         if (data.setup) {
             $rootScope.settings = {};
@@ -46,12 +10,9 @@
             $rootScope.planet = {};
             $rootScope.units = {};
             $rootScope.orders = {};
-            for (k in data.setup) { $rootScope.updateData(data.setup[k]); }
-            $rootScope.startProductionUpdates();
+            for (k in data.setup) { syncService.updateData(data.setup[k]); }
+            syncService.startProductionUpdates();
         }
-
-
-        //console.log("updateData");
         if (data.settings) {
             angular.merge($rootScope.settings, data.settings);
             mapService.panHome();
@@ -89,4 +50,57 @@
         if ($rootScope.selectedPlanet) $rootScope.selectedPlanet = $rootScope.planets[$rootScope.selectedPlanet.id];
         if ($rootScope.selectedUnit) $rootScope.selectedUnit = $rootScope.units[$rootScope.selectedUnit.id];
     };
+
+    syncService.productionUpdateHandler;
+    syncService.startProductionUpdates = function () {
+        if (syncService.productionUpdateHandler) $interval.cancel(syncService.productionIntervall);
+        syncService.productionUpdateHandler = $interval(syncService.productionUpdate, 1000);
+    }
+    syncService.productionUpdate = function () {
+        angular.forEach($rootScope.planets, function (planet, key) {
+            if (planet.buildings) {
+                angular.forEach(planet.buildings, function (building, key) {
+                    var products = $rootScope.settings.buildings[key].itemProducts;
+                    var productionFactor = building.lvl * planet.productionMinutes * $rootScope.settings.productionsPerMinute;
+                    angular.forEach(products, function (productionAmount, product) {
+                        planet.items[product].quant += productionAmount * productionFactor;
+                    });
+                });
+                planet.productionMinutes = 1/60;
+            }
+        });
+    }
+
+    syncService.socketError = function (data) { 
+        console.error("Socket error:"); 
+        console.error(data); 
+        syncService.connected = false;
+        $location.path('/login');
+    }
+    
+    syncService.send = function (action, data) {
+        var msg = { action: action, payload: data };
+        console.log("Sent Message:");
+        console.log(msg);
+        $rootScope.socket.send(msg);
+    }
+
+    syncService.connected = false;
+    syncService.connect = function(){
+        if(syncService.connected) return;
+        syncService.connected = true;
+        console.log("Connecting");
+        $rootScope.socket = $websocket('ws://127.0.0.1:2121')
+            .onMessage(function(message){
+                var data = JSON.parse(message.data);
+                console.log("Received Message:");
+                console.log(data);
+                syncService.updateData(data);
+            })
+            .onClose(syncService.socketError)
+            .onError(syncService.socketError)
+            .onOpen(function () {
+                syncService.send("setup");
+            });
+    }
 });

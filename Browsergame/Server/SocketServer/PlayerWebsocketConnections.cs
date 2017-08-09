@@ -28,7 +28,7 @@ namespace Browsergame.Server.SocketServer {
             IEvent e = new Game.Event.PlayerOnline(socket.playerID, true);
 
             Player player = socket.getPlayer();
-            string msg = string.Format("Socket opened to {0}. Token: {1}. Thread: {2}", player.name, player.token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);
+            string msg = string.Format("Socket opened. Player {0}. Token: {1}. Thread: {2}", player.name, player.token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);
             Logger.log(10, Category.WebSocket, Severity.Debug, msg);
         }
         public static void removeSocket(PlayerWebsocket socket) {
@@ -39,8 +39,13 @@ namespace Browsergame.Server.SocketServer {
             new Game.Event.PlayerOnline(socket.playerID, false);
 
             Player player = socket.getPlayer();
-            string msg = string.Format("Socket closed to {0}. Token: {1}. Thread: {2}", player.name, player.token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);
+            string msg = string.Format("Socket closed. Player {0}. Token: {1}. Thread: {2}", player.name, player.token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);
             Logger.log(11, Category.WebSocket, Severity.Debug, msg);
+        }
+        public static void closeAll() {
+            foreach(var s in sockets.Values) {
+                s.Close();
+            }
         }
     }
 }

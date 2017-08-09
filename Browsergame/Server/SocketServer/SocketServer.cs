@@ -49,6 +49,7 @@ namespace Browsergame.Server.SocketServer {
         }
 
         public void Dispose() {
+            PlayerWebsocketConnections.closeAll();
             server.Dispose();
         }
     }

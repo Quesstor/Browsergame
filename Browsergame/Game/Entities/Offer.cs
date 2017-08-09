@@ -14,5 +14,12 @@ namespace Browsergame.Game.Entities {
         public Offer(ItemType ItemType, int price) : base(ItemType) {
             this.price = price;
         }
+        public static Dictionary<ItemType, Offer> newOfferDict() {
+            var dict = new Dictionary<ItemType, Offer>();
+            foreach (ItemType t in Enum.GetValues(typeof(ItemType))) {
+                dict[t] = new Offer(t, 0);
+            }
+            return dict;
+        }
     }
 }

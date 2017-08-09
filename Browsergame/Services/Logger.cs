@@ -27,7 +27,7 @@ namespace Browsergame.Services
                 {
                     case Severity.Debug: Console.ForegroundColor = ConsoleColor.Gray; break;
                     //case Severity.Info: Console.ForegroundColor = ConsoleColor.White; break;
-                    case Severity.Warn: Console.ForegroundColor = ConsoleColor.Yellow; Console.Beep(); break;
+                    case Severity.Warn: Console.ForegroundColor = ConsoleColor.DarkYellow; Console.Beep(); break;
                     case Severity.Error: Console.ForegroundColor = ConsoleColor.Red; Console.Beep(); break;
                 }
                 Console.WriteLine(String.Format("{0}.{5}\t{4}\t{1}\t{2}\t{3}", ID, severity, category, msg, DateTime.Now.ToShortTimeString(), Thread.CurrentThread.ManagedThreadId));
