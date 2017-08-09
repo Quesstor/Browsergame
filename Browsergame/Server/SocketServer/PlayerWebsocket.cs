@@ -17,7 +17,7 @@ namespace Browsergame.Server.SocketServer
         public string token;
         public long playerID;
         public bool isAuthenticated;
-        public Player getPlayer() {
+        private Player getPlayer() {
             return StateEngine.getState().getPlayer(playerID);
         }
         public PlayerWebsocket(IWebSocketConnection socket) {

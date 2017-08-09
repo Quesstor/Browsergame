@@ -40,6 +40,9 @@ namespace Browsergame.Game.Engine {
                     e.execute();
                     SubscriberUpdates.Union(e.updates);
                 }
+                else {
+                    Logger.log(40, Category.EventEngine, Severity.Debug, "Event rejected: "+ e.GetType().ToString());
+                }
             }
         }
     }

@@ -57,6 +57,7 @@
         syncService.productionUpdateHandler = $interval(syncService.productionUpdate, 1000);
     }
     syncService.productionUpdate = function () {
+        console.log("productionUpdate");
         angular.forEach($rootScope.planets, function (planet, key) {
             if (planet.buildings) {
                 angular.forEach(planet.buildings, function (building, key) {
@@ -77,7 +78,11 @@
         syncService.connected = false;
         $location.path('/login');
     }
-    
+    syncService.socketClosed = function (data) { 
+        console.log("Socket closed:"); 
+        syncService.connected = false;
+        $location.path('/login');
+    }
     syncService.send = function (action, data) {
         var msg = { action: action, payload: data };
         console.log("Sent Message:");
@@ -97,10 +102,17 @@
                 console.log(data);
                 syncService.updateData(data);
             })
-            .onClose(syncService.socketError)
+            .onClose(syncService.socketClosed)
             .onError(syncService.socketError)
             .onOpen(function () {
                 syncService.send("setup");
             });
     }
+    syncService.disconnect = function(){
+        if(!syncService.connected) return;
+        syncService.connected = false;
+        $rootScope.socket.close();
+        console.log("Disconnected");
+    }
+
 });

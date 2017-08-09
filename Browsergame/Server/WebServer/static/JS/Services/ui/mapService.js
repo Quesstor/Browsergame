@@ -6,10 +6,8 @@
     this.drawPlanetMarker = function () {
         //Delete Marker not in Data
         angular.forEach(marker.planets, function (m, id) {
-            if (!$rootScope.planets[id]) {
-                map.removeLayer(marker.planets[id]);
-                marker.planets[id]=false;
-            }
+            map.removeLayer(marker.planets[id]);
+            marker.planets[id]=false;
         });
         //Draw missing Marker
         angular.forEach($rootScope.planets, function (planet, id) {

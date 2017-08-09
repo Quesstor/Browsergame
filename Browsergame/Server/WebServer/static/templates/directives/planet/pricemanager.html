@@ -1,0 +1,70 @@
+﻿<table ng-hide="$root.selectedUnit.planet == $root.selectedPlanet.id" class="table table-condensed">
+    <tr>
+        <td>Planet</td>
+        <td></td>
+        <td>Angebote</td>
+        <td style="text-align: right;">Anpassen</td>
+    </tr>
+    <tr ng-repeat="(key,item) in $root.selectedPlanet.items">
+        <!--Planet-->
+        <td class="square-td">
+            <itemsquare planetquant="item.quant" item="item" quant="" />
+        </td>
+        <!--Angebote Pfeile-->
+        <td style="padding: 4px 0 0 0; width: 30px;">
+            <span title="Zum Kauf angeboten" ng-if="offer(key).quant<0" class="glyphicon glyphicon-chevron-left" style="font-size: 25px;"></span>
+            <span title="Zum Verkauf angeboten" ng-if="offer(key).quant>0" class="glyphicon glyphicon-chevron-right" style="font-size: 25px;"></span>
+        </td>
+        <!--Angebote-->
+        <td class="square-td">
+            <itemsquare item="item" quant="Math.abs(offer(key).quant)" itemprice="offer(key).price"></itemsquare>
+        </td>
+        <!--Verkauf-->
+        <td class="btn-td">
+            <div ng-show="editPrice" style="float: right;">
+                <button type="button" class="close" aria-label="Close" ng-click="editPrice=false;">
+                    <span aria-hidden="true">&times;</span>
+                </button>   
+            </div>
+            <div ng-show="editPrice" style="float: right;">
+                <div class="input-group input-group-sm" style="width: 220px;">
+                    <input class="form-control" type="number" min="1"
+                           ng-model="offer(key).setQuant"
+                           ng-init="offer(key).setQuant=Math.abs(offer(key).quant||0)" />
+                    <span class="input-group-addon">Kiste{{offer(key).setQuant>1?'n':''}}</span>
+                </div>
+                <div class="input-group input-group-sm" style="width: 220px;">
+                    <input class="form-control" type="number" min="1" ng-model="offer(key).setPrice" />
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-xbt" />pro Kiste</span>
+                </div>
+                <div class="btn-group">
+                    <div ng-disabled="!offer(key).setQuant || !offer(key).setPrice"
+                         ng-click="setOffer(offer(key),false); editPrice=false;"
+                         class="btn btn-sm btn-success">
+                        <span class="glyphicon glyphicon-chevron-left" />
+                        Kaufen
+                    </div>
+                    <div ng-disabled="offer(key).quant==0"
+                         class="btn btn-sm btn-default"
+                         ng-click="offer(key).setQuant=0;  setOffer(offer(key));"
+                         style="padding: 5px;">
+                        <span class="glyphicon glyphicon-ban-circle" />
+                        Stop
+                    </div>
+                    <div ng-disabled="!offer(key).setQuant || !offer(key).setPrice || (offer(key).setQuant>0 && offer(key).setQuant+1>item.quant+offer(key).quant)"
+                         ng-click="setOffer(offer(key),true); editPrice=false;"
+                         class="btn btn-sm btn-danger">
+                        Verkaufen
+                        <span class="glyphicon glyphicon-chevron-right" />
+                    </div>
+                </div>
+            </div>
+
+            <div ng-hide="editPrice" class="btn btn-sm btn-default" ng-click="editPrice=true" style="display: inline-block; float: right;">
+                <span class="glyphicon glyphicon-tag" />
+                Angebote anpassen
+            </div>
+        </td>
+    </tr>
+</table>
+

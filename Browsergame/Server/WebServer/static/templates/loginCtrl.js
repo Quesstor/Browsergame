@@ -6,7 +6,8 @@
                 $scope.loginstatus = "ok";
                 $cookies.put("token", r.data);
                 $location.path('/game');
-                syncService.connect();
             });
     };
+    syncService.disconnect();
+    $('.modal-backdrop').remove();
 });

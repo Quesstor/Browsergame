@@ -1,5 +1,6 @@
 ﻿using Browsergame.Game.Engine;
 using Browsergame.Server.SocketServer;
+using Browsergame.Server.WebServer;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -9,18 +10,26 @@ namespace Browsergame
 {
     class Program
     {
+        private static WebServer WebServer;
+        private static SocketServer SocketServer;
         static void Main(string[] args)
         {
-            var webserver = new Server.WebServer.WebServer();
-            var socketServer = new Server.SocketServer.SocketServer();
-            Game.Engine.Engine.init();
-
+            start();
             waitForInputLoop();
-            webserver.Dispose();
-            socketServer.Dispose();
-            Game.Engine.Engine.Stop();
+            stop();
         }
 
+        private static void start() {
+            WebServer = new Server.WebServer.WebServer();
+            SocketServer = new Server.SocketServer.SocketServer();
+            Game.Engine.Engine.init();
+        }
+        private static void stop() {
+            PlayerWebsocketConnections.closeAll();
+            WebServer.Dispose();
+            SocketServer.Dispose();
+            Game.Engine.Engine.Stop();
+        }
         private static void waitForInputLoop() {
             string input = "h";
             while (input != "") {
@@ -35,9 +44,10 @@ namespace Browsergame
                     case "G":
                         Process.Start(Settings.webserverUrl); break;
                     case "R":
-                        PlayerWebsocketConnections.closeAll();
-                        Thread.Sleep(3000);
+                        stop();
+                        start();
                         StateEngine.resetState();
+
                         Console.WriteLine("Game reset done");
                         break;
                     default: break;

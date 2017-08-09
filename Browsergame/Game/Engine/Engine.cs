@@ -1,24 +1,32 @@
-﻿using System;
+﻿using Browsergame.Game.Entities;
+using Browsergame.Game.Event;
+using Browsergame.Game.Utils;
+using Browsergame.Services;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Browsergame.Services;
-using Browsergame.Game.Utils;
-using System.Threading.Tasks;
-using Browsergame.Game.Event;
-using Browsergame.Game.Entities;
+using System.Threading;
 
 namespace Browsergame.Game.Engine {
     static class Engine {
         private static int tickcount = 1;
+        private static bool entitiesInitialized = false;
         public static void init() {
-            Building.makeSettings();
-            Unit.makeSettings();
-            Item.makeSettings();
+            if (!entitiesInitialized) {
+                Building.makeSettings();
+                Unit.makeSettings();
+                Item.makeSettings();
+                entitiesInitialized = true;
+            }
             StateEngine.init();
             TickEngine.init();
         }
         public static void Stop() {
+            Logger.log(31, Category.Engine, Severity.Info, "Engine shutting down");
             TickEngine.Dispose();
+            List<IEvent> a;
+            SubscriberUpdates b;
+            EventEngine.tick(out a, out b); //Wait for next tick so all events get calculated
             StateEngine.Dispose();
         }
         public static void tick() {

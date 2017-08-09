@@ -110,6 +110,7 @@
     <Compile Include="Game\Entities\Player.cs" />
     <Compile Include="Game\Entities\Unit.cs" />
     <Compile Include="Game\Event\PlayerOnline.cs" />
+    <Compile Include="Game\Event\setOffer.cs" />
     <Compile Include="Game\Utils\SubscriberUpdates.cs" />
     <Compile Include="Game\State.cs" />
     <Compile Include="Game\Event\Trade.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Game\Utils\UpdateData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server\SocketServer\Controller\SetOfferSocketController.cs" />
     <Compile Include="Server\SocketServer\SocketServer.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\Security.cs" />
@@ -153,6 +155,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Game\state.xml" />
+    <Content Include="Server\WebServer\static\favicon.ico" />
     <Content Include="Server\WebServer\static\img\icon\Freebee\Space icons %281%29.png" />
     <Content Include="Server\WebServer\static\img\icon\Freebee\Space icons %2810%29.png" />
     <Content Include="Server\WebServer\static\img\icon\Freebee\Space icons %2811%29.png" />
@@ -215,6 +218,9 @@
     <Content Include="Server\WebServer\static\img\icon\goods\nahrung.png" />
     <Content Include="Server\WebServer\static\img\icon\goods\Triebwerke.png" />
     <Content Include="Server\WebServer\static\img\icon\goods\wasser.png" />
+    <Content Include="Server\WebServer\static\img\icon\items\deuterium.png" />
+    <Content Include="Server\WebServer\static\img\icon\items\metal.png" />
+    <Content Include="Server\WebServer\static\img\icon\items\water.png" />
     <Content Include="Server\WebServer\static\img\icon\Lorcs Icons\4cpmn.png" />
     <Content Include="Server\WebServer\static\img\icon\Lorcs Icons\8HG5T.png" />
     <Content Include="Server\WebServer\static\img\icon\Lorcs Icons\AMVGj.png" />
@@ -304,16 +310,21 @@
     <Content Include="Server\WebServer\static\img\planet\info\7.jpg" />
     <Content Include="Server\WebServer\static\img\planet\info\8.jpg" />
     <Content Include="Server\WebServer\static\img\planet\info\9.jpg" />
+    <Content Include="Server\WebServer\static\img\planet\Stadt\0.jpg" />
     <Content Include="Server\WebServer\static\img\planet\Stadt\1.jpg" />
     <Content Include="Server\WebServer\static\img\planet\Stadt\10.jpg" />
     <Content Include="Server\WebServer\static\img\planet\Stadt\11.jpg" />
     <Content Include="Server\WebServer\static\img\planet\Stadt\12.jpg" />
     <Content Include="Server\WebServer\static\img\planet\Stadt\16.jpg" />
     <Content Include="Server\WebServer\static\img\planet\Stadt\17.jpg" />
+    <Content Include="Server\WebServer\static\img\planet\Stadt\2.jpg" />
     <Content Include="Server\WebServer\static\img\planet\Stadt\3.jpg" />
+    <Content Include="Server\WebServer\static\img\planet\Stadt\4.jpg" />
+    <Content Include="Server\WebServer\static\img\planet\Stadt\5.jpg" />
     <Content Include="Server\WebServer\static\img\planet\Stadt\55.jpg" />
     <Content Include="Server\WebServer\static\img\planet\Stadt\6.jpg" />
     <Content Include="Server\WebServer\static\img\planet\Stadt\7.jpg" />
+    <Content Include="Server\WebServer\static\img\planet\Stadt\8.jpg" />
     <Content Include="Server\WebServer\static\img\planet\Stadt\9.jpg" />
     <Content Include="Server\WebServer\static\img\planet\units\0.jpg" />
     <Content Include="Server\WebServer\static\img\planet\units\1.jpg" />
@@ -345,6 +356,7 @@
     <Content Include="Server\WebServer\static\JS\audio.js" />
     <Content Include="Server\WebServer\static\JS\Controller\gameCtrl.js" />
     <Content Include="Server\WebServer\static\JS\Controller\loginCtrl.js" />
+    <Content Include="Server\WebServer\static\JS\Controller\Manager\pricemanager.js" />
     <Content Include="Server\WebServer\static\JS\Controller\mapmarkerCtrl.js" />
     <Content Include="Server\WebServer\static\JS\Controller\utilCtrl.js" />
     <Content Include="Server\WebServer\static\JS\map.js" />
@@ -381,7 +393,9 @@
     <Content Include="Server\WebServer\static\music\sounds\trade.mp3" />
     <Content Include="Server\WebServer\static\music\sounds\trade_big.mp3" />
     <Content Include="Server\WebServer\static\music\sounds\trade_small.mp3" />
+    <Content Include="Server\WebServer\static\plugins\angular-cookies.min.js" />
     <Content Include="Server\WebServer\static\plugins\angular-route.min.js" />
+    <Content Include="Server\WebServer\static\plugins\angular-websocket.min.js" />
     <Content Include="Server\WebServer\static\plugins\angular.min.js" />
     <Content Include="Server\WebServer\static\plugins\bootstrap.min.css" />
     <Content Include="Server\WebServer\static\plugins\bootstrap.min.js" />
@@ -402,10 +416,14 @@
     <Content Include="Server\WebServer\static\templates\directives\modals\players.html" />
     <Content Include="Server\WebServer\static\templates\directives\planet\dock\dock.html" />
     <Content Include="Server\WebServer\static\templates\directives\planet\dock\manage.html" />
+    <Content Include="Server\WebServer\static\templates\directives\planet\dock\pricemanager.html" />
     <Content Include="Server\WebServer\static\templates\directives\planet\dock\trade.html" />
+    <Content Include="Server\WebServer\static\templates\directives\planet\dock\trademanager.html" />
+    <Content Include="Server\WebServer\static\templates\directives\planet\dock\unitmanager.html" />
     <Content Include="Server\WebServer\static\templates\directives\planet\industry.html" />
     <Content Include="Server\WebServer\static\templates\directives\planet\units.html" />
     <Content Include="Server\WebServer\static\templates\directives\util\goodsquare.html" />
+    <Content Include="Server\WebServer\static\templates\directives\util\itemsquare.html" />
     <Content Include="Server\WebServer\static\templates\directives\util\price.html" />
     <Content Include="Server\WebServer\static\templates\directives\util\unitsquare.html" />
     <Content Include="Server\WebServer\static\templates\game.html" />

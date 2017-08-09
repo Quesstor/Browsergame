@@ -38,11 +38,11 @@ namespace Browsergame.Game.Entities {
                 switch (type) {
                     case BuildingType.DeuteriumCollector:
                         setting.buildCosts.Add(ItemType.Metal, 100);
-                        setting.educts.Add(ItemType.Water, 5);
+                        setting.educts.Add(ItemType.Deuterium, 5);
                         setting.itemProducts.Add(ItemType.Deuterium, 10); break;
                     case BuildingType.WaterPurification:
                         setting.buildCosts.Add(ItemType.Metal, 100);
-                        setting.itemProducts.Add(ItemType.Water, 10); break;
+                        setting.itemProducts.Add(ItemType.Water, 1); break;
                 }
                 settings.Add(type, setting);
             }

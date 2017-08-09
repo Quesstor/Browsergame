@@ -14,6 +14,7 @@ namespace Browsergame.Game {
         [DataMember] public Dictionary<long, Player> players = new Dictionary<long, Player>();
         [DataMember] public Dictionary<long, Unit> units = new Dictionary<long, Unit>();
         [DataMember] public Dictionary<long, Planet> planets = new Dictionary<long, Planet>();
+        [DataMember] public Dictionary<long, Item> items = new Dictionary<long, Item>();
 
         public Player getPlayer(string token) {
             return (from p in players.Values where p.token == token select p).FirstOrDefault();

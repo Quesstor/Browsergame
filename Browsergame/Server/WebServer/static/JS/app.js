@@ -20,9 +20,11 @@ app.directive("playersmodal", function () { return { templateUrl: '/templates/di
 app.directive("messagesmodal", function () { return { templateUrl: '/templates/directives/modals/messages.html' } });
 app.directive("planetmodal", function () { return { templateUrl: '/templates/directives/modals/planet.html', controller: 'utilCtrl' } });
 
-app.directive("dockmodal", function () { return { templateUrl: '/templates/directives/planet/dock/dock.html', controller: 'utilCtrl' } });
-app.directive("dockmanage", function () { return { templateUrl: '/templates/directives/planet/dock/manage.html', controller: 'utilCtrl' } });
-app.directive("docktrade", function () { return { templateUrl: '/templates/directives/planet/dock/trade.html', controller: 'utilCtrl' } });
+app.directive("manager", function () { return { templateUrl: '/templates/directives/planet/manager.html', controller: 'utilCtrl' } });
+app.directive("unitmanager", function () { return { templateUrl: '/templates/directives/planet/unitmanager.html', controller: 'utilCtrl' } });
+app.directive("pricemanager", function () { return { templateUrl: '/templates/directives/planet/pricemanager.html', controller: 'pricemanager' } });
+app.directive("trademanager", function () { return { templateUrl: '/templates/directives/planet/trademanager.html', controller: 'utilCtrl' } });
+app.directive("unitlist", function () { return { templateUrl: '/templates/directives/planet/unitlist.html', controller: 'utilCtrl' } });
 
 app.directive("industrymodal", function () { return { templateUrl: '/templates/directives/planet/industry.html', controller: 'utilCtrl' } });
 app.directive("unitsmodal", function () { return { templateUrl: '/templates/directives/planet/units.html', controller: 'utilCtrl' } });
@@ -32,7 +34,8 @@ app.directive("navi", function () { return { templateUrl: '/templates/directives
 app.directive("selectedunitbar", function () { return { templateUrl: '/templates/directives/map/selectedunitbar.html' } });
 app.directive("debugbar", function () { return { templateUrl: '/templates/directives/map/debugbar.html' } });
 app.directive("price", function () { return { templateUrl: '/templates/directives/util/price.html', scope: { value: '=' }, controller: 'utilCtrl' } });
-app.directive("itemsquare", function () { return { templateUrl: '/templates/directives/util/itemsquare.html', scope: { item: "=", quant: "=", planetquant: "=", productionspeed: "=", ordered: "=", itemprice: "=" }, controller: 'utilCtrl' } });
+app.directive("itemsquare", function () { return { templateUrl: '/templates/directives/util/itemsquare.html', 
+                scope: { item: "=", quant: "=", planetquant: "=", productionspeed: "=", ordered: "=", itemprice: "=" }, controller: 'itemsquare' } });
 app.directive("unitsquare", function () { return { templateUrl: '/templates/directives/util/unitsquare.html', scope: { unittype: "=", quant: "=", hover: "="}, controller: 'utilCtrl' } });
 app.directive("planetmarker", function () { return { templateUrl: '/templates/directives/map/planetmarker.html', scope: { planet: '=' }, controller: 'mapmarkerCtrl' } });
 app.directive("ordermarker", function () { return { templateUrl: '/templates/directives/map/ordermarker.html', scope: { order: '=' }, controller: 'mapmarkerCtrl' } });

@@ -1,6 +1,7 @@
 ﻿using Browsergame.Game.Engine;
 using Browsergame.Game.Entities;
 using Browsergame.Game.Utils;
+using Browsergame.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +63,7 @@ namespace Browsergame.Game.Event {
         }
 
         private void gettingSubscribable(Subscribable s, SubscriberLevel updateSubscribersWithThisLevel) {
+            Logger.log(41, Category.EventEngine, Severity.Debug, "On Demand calculation " + s.ToString());
             s.onDemandCalculation();
             updates.Add(updateSubscribersWithThisLevel, s);
         }

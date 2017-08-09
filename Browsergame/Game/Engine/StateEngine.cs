@@ -36,10 +36,10 @@ namespace Browsergame.Game.Engine {
             }
             if (tickcount % Settings.persistenSaveEveryXTick == 0) persistentSaveAsync();
         }
-        public static void Dispose() {
+        public static async void Dispose() {
             Logger.log(4, Category.StateEngine, Severity.Info, "Making persistent save before shutting down.");
-            isSavingLock.WaitOne();
-            peristentSave();
+            var task = persistentSaveAsync();
+            task.Wait();
         }
         public static AutoResetEvent isSavingLock = new AutoResetEvent(true);
         public static Task persistentSaveAsync() {

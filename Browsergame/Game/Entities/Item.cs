@@ -17,7 +17,7 @@ namespace Browsergame.Game.Entities {
     }
     [DataContract]
     class Item {
-        [DataMember] public int quant = 0;
+        [DataMember] public int quant = 5;
         [JsonConverter(typeof(StringEnumConverter))]
         [DataMember] public ItemType type;
         public static Dictionary<ItemType, Setting> settings = new Dictionary<ItemType, Setting>();

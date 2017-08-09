@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Browsergame.Server.SocketServer.Controller {
     static class SetupSocketController {
         public static void onMessage(PlayerWebsocket socket, dynamic json) {
-            Player player = socket.getPlayer();
+            Player player = Browsergame.Game.Engine.StateEngine.getState().getPlayer(socket.playerID);
 
             var data = new List<Dictionary<string,object>>();
 

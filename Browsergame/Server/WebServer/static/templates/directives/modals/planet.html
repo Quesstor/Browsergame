@@ -4,7 +4,7 @@
         <div class="modal-content">
 
             <div class="modal-header coverbg"
-                 ng-init="show='dockmodal'"
+                 ng-init="show='manager'"
                  ng-class="{'coverbgbig':coverbgbig}"
                  style="background:#000;"
                  ng-style="{'background-image':'url(/img/planet/'+show.replace('modal','')+'/'+ $root.selectedPlanet.type +'.jpg)'}">
@@ -14,7 +14,7 @@
                 </div>
                 <ul class="nav nav-tabs nav-blackbg"
                     ng-click="$root.planetSync($root.selectedPlanet.id);$root.playerSync(); $event.stopPropagation();">
-                    <li ng-class="{'active':show=='dockmodal'}" ng-click="show='dockmodal'">
+                    <li ng-class="{'active':show=='manager'}" ng-click="show='manager'">
                         <a><span class="glyphicon glyphicon-globe"></span> {{$root.selectedPlanet.name}}</a>
                     </li>
                     <li ng-class="{'active':$parent.show=='unitsmodal'}"
@@ -51,8 +51,8 @@
                     </div>
                 </div>
                 <unitsmodal ng-show="show=='unitsmodal'"></unitsmodal>
-                <dockmodal ng-show="show=='dockmodal'" 
-                           ng-if="uiService.playerHasUnitOnPlanet($root.selectedPlanet, 'Händler') || $root.selectedPlanet.owner == $root.player.id"></dockmodal>
+                <manager ng-show="show=='manager'" 
+                           ng-if="uiService.playerHasUnitOnPlanet($root.selectedPlanet, 'Händler') || $root.selectedPlanet.owner == $root.player.id"></manager>
                 <industrymodal ng-show="show=='industrymodal'"></industrymodal>
             </div>
         </div>

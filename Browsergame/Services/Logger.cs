@@ -13,7 +13,7 @@ namespace Browsergame.Services
     }
     enum Category
     {
-        Service, TickEngine, EventEngine, Webserver, SocketServer, WebSocket, Security, StateEngine, Engine
+        Service, TickEngine, EventEngine, Event, Webserver, SocketServer, WebSocket, Security, StateEngine, Engine
     }
     static class Logger
     {
