@@ -2,17 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Browsergame.Game.Event {
-    class upgradeBuilding : Event {
+    class startBuildingUpgrade : Event {
         //{planetid: 1, buildingType: 0}
         private long PlayerID;
         private long PlanetID;
         private BuildingType BuildingType;
         private DateTime executionTime;
-        public upgradeBuilding(long playerID, long planetid, BuildingType buildingType) {
+        public startBuildingUpgrade(long playerID, long planetid, BuildingType buildingType) {
             PlayerID = playerID;
             PlanetID = planetid;
             BuildingType = buildingType;
@@ -40,28 +41,7 @@ namespace Browsergame.Game.Event {
                 planet.items[cost.Key].quant -= cost.Value * (planet.buildings[BuildingType].lvl + 1);
             }
             planet.buildings[BuildingType].upgradesAt = executionTime;
-            new timedBuildingUpgrade(PlanetID, BuildingType, executionTime);
-        }
-
-        class timedBuildingUpgrade : Event {
-            private long PlanetID;
-            private BuildingType BuildingType;
-
-            public timedBuildingUpgrade(long planetID, BuildingType buildingType, DateTime executionTime) {
-                PlanetID = planetID;
-                BuildingType = buildingType;
-                register(executionTime);
-            }
-
-            public override bool conditions() {
-                return true;
-            }
-
-            public override void execute() {
-                var planet = getPlanet(PlanetID, Utils.SubscriberLevel.Owner);
-                planet.buildings[BuildingType].lvl += 1;
-                planet.buildings[BuildingType].upgradesAt = DateTime.MaxValue;
-            }
+            new Timed.buildingUpgrade(PlanetID, BuildingType, executionTime, getStateForTimedEvents());
         }
     }
 }

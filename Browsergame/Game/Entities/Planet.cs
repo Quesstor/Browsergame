@@ -47,6 +47,10 @@ namespace Browsergame.Game.Entities {
             data["owner"] = owner.id;
 
             if (subscriber == SubscriberLevel.Owner) {
+                var buildings = new Dictionary<BuildingType, object>();
+                foreach(var b in this.buildings) {
+                    buildings[b.Key] = b.Value.getUpdateData(subscriber);
+                }
                 data["buildings"] = buildings;
                 data["items"] = items;
                 data["offers"] = offers;

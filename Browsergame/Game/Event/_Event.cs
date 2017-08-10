@@ -5,6 +5,7 @@ using Browsergame.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,36 +13,48 @@ using System.Threading.Tasks;
 namespace Browsergame.Game.Event {
 
     interface IEvent {
-        ManualResetEvent processed { get; }
-        State state { set; }
-        SubscriberUpdates updates { get; }
+        ManualResetEvent processed { get; set; }
+        SubscriberUpdates updates { get; set; }
         bool conditions();
-        void execute();
+        SubscriberUpdates execute(State state);
         void register();
     }
+    [DataContract]
     abstract class Event : IEvent {
-        ManualResetEvent processed = new ManualResetEvent(false);
-        ManualResetEvent IEvent.processed { get => processed; }
-
-        private State state { get; set; }
-        State IEvent.state { set => state = value; }
-
-        public abstract bool conditions();
-        public abstract void execute();
+        private ManualResetEvent processed = new ManualResetEvent(false);
+        ManualResetEvent IEvent.processed { get => processed; set => processed = value; }
 
         private SubscriberUpdates updates = new SubscriberUpdates();
-        SubscriberUpdates IEvent.updates => updates;
+        SubscriberUpdates IEvent.updates { get => updates; set => updates = value; }
 
+        private State state { get; set; }
+
+        public SubscriberUpdates execute(State state) {
+            this.state = state;
+
+            //chech conditions and execute event
+            if (conditions()) {
+                execute();
+                return updates;
+            }
+            else {
+                Logger.log(40, Category.Event, Severity.Warn, "Event rejected: " + this.GetType().ToString());
+            }
+            return null;
+        }
+        public abstract bool conditions();
+        public abstract void execute();
+        
         public bool isRegistered = false;
         public void register() {
             if (isRegistered) return;
             isRegistered = true;
             EventEngine.addEvent(this);
         }
-        public void register(DateTime executionTime) {
+        public void register(DateTime executionTime, State state) {
             if (isRegistered) return;
             isRegistered = true;
-            EventEngine.addTimedEvent(executionTime, this);
+            EventEngine.addTimedEvent(executionTime, this, state);
         }
 
 
@@ -65,6 +78,9 @@ namespace Browsergame.Game.Event {
             var planet = state.addPlanet(name, owner);
             updates.Add(SubscriberLevel.Other, planet);
             return planet;
+        }
+        protected State getStateForTimedEvents() {
+            return state;
         }
 
         private void gettingSubscribable(Subscribable s, SubscriberLevel updateSubscribersWithThisLevel) {

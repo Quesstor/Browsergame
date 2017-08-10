@@ -97,7 +97,7 @@
                 </div>
                 <div ng-show="building.upgradeDuration" style="margin-top:5px;">
                     <span class="glyphicon glyphicon-hourglass"></span>
-                    {{building.upgradeDuration}} Sekunden zur Fertigstellung
+                    {{Math.max(0,building.upgradeDuration.toFixed(0)*1 + 1)}} Sekunden zur Fertigstellung
                 </div>
             </div>
         </td>

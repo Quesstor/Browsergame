@@ -77,6 +77,10 @@ namespace Browsergame.Game.Engine {
                     DataContractSerializer serializer = new DataContractSerializer(typeof(State));
                     state = (State)serializer.ReadObject(fs);
                 }
+                foreach(var e in state.timedEventList) {
+                    if (e.Value.processed == null) e.Value.processed = new ManualResetEvent(false);
+                    if (e.Value.updates == null) e.Value.updates = new Utils.SubscriberUpdates();
+                }
                 Logger.log(7, Category.StateEngine, Severity.Info, string.Format("State {0} loaded", path));
                 return state;
             }

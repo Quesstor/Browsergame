@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Browsergame.Game.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -10,7 +11,7 @@ namespace Browsergame.Game.Entities {
         WaterPurification, DeuteriumCollector
     }
     [DataContract]
-    class Building {
+    class Building : Subscribable {
         [DataMember] public BuildingType type;
         [DataMember] public int lvl;
         [DataMember] public DateTime upgradesAt = DateTime.MaxValue;
@@ -47,6 +48,18 @@ namespace Browsergame.Game.Entities {
                 }
                 settings.Add(type, setting);
             }
+        }
+
+        public override void onDemandCalculation() {
+            return;
+        }
+
+        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
+            var data = new UpdateData(type.ToString());
+            data["type"] = type;
+            data["lvl"] = lvl;
+            if(upgradesAt!= DateTime.MaxValue) data["upgradeDuration"] = (upgradesAt - DateTime.Now).TotalSeconds;
+            return data;
         }
 
         public class Setting {

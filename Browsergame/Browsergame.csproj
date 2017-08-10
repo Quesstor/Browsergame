@@ -111,7 +111,8 @@
     <Compile Include="Game\Entities\Unit.cs" />
     <Compile Include="Game\Event\PlayerOnline.cs" />
     <Compile Include="Game\Event\setOffer.cs" />
-    <Compile Include="Game\Event\upgradeBuilding.cs" />
+    <Compile Include="Game\Event\Timed\buildingUpgrade.cs" />
+    <Compile Include="Game\Event\startBuildingUpgrade.cs" />
     <Compile Include="Game\Utils\SubscriberUpdates.cs" />
     <Compile Include="Game\State.cs" />
     <Compile Include="Game\Event\Trade.cs" />
@@ -156,7 +157,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Game\state.xml" />
     <Content Include="Server\WebServer\static\favicon.ico" />
     <Content Include="Server\WebServer\static\img\icon\Freebee\Space icons %281%29.png" />
     <Content Include="Server\WebServer\static\img\icon\Freebee\Space icons %2810%29.png" />

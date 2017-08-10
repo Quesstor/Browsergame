@@ -16,6 +16,7 @@ namespace Browsergame.Game.Utils {
             this.Add(SubscriberLevel.Owner, data);
         }
         public void Union(SubscriberUpdates other) {
+            if (other == null) return;
             foreach (var updateSet in other.dict) {
                 if (!dict.ContainsKey(updateSet.Key)) dict[updateSet.Key] = new HashSet<Subscribable>();
                 this.dict[updateSet.Key].UnionWith(updateSet.Value);
