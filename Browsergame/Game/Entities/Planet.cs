@@ -34,7 +34,8 @@ namespace Browsergame.Game.Entities {
             lastProduced = DateTime.Now;
             owner.planets.Add(this);
             type = rand.Next(0, 10);
-            buildings[BuildingType.WaterPurification].lvl = 1;
+            buildings[BuildingType.DeuteriumCollector].lvl = 1;
+            foreach (Item item in this.items.Values) item.quant = 500;
         }
 
         public override UpdateData getUpdateData(SubscriberLevel subscriber) {
@@ -48,7 +49,7 @@ namespace Browsergame.Game.Entities {
 
             if (subscriber == SubscriberLevel.Owner) {
                 var buildings = new Dictionary<BuildingType, object>();
-                foreach(var b in this.buildings) {
+                foreach (var b in this.buildings) {
                     buildings[b.Key] = b.Value.getUpdateData(subscriber);
                 }
                 data["buildings"] = buildings;
@@ -69,14 +70,20 @@ namespace Browsergame.Game.Entities {
 
         public override void onDemandCalculation() {
             double TotalMilliseconds = (int)Math.Floor((DateTime.Now - lastProduced).TotalMilliseconds);
-            double productionCycles = TotalMilliseconds * 0.001  * Settings.productionsPerMinute / 60;
+            double productionCycles = TotalMilliseconds * 0.001 * Settings.productionsPerMinute / 60;
             if (productionCycles > 0) {
-                foreach (var build in this.buildings) {
-                    Building building = build.Value;
-                    foreach (var production in building.setting.itemProducts) {
-                        double amount = production.Value * building.lvl * productionCycles ;
-                        this.getItem(production.Key).quant += amount;
+                foreach (var building in this.buildings.Values) {
+                    var productions = productionCycles;
+                    if (building.setting.educts.Count > 0) {
+                        productions = Math.Min(building.orderedProductions, productions);
+                        building.orderedProductions -= productions;
                     }
+                    //Produce products
+                    foreach (var production in building.setting.itemProducts) {
+                        double amount = production.Value * building.lvl * productions;
+                        items[production.Key].quant += amount;
+                    }
+
                 }
                 this.lastProduced = this.lastProduced.AddMilliseconds(TotalMilliseconds);
             }

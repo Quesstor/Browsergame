@@ -5,9 +5,12 @@
     $scope.planetService = planetService;
     $scope.uiService = uiService;
 
-    $scope.buildings = function(){
-        if(!$rootScope.selectedPlanet) return;
-        utilService.merge($rootScope.selectedPlanet.buildings, $rootScope.settings.buildings)
+    $scope.buildings = function () {
+        if (!$rootScope.selectedPlanet) return;
+        utilService.merge($rootScope.selectedPlanet.buildings, $rootScope.settings.buildings);
+        angular.forEach($rootScope.selectedPlanet.buildings, function (value, key) {
+            if(value.setProduction == undefined) value.setProduction = 0;
+        });
         return $rootScope.selectedPlanet.buildings;
     };
     $scope.showBuilding = function (building) {
@@ -17,7 +20,13 @@
         };
         return true;
     }
-    $scope.selectePlanetItem = function(type){
+    $scope.selectePlanetItem = function (type) {
         return $root.selectedPlanet.items[type];
+    }
+    $scope.hasEducts = function (building) {
+        return !angular.equals({}, building.educts);
+    }
+    $scope.orderProduct = function (building, quant) {
+        syncService.send("orderProduct", { buildingType: building.type, quant: quant });
     }
 });

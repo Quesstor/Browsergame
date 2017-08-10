@@ -14,6 +14,7 @@ namespace Browsergame.Game.Entities {
     class Building : Subscribable {
         [DataMember] public BuildingType type;
         [DataMember] public int lvl;
+        [DataMember] public double orderedProductions = 0;
         [DataMember] public DateTime upgradesAt = DateTime.MaxValue;
 
         public Building(BuildingType type) {
@@ -40,7 +41,7 @@ namespace Browsergame.Game.Entities {
                 switch (type) {
                     case BuildingType.DeuteriumCollector:
                         setting.buildCosts.Add(ItemType.Metal, 100);
-                        setting.educts.Add(ItemType.Deuterium, 20);
+                        setting.educts.Add(ItemType.Water, 5);
                         setting.itemProducts.Add(ItemType.Deuterium, 10); break;
                     case BuildingType.WaterPurification:
                         setting.buildCosts.Add(ItemType.Metal, 100);
@@ -58,7 +59,8 @@ namespace Browsergame.Game.Entities {
             var data = new UpdateData(type.ToString());
             data["type"] = type;
             data["lvl"] = lvl;
-            if(upgradesAt!= DateTime.MaxValue) data["upgradeDuration"] = (upgradesAt - DateTime.Now).TotalSeconds;
+            if (setting.educts.Count > 0) data["ordered"] = orderedProductions;
+            if (upgradesAt!= DateTime.MaxValue) data["upgradeDuration"] = (upgradesAt - DateTime.Now).TotalSeconds;
             return data;
         }
 
