@@ -1,4 +1,4 @@
-﻿angular.module('app').controller('gameCtrl', function ($scope, $routeParams, $rootScope, $interval, $timeout, syncService, mapService, $cookies, $websocket) {
+﻿angular.module('app').controller('gameCtrl', function ($scope, $routeParams, $rootScope, $timeout, syncService, mapService, $cookies, $websocket) {
     $scope.Math = window.Math;
     $rootScope.token = $cookies.get("token");
     $scope.mapService = mapService;
@@ -30,24 +30,6 @@
             return false;
         }
     }
-    $interval(function () {
-        if ($rootScope.selectedPlanet) {
-            angular.forEach($rootScope.selectedPlanet.buildings, function (building, k) {
-                if (building.productionDuration != null) {
-                    if (building.productionDuration == 0)
-                        $scope.saveSyncPlanet();
-                    else
-                        building.productionDuration = Math.max(0, building.productionDuration - 1);
-                }
-                if (building.upgradeDuration != null) {
-                    if (building.upgradeDuration == 0)
-                        $rootScope.planetSync();
-                    else
-                        building.upgradeDuration = Math.max(0, building.upgradeDuration - 1)
-                }
-            });
-        }
-    }, 1000);
     syncService.connect();
 });
 

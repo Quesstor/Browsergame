@@ -9,7 +9,7 @@ namespace Browsergame.Server.SocketServer.Controller {
     class UpgradeBuildingSocketController {
         //{planetid: 1, buildingType: 0}
     public static void onMessage(PlayerWebsocket socket, dynamic json) {
-            new Browsergame.Game.Event.upgradeBuilding((long) socket.playerID, (long) json.planetid, (BuildingType) json.buildingType);
+            new Browsergame.Game.Event.startBuildingUpgrade((long) socket.playerID, (long) json.planetid, (BuildingType) json.buildingType);
         }
     }
 }

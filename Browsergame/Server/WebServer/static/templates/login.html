@@ -1,7 +1,7 @@
 ﻿<div class="container">
     <br><br><br><br>
     <div id="login" class="well" style="width: 500px; margin: 0 auto">
-        <form class="form-horizontal" role="form">
+        <form ng-keydown="$event.keyCode === 13 && login()" class="form-horizontal" role="form">
             <div class="form-group">
                 <label class="control-label col-sm-3" for="email">Name:</label>
                 <div class="col-sm-9">

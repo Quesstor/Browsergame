@@ -11,7 +11,7 @@
             $rootScope.units = {};
             $rootScope.orders = {};
             for (k in data.setup) { syncService.updateData(data.setup[k]); }
-            syncService.startSyncloop();
+            syncService.startSyncLoop();
         }
         if (data.settings) {
             angular.merge($rootScope.settings, data.settings);
@@ -51,25 +51,25 @@
         if ($rootScope.selectedUnit) $rootScope.selectedUnit = $rootScope.units[$rootScope.selectedUnit.id];
     };
 
-    syncService.snycloopHandler;
-    syncService.syncLoopIntervallInMillisec = 100;
-    syncService.startSyncloop = function () {
-        if (syncService.snycloopHandler) $interval.cancel(syncService.snycloopHandler);
-        syncService.snycloopHandler = $interval(syncService.snycloop, syncService.syncLoopIntervallInMillisec);
+    syncService.syncLoopIntervall = 100;
+    syncService.syncLoopHandler;
+    syncService.startSyncLoop = function () {
+        if (syncService.syncLoopHandler) $interval.cancel(syncService.syncLoopHandler);
+        syncService.syncLoopHandler = $interval(syncService.syncLoop, syncService.syncLoopIntervall);
     }
-    syncService.snycloop = function () {
-        var perSecond = syncService.syncLoopIntervallInMillisec / 1000;
+    syncService.syncLoop = function () {
+        var perSecond = syncService.syncLoopIntervall / 1000;
         angular.forEach($rootScope.planets, function (planet, key) {
             if (planet.buildings) {
                 angular.forEach(planet.buildings, function (building, key) {
                     var products = $rootScope.settings.buildings[key].itemProducts;
                     var productionFactor = building.lvl * planet.productionMinutes * $rootScope.settings.productionsPerMinute * perSecond;
-                    if(building.buildingDuration) building.buildingDuration -= 1 * perSecond;
                     angular.forEach(products, function (productionAmount, product) {
                         planet.items[product].quant += productionAmount * productionFactor;
                     });
+                    if(building.upgradeDuration) building.upgradeDuration -= perSecond;
                 });
-                planet.productionMinutes = 1/60;
+                planet.productionMinutes = perSecond/60;
             }
         });
     }

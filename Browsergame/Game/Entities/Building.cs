@@ -11,9 +11,10 @@ namespace Browsergame.Game.Entities {
         WaterPurification, DeuteriumCollector, MetalMine
     }
     [DataContract]
-    class Building {
+    class Building : Subscribable {
         [DataMember] public BuildingType type;
         [DataMember] public int lvl;
+        [DataMember] public double orderedProductions = 0;
         [DataMember] public DateTime upgradesAt = DateTime.MaxValue;
 
         public Building(BuildingType type) {
@@ -63,6 +64,19 @@ namespace Browsergame.Game.Entities {
                 }
                 settings.Add(type, setting);
             }
+        }
+
+        public override void onDemandCalculation() {
+            return;
+        }
+
+        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
+            var data = new UpdateData(type.ToString());
+            data["type"] = type;
+            data["lvl"] = lvl;
+            if (setting.educts.Count > 0) data["ordered"] = orderedProductions;
+            if (upgradesAt!= DateTime.MaxValue) data["upgradeDuration"] = (upgradesAt - DateTime.Now).TotalSeconds;
+            return data;
         }
 
         public class Setting {

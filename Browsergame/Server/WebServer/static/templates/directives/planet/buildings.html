@@ -2,35 +2,29 @@
     <tr>
         <td>Level</td>
         <td>Name</td>
-        <td>
-            <!--Produktionsgeschwindigkeit-->
-        </td>
+        <td>Verbraucht</td>
+        <td></td> <!--Pfeil-->
         <td>Produkte</td>
-
+        <td>Produktion</td>
         <td>Kosten</td>
         <td></td>
     </tr>
-    <tr ng-repeat="(type,building) in buildings()"
-        ng-show="showBuilding(building)"
-        ng-class="{'text-muted':building.lvl==0 && !building.buildingDuration}">
+    <tr ng-repeat="(type,building) in buildings()" ng-show="showBuilding(building)" ng-class="{'text-muted':building.lvl==0 && !building.upgradeDuration}">
         <!--Level-->
-        <td class="text-td">{{building.lvl || 0}}</td>
+        <td class="text-td">{{building.lvl}}</td>
         <!--Name-->
         <td class="text-td">{{building.name}}</td>
-        <!--Geschwindigkeit-->
-        <td style="padding: 4px 8px 0 8px; line-height: 1; min-width: 45px;">
-            <div ng-show="building.lvl>0">
-                <div ng-show="building.productionDuration">
-                    <span class="glyphicon glyphicon-hourglass"></span>{{building.productionDuration}}
-                </div>
-                <div ng-show="!building.productionDuration">
-                    <span class="glyphicon glyphicon-hourglass"></span>{{building.secondsForOneProductionCycle}}
-                </div>
-                <div ng-show="building.educts.length>0" ng-class="{'text-danger':building.educts.length>0 && !building.ordered>0}">
-                    <span class="glyphicon glyphicon-cog" ng-hide="building.educts.length>0 && !building.ordered>0"></span>
-                    <span class="glyphicon glyphicon-exclamation-sign" ng-show="building.educts.length>0 && !building.ordered>0"></span>
-                    {{building.ordered}}
-                </div>
+        <!--Educts-->
+        <td class="square-td">
+            <div ng-show="hasEducts(building)">
+                <itemsquare ng-repeat="(type,quant) in building.educts" item="{type:type}" quant="quant"></itemsquare>
+            </div>
+        </td>
+        <td>
+            <div ng-show="hasEducts(building)" style="display:table">
+                <span ng-show="building.ordered>0" class="glyphicon glyphicon-chevron-right text-success" style="font-size: 25px; display:inline;"></span>
+                <span ng-show="building.ordered==0" class="glyphicon glyphicon-chevron-right text-danger" style="font-size: 25px; display:inline;"></span>
+                <div style="display:inline;">{{building.ordered}}</span>
             </div>
         </td>
         <!--Produkte-->
@@ -38,17 +32,31 @@
             <itemsquare ng-repeat="(type,quant) in building.itemProducts" item="{type:type}" quant="quant * building.lvl"></itemsquare>
             <unitsquare ng-repeat="unit in building.unitProducts" unittype="unit"></unitsquare>
         </td>
-        <td class="square-td" style="width:100px;">
-            <!--Educts-->
-            <div ng-show="showProduce">
-                <itemsquare ng-repeat="(type,quant) in building.educts" item="{type:type}" quant="quant"></itemsquare>
+        <!--Orders-->
+        <td style="padding: 4px 8px 0 8px; line-height: 1; min-width: 45px;">
+            <div ng-show="building.lvl>0 && hasEducts(building)">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-btn" ng-if="building.ordered>0">
+                        <div class="btn btn-default" ng-click="building.setProduction=0; orderProduct(building)">
+                            <span class="glyphicon glyphicon-remove"/>
+                        </div>
+                    </span>
+                    <input type="number" ng-model="building.setProduction" min="1" class="form-control" ng-click="$event.stopPropagation();"
+                        style="min-width: 50px">
+                    <span class="input-group-btn">
+                        <div ng-click="orderProduct(building);" class="btn btn-default">
+                            <span class="glyphicon glyphicon-cog"/> Produzieren
+                        </div>
+                    </span>
+                </div>
             </div>
+        </td>
+        <td class="btn-td">
             <!--Build Costs-->
             <div ng-show="showUpgrade" style="padding-bottom: 10px;">
                 <price value="-building.buildPrice * (building.lvl+1)" ng-show="showUpgrade"></price>
-                <br /> 
-                <itemsquare ng-repeat="(type,quant) in building.buildCosts" item="{type:type}" quant="-quant*(building.lvl+1)"
-                            ng-class="{'text-danger':$root.selectedPlanet.items[itemcost.type].quant<itemcost.quant*(building.lvl+1)}"></itemsquare>
+                <br />
+                <itemsquare ng-repeat="(type,quant) in building.buildCosts" item="{type:type}" quant="-quant*(building.lvl+1)" ng-class="{'text-danger':$root.selectedPlanet.items[itemcost.type].quant<itemcost.quant*(building.lvl+1)}"></itemsquare>
                 <table class="table table-condensed text-danger" style="margin:0">
                     <tr ng-repeat="(type,level) in building.buildRequirements" ng-show="$root.selectedPlanet.buildings[type].lvl < level">
                         <td>{{$root.settings.buildings[type].name}}</td>
@@ -56,37 +64,15 @@
                     </tr>
                 </table>
             </div>
-        </td>
-        <!--Produzieren-->
-        <td class="btn-td">
             <div style="float: right">
-                <div ng-hide="showUpgrade || showProduce || building.buildingDuration">
-                    <div ng-click="$parent.showProduce=true" ng-if="building.educts.length>0 && building.lvl>0" 
-                         ng-class="{'btn-primary':building.ordered==0 && building.educts.length>0}"
-                         class="btn btn-sm btn-default">
-                        <span class="glyphicon glyphicon-cog"></span>
-                        Produzieren
-                    </div>
+                <div ng-hide="showUpgrade || showProduce || building.upgradeDuration">
                     <div ng-click="showUpgrade=true" class="btn btn-sm btn-default">
-                        <span class="glyphicon glyphicon-open"></span>
-                        {{building.lvl==0?'Bauen':'Investieren'}}
+                        <span class="glyphicon glyphicon-open"></span> {{building.lvl==0?'Bauen':'Investieren'}}
                     </div>
                 </div>
-                <div class="btn-group" ng-show="showProduce" style="width: 180px;">
-                    <button ng-click="planetService.orderProduct(building, menge);showProduce=false;"
-                            ng-disabled="!uiService.canProduce(building, menge)"
-                            class="btn btn-sm btn-default">
-                        <input type="number" ng-init="menge=1" ng-model="menge" min="1" class="input-sm" ng-click="$event.stopPropagation();" />
-                        Produzieren
-                    </button>
-                    <div class="btn btn-sm btn-default" ng-click="showProduce=false">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </div>
-                </div>
-                <div ng-show="!building.buildingDuration">
-                    <div class="btn-group" ng-show="showUpgrade && !building.buildingDuration" style="width: 130px;">
-                        <button class="btn btn-sm btn-default" ng-click="planetService.upgradeBuilding(building); showUpgrade=false;"
-                                ng-disabled="!uiService.canUpgradeBuilding(building)">
+                <div ng-show="!building.upgradeDuration">
+                    <div class="btn-group" ng-show="showUpgrade && !building.upgradeDuration" style="width: 130px;">
+                        <button class="btn btn-sm btn-default" ng-click="planetService.upgradeBuilding(building); showUpgrade=false;" ng-disabled="!uiService.canUpgradeBuilding(building)">
                             <span class="glyphicon glyphicon-open"></span>
                             Bezahlen
                         </button>
@@ -95,9 +81,9 @@
                         </div>
                     </div>
                 </div>
-                <div ng-show="building.buildingDuration" style="margin-top:5px;">
-                    <span class="glyphicon glyphicon-hourglass"></span>
-                    {{building.buildingDuration.toFixed(0)+1}} Sekunden zur Fertigstellung
+                <div ng-show="building.upgradeDuration" style="margin-top:5px;">
+                    <span class="glyphicon glyphicon-hourglass"></span> {{Math.max(0,building.upgradeDuration.toFixed(0)*1
+                    + 1)}} Sekunden zur Fertigstellung
                 </div>
             </div>
         </td>
