@@ -74,7 +74,7 @@ namespace Browsergame.Game.Engine {
                     SubscriberUpdates.Union(e.updates);
                 }
                 else {
-                    Logger.log(40, Category.EventEngine, Severity.Debug, "Event rejected: "+ e.GetType().ToString());
+                    Logger.log(40, Category.EventEngine, Severity.Warn, "Event rejected: "+ e.GetType().ToString());
                 }
             }
         }

@@ -12,7 +12,7 @@
     </tr>
     <tr ng-repeat="(type,building) in buildings()"
         ng-show="showBuilding(building)"
-        ng-class="{'text-muted':building.lvl==0 && !building.upgradeDuration}">
+        ng-class="{'text-muted':building.lvl==0 && !building.buildingDuration}">
         <!--Level-->
         <td class="text-td">{{building.lvl || 0}}</td>
         <!--Name-->
@@ -60,7 +60,7 @@
         <!--Produzieren-->
         <td class="btn-td">
             <div style="float: right">
-                <div ng-hide="showUpgrade || showProduce || building.upgradeDuration">
+                <div ng-hide="showUpgrade || showProduce || building.buildingDuration">
                     <div ng-click="$parent.showProduce=true" ng-if="building.educts.length>0 && building.lvl>0" 
                          ng-class="{'btn-primary':building.ordered==0 && building.educts.length>0}"
                          class="btn btn-sm btn-default">
@@ -83,8 +83,8 @@
                         <span class="glyphicon glyphicon-remove"></span>
                     </div>
                 </div>
-                <div ng-show="!building.upgradeDuration">
-                    <div class="btn-group" ng-show="showUpgrade && !building.upgradeDuration" style="width: 130px;">
+                <div ng-show="!building.buildingDuration">
+                    <div class="btn-group" ng-show="showUpgrade && !building.buildingDuration" style="width: 130px;">
                         <button class="btn btn-sm btn-default" ng-click="planetService.upgradeBuilding(building); showUpgrade=false;"
                                 ng-disabled="!uiService.canUpgradeBuilding(building)">
                             <span class="glyphicon glyphicon-open"></span>
@@ -95,9 +95,9 @@
                         </div>
                     </div>
                 </div>
-                <div ng-show="building.upgradeDuration" style="margin-top:5px;">
+                <div ng-show="building.buildingDuration" style="margin-top:5px;">
                     <span class="glyphicon glyphicon-hourglass"></span>
-                    {{building.upgradeDuration}} Sekunden zur Fertigstellung
+                    {{building.buildingDuration.toFixed(0)+1}} Sekunden zur Fertigstellung
                 </div>
             </div>
         </td>

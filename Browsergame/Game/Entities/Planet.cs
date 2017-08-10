@@ -47,6 +47,10 @@ namespace Browsergame.Game.Entities {
             data["owner"] = owner.id;
 
             if (subscriber == SubscriberLevel.Owner) {
+                var buildings = new Dictionary<BuildingType, object>();
+                foreach (var b in this.buildings) {
+                    buildings.Add(b.Key, b.Value.getUpdateData(subscriber));
+                }
                 data["buildings"] = buildings;
                 data["items"] = items;
                 data["offers"] = offers;
@@ -65,12 +69,24 @@ namespace Browsergame.Game.Entities {
 
         public override void onDemandCalculation() {
             double TotalMilliseconds = (int)Math.Floor((DateTime.Now - lastProduced).TotalMilliseconds);
-            double productionCycles = TotalMilliseconds * 0.001  * Settings.productionsPerMinute / 60;
+            double productionCycles = TotalMilliseconds * 0.001 * Settings.productionsPerMinute / 60;
             if (productionCycles > 0) {
+                double resourceFactor = 1;
+                var resourcesNeeded = new Dictionary<ItemType, double>();
+                foreach (var building in this.buildings.Values) {
+                    foreach (var production in building.setting.itemProducts) {
+                        if (!resourcesNeeded.ContainsKey(production.Key)) resourcesNeeded[production.Key] = 0;
+                         resourcesNeeded[production.Key] += production.Value;
+                    }
+                }
+                foreach(var r in resourcesNeeded) {//TODO Reduce output if educts missing
+                    if (this.items[r.Key].quant < r.Value) r.Value = Math.Min(resourceFactor, this.items[r.Key].quant / r.Value);
+                }
                 foreach (var build in this.buildings) {
                     Building building = build.Value;
                     foreach (var production in building.setting.itemProducts) {
-                        double amount = production.Value * building.lvl * productionCycles ;
+                        double amount = production.Value * building.lvl * productionCycles;
+                        if (building.setting.educts.Any(e => e.Value > 0)) amount *= resourceFactor;
                         this.getItem(production.Key).quant += amount;
                     }
                 }

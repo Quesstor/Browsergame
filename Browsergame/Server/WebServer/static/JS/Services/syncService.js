@@ -11,7 +11,7 @@
             $rootScope.units = {};
             $rootScope.orders = {};
             for (k in data.setup) { syncService.updateData(data.setup[k]); }
-            syncService.startProductionUpdates();
+            syncService.startSyncloop();
         }
         if (data.settings) {
             angular.merge($rootScope.settings, data.settings);
@@ -51,17 +51,20 @@
         if ($rootScope.selectedUnit) $rootScope.selectedUnit = $rootScope.units[$rootScope.selectedUnit.id];
     };
 
-    syncService.productionUpdateHandler;
-    syncService.startProductionUpdates = function () {
-        if (syncService.productionUpdateHandler) $interval.cancel(syncService.productionIntervall);
-        syncService.productionUpdateHandler = $interval(syncService.productionUpdate, 100);
+    syncService.snycloopHandler;
+    syncService.syncLoopIntervallInMillisec = 100;
+    syncService.startSyncloop = function () {
+        if (syncService.snycloopHandler) $interval.cancel(syncService.snycloopHandler);
+        syncService.snycloopHandler = $interval(syncService.snycloop, syncService.syncLoopIntervallInMillisec);
     }
-    syncService.productionUpdate = function () {
+    syncService.snycloop = function () {
+        var perSecond = syncService.syncLoopIntervallInMillisec / 1000;
         angular.forEach($rootScope.planets, function (planet, key) {
             if (planet.buildings) {
                 angular.forEach(planet.buildings, function (building, key) {
                     var products = $rootScope.settings.buildings[key].itemProducts;
-                    var productionFactor = building.lvl * planet.productionMinutes * $rootScope.settings.productionsPerMinute / 10;
+                    var productionFactor = building.lvl * planet.productionMinutes * $rootScope.settings.productionsPerMinute * perSecond;
+                    if(building.buildingDuration) building.buildingDuration -= 1 * perSecond;
                     angular.forEach(products, function (productionAmount, product) {
                         planet.items[product].quant += productionAmount * productionFactor;
                     });
@@ -97,8 +100,7 @@
         $rootScope.socket = $websocket('ws://127.0.0.1:2121')
             .onMessage(function(message){
                 var data = JSON.parse(message.data);
-                console.log("Received Message:");
-                console.log(data);
+                console.log("Received Message: "+message.data);
                 syncService.updateData(data);
             })
             .onClose(syncService.socketClosed)
