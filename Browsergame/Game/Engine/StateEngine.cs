@@ -95,9 +95,12 @@ namespace Browsergame.Game.Engine {
         }
         private static State newState() {
             State state = new State();
-            var bot1 = state.addPlayer("Bot1", "botToken");
-            state.addPlanet("BotPlanet", bot1);
-            bot1.isBot = true;
+            for(var i =0; i<5; i++) {
+                var bot = state.addPlayer("Bot "+i, "botToken"+i);
+                bot.isBot = true;
+                state.addPlanet("Bot "+i+" Planet", bot);
+            }
+
             return state;
         }
     }

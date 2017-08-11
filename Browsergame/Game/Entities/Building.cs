@@ -21,13 +21,16 @@ namespace Browsergame.Game.Entities {
             this.type = type;
             this.lvl = 0;
         }
-        public UpdateData getUpdateData(SubscriberLevel subscriber) {
+
+        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
             var data = new UpdateData(type.ToString());
-            data.Add("type", type);
-            data.Add("lvl", lvl);
-            if(upgradesAt != DateTime.MaxValue) data.Add("buildingDuration", (upgradesAt- DateTime.Now).TotalSeconds);
+            data["type"] = type;
+            data["lvl"] = lvl;
+            if (setting.educts.Count > 0) data["ordered"] = orderedProductions;
+            if (upgradesAt != DateTime.MaxValue) data["upgradeDuration"] = (upgradesAt - DateTime.Now).TotalSeconds;
             return data;
         }
+
         public Setting setting { get => Building.settings[this.type]; }
 
         public static Dictionary<BuildingType, Setting> settings = new Dictionary<BuildingType, Setting>();
@@ -47,11 +50,11 @@ namespace Browsergame.Game.Entities {
                 switch (type) {
                     case BuildingType.DeuteriumCollector:
                         setting.buildCosts.Add(ItemType.Metal, 100);
-                        setting.educts.Add(ItemType.Water, 5);
-                        setting.itemProducts.Add(ItemType.Deuterium, 10); break;
+                        setting.educts.Add(ItemType.Water, 20);
+                        setting.itemProducts.Add(ItemType.Deuterium, 1000); break;
                     case BuildingType.WaterPurification:
                         setting.buildCosts.Add(ItemType.Metal, 100);
-                        setting.itemProducts.Add(ItemType.Water, 10); break;
+                        setting.itemProducts.Add(ItemType.Water, 1000); break;
                     case BuildingType.MetalMine:
                         setting.buildCosts.Add(ItemType.Deuterium, 50);
                         setting.buildCosts.Add(ItemType.Water, 200);
@@ -70,14 +73,6 @@ namespace Browsergame.Game.Entities {
             return;
         }
 
-        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
-            var data = new UpdateData(type.ToString());
-            data["type"] = type;
-            data["lvl"] = lvl;
-            if (setting.educts.Count > 0) data["ordered"] = orderedProductions;
-            if (upgradesAt!= DateTime.MaxValue) data["upgradeDuration"] = (upgradesAt - DateTime.Now).TotalSeconds;
-            return data;
-        }
 
         public class Setting {
             public string name;

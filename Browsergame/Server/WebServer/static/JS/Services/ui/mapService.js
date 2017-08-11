@@ -100,6 +100,7 @@
         this.drawPolyLine(unit.id, unit.location, $rootScope.planets[unit.targetplanet].location);
     }
     this.drawPolyLine = function (lineId, locX, locY, color) {
+        return;
         if (!locX || !locY) { return; }
         try {
             if (lines[lineId]) mapService.deletePolyLine(lineId);

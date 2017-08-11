@@ -9,7 +9,7 @@
         if (!$rootScope.selectedPlanet) return;
         utilService.merge($rootScope.selectedPlanet.buildings, $rootScope.settings.buildings);
         angular.forEach($rootScope.selectedPlanet.buildings, function (value, key) {
-            if(value.setProduction == undefined) value.setProduction = 0;
+            if(value.setProduction == undefined) value.setProduction = 5;
         });
         return $rootScope.selectedPlanet.buildings;
     };
@@ -21,12 +21,12 @@
         return true;
     }
     $scope.selectePlanetItem = function (type) {
-        return $root.selectedPlanet.items[type];
+        return $rootScope.selectedPlanet.items[type];
     }
     $scope.hasEducts = function (building) {
         return !angular.equals({}, building.educts);
     }
-    $scope.orderProduct = function (building, quant) {
-        syncService.send("orderProduct", { buildingType: building.type, quant: quant });
+    $scope.orderProduct = function (building) {
+        syncService.send("orderProduct", {planetid: $rootScope.selectedPlanet.id, buildingType: building.type, amount: building.setProduction });
     }
 });

@@ -28,13 +28,13 @@
             </div>
             <div ng-show="editPrice" style="float: right;">
                 <div class="input-group input-group-sm" style="width: 220px;">
-                    <input class="form-control" type="number" min="1"
+                    <input class="form-control" type="number" min="1" placeholder="Menge"
                            ng-model="offer(key).setQuant"
                            ng-init="offer(key).setQuant=Math.abs(offer(key).quant||0)" />
                     <span class="input-group-addon">Kiste{{offer(key).setQuant>1?'n':''}}</span>
                 </div>
                 <div class="input-group input-group-sm" style="width: 220px;">
-                    <input class="form-control" type="number" min="1" ng-model="offer(key).setPrice" />
+                    <input class="form-control" type="number" min="1"  placeholder="Preis" ng-model="offer(key).setPrice" />
                     <span class="input-group-addon"><span class="glyphicon glyphicon-xbt" />pro Kiste</span>
                 </div>
                 <div class="btn-group">
