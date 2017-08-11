@@ -9,7 +9,7 @@
         if (!$rootScope.selectedPlanet) return;
         utilService.merge($rootScope.selectedPlanet.buildings, $rootScope.settings.buildings);
         angular.forEach($rootScope.selectedPlanet.buildings, function (value, key) {
-            if(value.setProduction == undefined) value.setProduction = 0;
+            if(value.setProduction == undefined) value.setProduction = 1;
         });
         return $rootScope.selectedPlanet.buildings;
     };
@@ -26,7 +26,10 @@
     $scope.hasEducts = function (building) {
         return !angular.equals({}, building.educts);
     }
-    $scope.orderProduct = function (building, quant) {
-        syncService.send("orderProduct", { buildingType: building.type, quant: quant });
+    $scope.orderProduct = function (building) {
+        syncService.send("OrderProduction", { planetID:$rootScope.selectedPlanet.id, buildingType: building.type, amount: building.setProduction });
+    }
+    $scope.upgradeBuilding = function (building) {
+        syncService.send("StartBuildingUpgrade", {  planetID: $rootScope.selectedPlanet.id, buildingType: building.type })
     }
 });

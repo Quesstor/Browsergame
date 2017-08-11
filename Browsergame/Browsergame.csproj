@@ -110,9 +110,12 @@
     <Compile Include="Game\Entities\Player.cs" />
     <Compile Include="Game\Entities\Unit.cs" />
     <Compile Include="Game\Event\PlayerOnline.cs" />
-    <Compile Include="Game\Event\setOffer.cs" />
+    <Compile Include="Game\Event\SetOffer.cs" />
+    <Compile Include="Game\Event\OrderProduction.cs" />
+    <Compile Include="Game\Event\StartAtack.cs" />
     <Compile Include="Game\Event\Timed\buildingUpgrade.cs" />
-    <Compile Include="Game\Event\startBuildingUpgrade.cs" />
+    <Compile Include="Game\Event\StartBuildingUpgrade.cs" />
+    <Compile Include="Game\Event\Timed\Fight.cs" />
     <Compile Include="Game\Utils\SubscriberUpdates.cs" />
     <Compile Include="Game\State.cs" />
     <Compile Include="Game\Event\Trade.cs" />
@@ -125,8 +128,6 @@
     <Compile Include="Game\Utils\UpdateData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Server\SocketServer\Controller\UpgradeBuildingSocketController.cs" />
-    <Compile Include="Server\SocketServer\Controller\SetOfferSocketController.cs" />
     <Compile Include="Server\SocketServer\SocketServer.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\Security.cs" />

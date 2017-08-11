@@ -1,0 +1,19 @@
+<div style="margin-bottom: 20px;">
+    <div ng-hide="editinfo">
+        <button ng-show="$root.selectedPlanet.owner==$root.player.id" class="btn btn-default pull-right" ng-click="editinfo=true; setinfo=$root.selectedPlanet.info">
+            <span class="glyphicon glyphicon-pencil"></span>
+        </button> {{$root.selectedPlanet.info}}
+    </div>
+    <div ng-show="editinfo">
+        <div class="btn-group pull-right" ng-click="editinfo=false">
+            <button class="btn btn-default " ng-click="planetService.updatePlanetinfo($root.selectedPlanet,setinfo);">
+                Speichern
+            </button>
+            <button class="btn btn-default">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+        <br />
+        <textarea class="form-control" ng-model="setinfo"></textarea>
+    </div>
+</div>

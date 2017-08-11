@@ -15,17 +15,20 @@ namespace Browsergame.Game.Entities {
         [DataMember] public BuildingType type;
         [DataMember] public int lvl;
         [DataMember] public double orderedProductions = 0;
-        [DataMember] public DateTime upgradesAt = DateTime.MaxValue;
+        [DataMember] public DateTime upgradesAt = DateTime.Now;
+        [DataMember] public bool isUpgrading = false;
 
         public Building(BuildingType type) {
             this.type = type;
             this.lvl = 0;
         }
-        public UpdateData getUpdateData(SubscriberLevel subscriber) {
+
+        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
             var data = new UpdateData(type.ToString());
-            data.Add("type", type);
-            data.Add("lvl", lvl);
-            if(upgradesAt != DateTime.MaxValue) data.Add("buildingDuration", (upgradesAt- DateTime.Now).TotalSeconds);
+            data["type"] = type;
+            data["lvl"] = lvl;
+            if (setting.educts.Count > 0) data["orderedProductions"] = orderedProductions;
+            if (isUpgrading) data["upgradeDuration"] = (upgradesAt - DateTime.Now).TotalSeconds;
             return data;
         }
         public Setting setting { get => Building.settings[this.type]; }
@@ -70,14 +73,7 @@ namespace Browsergame.Game.Entities {
             return;
         }
 
-        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
-            var data = new UpdateData(type.ToString());
-            data["type"] = type;
-            data["lvl"] = lvl;
-            if (setting.educts.Count > 0) data["ordered"] = orderedProductions;
-            if (upgradesAt!= DateTime.MaxValue) data["upgradeDuration"] = (upgradesAt - DateTime.Now).TotalSeconds;
-            return data;
-        }
+
 
         public class Setting {
             public string name;

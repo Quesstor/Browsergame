@@ -51,7 +51,7 @@ namespace Browsergame.Game.Event {
             isRegistered = true;
             EventEngine.addEvent(this);
         }
-        public void register(DateTime executionTime, State state) {
+        public void register(DateTime executionTime) {
             if (isRegistered) return;
             isRegistered = true;
             EventEngine.addTimedEvent(executionTime, this, state);
@@ -60,12 +60,12 @@ namespace Browsergame.Game.Event {
 
         protected Player getPlayer(long playerID, SubscriberLevel updateSubscribersWithThisLevel) {
             Player player = state.getPlayer(playerID);
-            gettingSubscribable(player, updateSubscribersWithThisLevel);
+            updateSubscribers(player, updateSubscribersWithThisLevel);
             return player;
         }
         protected Planet getPlanet(long planetID, SubscriberLevel updateSubscribersWithThisLevel) {
             Planet planet = state.getPlanet(planetID);
-            gettingSubscribable(planet, updateSubscribersWithThisLevel);
+            updateSubscribers(planet, updateSubscribersWithThisLevel);
             return planet;
         }
 
@@ -74,16 +74,18 @@ namespace Browsergame.Game.Event {
             updates.Add(SubscriberLevel.Other, player);
             return player;
         }
-        protected Planet addPlanet(string name, Player owner) {
-            var planet = state.addPlanet(name, owner);
+        protected Planet addPlanet(string name, Player owner, Location location) {
+            var planet = state.addPlanet(name, owner, location);
             updates.Add(SubscriberLevel.Other, planet);
             return planet;
         }
-        protected State getStateForTimedEvents() {
-            return state;
+        protected Unit addUnit(Player owner, Planet location, UnitType unitType) {
+            var unit = state.addUnit(owner, location, unitType);
+            updates.Add(SubscriberLevel.Owner, unit);
+            return unit;
         }
 
-        private void gettingSubscribable(Subscribable s, SubscriberLevel updateSubscribersWithThisLevel) {
+        protected void updateSubscribers(Subscribable s, SubscriberLevel updateSubscribersWithThisLevel) {
             if (!updates.contains(updateSubscribersWithThisLevel, s)) {
                 Logger.log(41, Category.EventEngine, Severity.Debug, "On Demand calculation " + s.ToString());
                 s.onDemandCalculation();

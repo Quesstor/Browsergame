@@ -16,6 +16,6 @@
         if (sell) var quant = Math.abs(offer.setQuant);
         else quant = -Math.abs(offer.setQuant);
         console.warn(offer);
-        syncService.send("setOffer", { planetid: $rootScope.selectedPlanet.id, itemType: offer.type, price: offer.setPrice || 0, quant: quant || 0})
+        syncService.send("setOffer", { planetID: $rootScope.selectedPlanet.id, itemType: offer.type, price: offer.setPrice || 0, quant: quant || 0})
     }
 });

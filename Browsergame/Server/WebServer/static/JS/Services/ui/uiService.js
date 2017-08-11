@@ -1,4 +1,4 @@
-﻿angular.module('app').service('uiService', function ($rootScope, $http, $compile, $interval, $timeout) {
+﻿angular.module('app').service('uiService', function ($rootScope, $http, $compile, $timeout) {
     this.Math = window.Math;
     var uiService = this;
     this.isFighter = function (unittype) {
@@ -40,15 +40,4 @@
         return true;
     }
 
-    this.itemColor = function (rarity) {
-        var trans = 0.6;
-        switch (rarity) {
-            case 0: return "rgba(0,0,0,0.2)";
-            case 1: return "rgba(0,0,0,0.4)";
-            case 2: return "rgba(134, 161, 54, " + trans + ")";
-            case 3: return "rgba(56, 50, 118, " + trans + ")";
-            case 4: return "rgba(127, 42, 104, " + trans + ")";
-            case 5: return "rgba(170, 145, 57, " + trans + ")";
-        }
-    }
 });

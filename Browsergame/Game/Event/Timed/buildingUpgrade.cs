@@ -12,10 +12,10 @@ namespace Browsergame.Game.Event.Timed {
         [DataMember] private long PlanetID;
         [DataMember] private BuildingType BuildingType;
 
-        public buildingUpgrade(long planetID, BuildingType buildingType, DateTime executionTime, State state) {
+        public buildingUpgrade(long planetID, BuildingType buildingType, DateTime executionTime) {
             PlanetID = planetID;
             BuildingType = buildingType;
-            register(executionTime, state);
+            register(executionTime);
         }
 
         public override bool conditions() {
@@ -23,9 +23,9 @@ namespace Browsergame.Game.Event.Timed {
         }
 
         public override void execute() {
-            var planet = getPlanet(PlanetID, Utils.SubscriberLevel.Owner);
-            planet.buildings[BuildingType].lvl += 1;
-            planet.buildings[BuildingType].upgradesAt = DateTime.MaxValue;
+            var building = getPlanet(PlanetID, Utils.SubscriberLevel.Owner).buildings[BuildingType];
+            building.lvl += 1;
+            building.isUpgrading = false;
         }
     }
 }

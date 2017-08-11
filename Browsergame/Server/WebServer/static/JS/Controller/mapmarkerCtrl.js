@@ -1,7 +1,6 @@
-﻿angular.module('app').controller('mapmarkerCtrl', function ($scope, $rootScope, $timeout, $interval, $http, utilService, mapService, uiService) {
+﻿angular.module('app').controller('mapmarkerCtrl', function ($scope, $rootScope, $timeout, $http, utilService, mapService, syncService) {
     $scope.utilService = utilService;
     $scope.mapService = mapService;
-    $scope.uiService = uiService;
     $scope.moveUnit = function (targetPlanetId) {
         if (!$rootScope.selectedUnit) return false;
         $http.post("action/action/moveunit", { token: $rootScope.token, unitid: $rootScope.selectedUnit.id, targetPlanetId: targetPlanetId })
@@ -11,14 +10,10 @@
     }
     $scope.atack = function (targetPlanetId) {
         if (!$rootScope.selectedUnits) return false;
-        $http.post("action/action/atack", {
-            token: $rootScope.token,
+        syncService.send("startAtack", {
             units: $rootScope.selectedUnits,
-            unitplanet: $rootScope.selectedUnitsPlanet.id,
-            targetPlanetId: targetPlanetId
-        })
-        .success(function (data) {
-            $rootScope.updateData(data);
+            startPlanetID: $rootScope.selectedPlanet.id,
+            targetPlanetID: targetPlanetId
         });
     }
     $scope.rightclickPlanet = function (planet) {

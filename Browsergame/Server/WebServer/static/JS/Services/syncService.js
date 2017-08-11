@@ -35,7 +35,7 @@
             $rootScope.players[data.players.id] = data.players;
         }
         if (data.unit) {
-            angular.merge($rootScope.units[data.unit.id], data.unit);
+            $rootScope.units[data.unit.id] = data.unit;
         }
         if (data.units) {
             angular.merge($rootScope.units, data.units);
@@ -59,17 +59,23 @@
     }
     syncService.syncLoop = function () {
         var perSecond = syncService.syncLoopIntervall / 1000;
+        var perMinute = perSecond / 60;
         angular.forEach($rootScope.planets, function (planet, key) {
             if (planet.buildings) {
                 angular.forEach(planet.buildings, function (building, key) {
                     var products = $rootScope.settings.buildings[key].itemProducts;
-                    var productionFactor = building.lvl * planet.productionMinutes * $rootScope.settings.productionsPerMinute * perSecond;
+                    var educts = $rootScope.settings.buildings[key].educts;
+                    var productions = building.lvl * planet.productionMinutes * $rootScope.settings.productionsPerMinute;
+                    if (!angular.equals({}, educts)) {
+                        productions = Math.min(building.orderedProductions, productions);
+                        building.orderedProductions -= productions;
+                    }
                     angular.forEach(products, function (productionAmount, product) {
-                        planet.items[product].quant += productionAmount * productionFactor;
+                        planet.items[product].quant += productionAmount * productions;
                     });
-                    if(building.upgradeDuration) building.upgradeDuration -= perSecond;
+                    if(building.upgradeDuration) building.upgradeDuration -= 1 * perSecond;
                 });
-                planet.productionMinutes = perSecond/60;
+                planet.productionMinutes = perMinute;
             }
         });
     }

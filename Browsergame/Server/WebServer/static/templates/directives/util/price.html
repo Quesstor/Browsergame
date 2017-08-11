@@ -4,12 +4,12 @@
     <table>
         <tr>
             <td>
-                <span class="glyphicon glyphicon glyphicon-xbt" ng-class="{'text-success':value>0, 'text-danger':value<0}" style="height:25px; font-size:21px;" />
+                <div class="glyphicon glyphicon glyphicon-xbt" style="width:40px;padding: 5px 0 0 10px; font-size:21px;" />
             </td>
             <td style="line-height: 1;">
-                <span ng-class="{'text-danger':$root.player.gold+value<0,'text-success':value>0, 'text-danger':value<0}">{{value>0?'+':''}}{{value}}</span>
+                <span ng-class="{'text-danger':$root.player.money+value<0,'text-success':value>0, 'text-danger':value<0}">{{value>0?'+':''}}{{value}}</span>
                 <div>
-                    {{$root.player.gold}}
+                    {{$root.player.money}}
                 </div>
             </td>
         </tr>
