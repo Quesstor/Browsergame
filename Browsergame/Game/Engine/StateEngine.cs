@@ -92,7 +92,7 @@ namespace Browsergame.Game.Engine {
 
         public static void resetState() {
             writeState = new State();
-            new Event.NewPlayer(0, "Bot", "BotToken");
+            new Event.Instant.NewPlayer(0, "Bot", "BotToken");
         }
     }
 }

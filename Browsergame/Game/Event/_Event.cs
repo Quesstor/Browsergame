@@ -1,5 +1,6 @@
 ﻿using Browsergame.Game.Engine;
 using Browsergame.Game.Entities;
+using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Utils;
 using Browsergame.Services;
 using System;
@@ -15,48 +16,27 @@ namespace Browsergame.Game.Event {
     interface IEvent {
         ManualResetEvent processed { get; set; }
         SubscriberUpdates updates { get; set; }
+        void setState(State state);
         bool conditions();
-        SubscriberUpdates execute(State state);
-        void register();
+        void execute();
+        void addTimedEvents(List<TimedEvent> TimedEvents);
     }
     [DataContract]
+
     abstract class Event : IEvent {
-        private ManualResetEvent processed = new ManualResetEvent(false);
-        ManualResetEvent IEvent.processed { get => processed; set => processed = value; }
-
-        private SubscriberUpdates updates = new SubscriberUpdates();
-        SubscriberUpdates IEvent.updates { get => updates; set => updates = value; }
-
-        private State state { get; set; }
-
-        public SubscriberUpdates execute(State state) {
-            this.state = state;
-
-            //chech conditions and execute event
-            if (conditions()) {
-                execute();
-                return updates;
-            }
-            else {
-                Logger.log(40, Category.Event, Severity.Warn, "Event rejected: " + this.GetType().ToString());
-            }
-            return null;
-        }
         public abstract bool conditions();
         public abstract void execute();
-        
-        public bool isRegistered = false;
-        public void register() {
-            if (isRegistered) return;
-            isRegistered = true;
-            EventEngine.addEvent(this);
-        }
-        public void register(DateTime executionTime) {
-            if (isRegistered) return;
-            isRegistered = true;
-            EventEngine.addTimedEvent(executionTime, this, state);
-        }
 
+        public abstract void addTimedEvents(List<TimedEvent> list);
+
+        public ManualResetEvent processed = new ManualResetEvent(false);
+        ManualResetEvent IEvent.processed { get => processed; set => processed = value; }
+
+        public SubscriberUpdates updates = new SubscriberUpdates();
+        SubscriberUpdates IEvent.updates { get => updates; set => updates = value; }
+
+        public void setState(State state) { this.state = state; }
+        private State state;
 
         protected Player getPlayer(long playerID, SubscriberLevel updateSubscribersWithThisLevel) {
             Player player = state.getPlayer(playerID);
@@ -92,5 +72,6 @@ namespace Browsergame.Game.Event {
             }
             updates.Add(updateSubscribersWithThisLevel, s);
         }
+
     }
 }

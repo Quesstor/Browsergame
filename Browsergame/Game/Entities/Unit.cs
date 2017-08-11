@@ -38,7 +38,7 @@ namespace Browsergame.Game.Entities {
             data.Add("id", id);
             if (subscriber == SubscriberLevel.Owner) {
                 data.Add("type", type.ToString());
-                data.Add("planet", planet.id);
+                if(planet!=null) data.Add("planet", planet.id);
                 data.Add("items", items);
             }
             return data;

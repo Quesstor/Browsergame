@@ -5,9 +5,10 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Browsergame.Game.Event.Timed;
 
-namespace Browsergame.Game.Event {
-    class StartBuildingUpgrade : Event {
+namespace Browsergame.Game.Event.Instant {
+    class StartBuildingUpgrade : InstantEvent {
         //{planetid: 1, buildingType: 0}
         private long PlayerID;
         private long PlanetID;
@@ -21,6 +22,7 @@ namespace Browsergame.Game.Event {
             register();
         }
 
+
         public override bool conditions() {
             var player = getPlayer(PlayerID, Utils.SubscriberLevel.Owner);
             var planet = getPlanet(PlanetID, Utils.SubscriberLevel.Owner);
@@ -28,8 +30,8 @@ namespace Browsergame.Game.Event {
             if (planet.owner.id != player.id) return false;
             if (player.money < building.setting.buildPrice) return false;
             if (building.isUpgrading) return false;
-            foreach(var cost in building.setting.buildCosts) {
-                if (planet.items[cost.Key].quant < cost.Value * (building.lvl+1)) return false;
+            foreach (var cost in building.setting.buildCosts) {
+                if (planet.items[cost.Key].quant < cost.Value * (building.lvl + 1)) return false;
             }
             return true;
         }
@@ -38,8 +40,8 @@ namespace Browsergame.Game.Event {
             var player = getPlayer(PlayerID, Utils.SubscriberLevel.Owner);
             var planet = getPlanet(PlanetID, Utils.SubscriberLevel.Owner);
             var building = planet.buildings[BuildingType];
-            player.money -= building.setting.buildPrice * (building.lvl+1);
-            if(building.setting.educts.Count > 0) { //Remove ordered Productions
+            player.money -= building.setting.buildPrice * (building.lvl + 1);
+            if (building.setting.educts.Count > 0) { //Remove ordered Productions
                 foreach (var educt in building.setting.educts) {
                     planet.items[educt.Key].quant += educt.Value * building.lvl * building.orderedProductions;
                 }
@@ -50,7 +52,10 @@ namespace Browsergame.Game.Event {
             }
             building.upgradesAt = executionTime;
             building.isUpgrading = true;
-            new Timed.buildingUpgrade(PlanetID, BuildingType, executionTime);
+        }
+
+        public override void addTimedEvents(List<TimedEvent> list) {
+            list.Add(new Timed.BuildinUpgrade(PlanetID, BuildingType, executionTime));
         }
     }
 }

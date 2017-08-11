@@ -20,7 +20,10 @@ namespace Browsergame.Server.SocketServer {
             action = char.ToUpper(action[0]) + action.Substring(1);
             jsonPayload = json.payload;
             controllerType = Type.GetType("Browsergame.Server.SocketServer.Controller." + action + "SocketController");
-            if (routableEvents.Contains(action)) eventType = Type.GetType("Browsergame.Game.Event." + action);
+            if (routableEvents.Contains(action)) {
+                eventType = Type.GetType("Browsergame.Game.Event.Instant." + action);
+                if(eventType == null) eventType = Type.GetType("Browsergame.Game.Event.Timed." + action);
+            }
             if (controllerType == null && eventType == null) {
                 if (routableEvents.Contains(action)) throw new Exception("No Controller or Event found for " + action);
                 throw new Exception(string.Format("No Controller found for action '{0}'. Maybe add it to routableEvents.", action));

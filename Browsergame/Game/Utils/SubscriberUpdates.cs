@@ -22,18 +22,16 @@ namespace Browsergame.Game.Utils {
                 this.dict[updateSet.Key].UnionWith(updateSet.Value);
             }
         }
-        public void updateSubscribers() {
+        public int updateSubscribers() {
+            int count = 0;
             foreach (SubscriberLevel sLevel in this.dict.Keys) {
                 foreach (Subscribable subscribable in this.dict[sLevel]) {
-                    subscribable.updateSubscribers(sLevel);
+                    count += subscribable.updateSubscribers(sLevel);
                 }
             }
+            return count;
         }
-        public HashSet<Subscribable> getAllSubscribables() {
-            var set = new HashSet<Subscribable>();
-            foreach (SubscriberLevel l in dict.Keys) set.UnionWith(dict[l]);
-            return set;
-        }
+
         public bool contains(SubscriberLevel SubscriberLevel, Subscribable Subscribable) {
             if (!dict.ContainsKey(SubscriberLevel)) return false;
             return dict[SubscriberLevel].Contains(Subscribable);

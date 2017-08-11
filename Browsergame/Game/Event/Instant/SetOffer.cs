@@ -1,4 +1,5 @@
 ﻿using Browsergame.Game.Entities;
+using Browsergame.Game.Event.Timed;
 using Browsergame.Services;
 using System;
 using System.Collections.Generic;
@@ -6,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Browsergame.Game.Event {
-    class SetOffer : Event {
+namespace Browsergame.Game.Event.Instant {
+    class SetOffer : InstantEvent {
         private long playerID;
         private long planetID;
         private ItemType itemType;
@@ -46,6 +47,9 @@ namespace Browsergame.Game.Event {
             planet.offers[itemType].quant = newQuant;
             planet.offers[itemType].price = newQuant == 0 ? 0 : newPrice;
         }
+
+        public override void addTimedEvents(List<TimedEvent> list) { return; }
+
     }
 }
 

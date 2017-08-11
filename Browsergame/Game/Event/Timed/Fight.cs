@@ -4,20 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Browsergame.Game.Entities;
+using System.Runtime.Serialization;
 
 namespace Browsergame.Game.Event.Timed {
-    class Fight : Event {
-        private long playerID;
-        private long targetPlanetID;
-        private long startPlanetID;
-        private Dictionary<UnitType, int> units;
+    [DataContract]
+    class Fight : TimedEvent {
+        [DataMember] private long playerID;
+        [DataMember] private long targetPlanetID;
+        [DataMember] private long startPlanetID;
+        [DataMember] private Dictionary<UnitType, int> units;
 
-        public Fight(long playerID, long targetPlanetID, long startPlanetID, Dictionary<UnitType, int> units, DateTime fightTime) {
+        public Fight(long playerID, long targetPlanetID, long startPlanetID, Dictionary<UnitType, int> units, DateTime fightTime) : base(fightTime){
             this.playerID = playerID;
             this.targetPlanetID = targetPlanetID;
             this.startPlanetID = startPlanetID;
             this.units = units;
-            register(fightTime);
         }
 
         public override bool conditions() {
@@ -29,8 +30,13 @@ namespace Browsergame.Game.Event.Timed {
             updateSubscribers(targetPlanet, Utils.SubscriberLevel.Owner);
             Player player = getPlayer(playerID, Utils.SubscriberLevel.Owner);
 
+            string msg = string.Format("Du hast Planet {0} eingenommen", targetPlanet.name);
+            player.messages.Add(new Message(msg, DateTime.Now));
+
             targetPlanet.owner = player;
 
         }
+        public override void addTimedEvents(List<TimedEvent> list) { return; }
+
     }
 }

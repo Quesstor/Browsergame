@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Browsergame.Game.Event.Timed;
 
-namespace Browsergame.Game.Event {
-    class StartAtack : Event {
+namespace Browsergame.Game.Event.Instant {
+    class StartAtack : InstantEvent {
         private long playerID;
         private long targetPlanetID;
         private long startPlanetID;
@@ -46,8 +47,10 @@ namespace Browsergame.Game.Event {
                     startPlanet.units.Remove(u);
                 }
             }
+        }
 
-            new Timed.Fight(playerID, targetPlanetID, startPlanetID, units, DateTime.Now.AddSeconds(10));
+        public override void addTimedEvents(List<TimedEvent> list) {
+            list.Add(new Timed.Fight(playerID, targetPlanetID, startPlanetID, units, DateTime.Now.AddSeconds(10)));
         }
     }
 }

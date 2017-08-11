@@ -6,9 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Browsergame.Game.Utils;
 using Browsergame.Game.Entities;
+using Browsergame.Game.Event.Timed;
 
-namespace Browsergame.Game.Event {
-    class PlayerOnline : Event {
+namespace Browsergame.Game.Event.Instant {
+    class PlayerOnline : InstantEvent {
         private bool newOnlineStatus;
         private long playerID;
 
@@ -26,5 +27,8 @@ namespace Browsergame.Game.Event {
         public override bool conditions() {
             return true;
         }
+
+        public override void addTimedEvents(List<TimedEvent> list) { return; }
+
     }
 }

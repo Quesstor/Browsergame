@@ -8,14 +8,13 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Event.Timed {
     [DataContract]
-    class buildingUpgrade : Event {
+    class BuildinUpgrade : TimedEvent {
         [DataMember] private long PlanetID;
         [DataMember] private BuildingType BuildingType;
 
-        public buildingUpgrade(long planetID, BuildingType buildingType, DateTime executionTime) {
+        public BuildinUpgrade(long planetID, BuildingType buildingType, DateTime executionTime) : base(executionTime) {
             PlanetID = planetID;
             BuildingType = buildingType;
-            register(executionTime);
         }
 
         public override bool conditions() {
@@ -27,5 +26,7 @@ namespace Browsergame.Game.Event.Timed {
             building.lvl += 1;
             building.isUpgrading = false;
         }
+
+        public override void addTimedEvents(List<TimedEvent> list) { return; }
     }
 }

@@ -12,14 +12,16 @@
         <td class="text-td" style="opacity: {{building.lvl==0?0.3:1}}">{{building.lvl}}</td>
         <!--Name-->
         <td class="text-td" style="opacity: {{building.lvl==0?0.3:1}}">{{building.name}}</td>
-        <!--Educts-->
+        <!--Verbraucht-->
         <td class="square-td" style="opacity: {{building.lvl==0?0.3:1}}">
             <div ng-show="hasEducts(building)">
                 <itemsquare ng-repeat="(type,quant) in building.educts" item="{type:type}" quant="-(showSetProduction?building.setProduction:1)*quant*building.lvl"></itemsquare>
             </div>
         </td>
-        <td style="opacity: {{building.lvl==0?0.3:1}}">
-            <div ng-show="hasEducts(building) && building.lvl>0" style="position:relative; display:table;" ng-mouseenter="showSetProduction = true" ng-mouseleave="showSetProduction=false">
+        <!--Produktion-->
+        <td>
+            <div ng-show="hasEducts(building) && building.lvl>0" style="position:relative; display:table;" ng-mouseenter="showSetProduction = true"
+                ng-mouseleave="showSetProduction=false">
                 <div ng-click="orderProduct(building); showSetProduction=false;" class="btn btn-sm btn-default" ng-class="{'btn-success':showSetProduction}"
                     style="min-width: 70px; padding-right: 0;">
                     <span>{{showSetProduction?"+"+building.setProduction : building.orderedProductions.toFixed(1)}}</span>

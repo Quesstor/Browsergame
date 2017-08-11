@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Browsergame.Game.Event;
 using Fleck;
 using System;
+using Browsergame.Game.Event.Instant;
 
 namespace Browsergame.Server.SocketServer {
     static class PlayerWebsocketConnections {
@@ -20,7 +21,7 @@ namespace Browsergame.Server.SocketServer {
             }
             else {
                 Logger.log(9, Category.WebSocket, Severity.Warn, string.Format("No socket found for Player '{0}'", toPlayer.name));
-                if (toPlayer.online) new Game.Event.PlayerOnline(toPlayer.id, false);
+                if (toPlayer.online) new PlayerOnline(toPlayer.id, false);
             }
         }
 
@@ -29,7 +30,7 @@ namespace Browsergame.Server.SocketServer {
                 if (sockets.ContainsKey(socket.playerID)) sockets[socket.playerID].Close();
 
                 sockets[socket.playerID] = socket;
-                IEvent e = new Game.Event.PlayerOnline(socket.playerID, true);
+                IEvent e = new PlayerOnline(socket.playerID, true);
 
                 Player player = Browsergame.Game.Engine.StateEngine.getState().getPlayer(socket.playerID);
                 string msg = string.Format("Socket opened. Player {0}. Token: {1}. Thread: {2}", player.name, player.token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);
@@ -43,7 +44,7 @@ namespace Browsergame.Server.SocketServer {
                     sockets.Remove(socket.playerID);
                 }
             }
-            new Game.Event.PlayerOnline(socket.playerID, false);
+            new PlayerOnline(socket.playerID, false);
 
             Player player = Browsergame.Game.Engine.StateEngine.getState().getPlayer(socket.playerID);
             string msg = string.Format("Socket closed. Player {0}. Token: {1}. Thread: {2}", player.name, player.token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);

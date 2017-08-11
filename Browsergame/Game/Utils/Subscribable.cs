@@ -38,11 +38,14 @@ namespace Browsergame.Game.Utils {
                 Task.Run(() => updateSubscribers(lvl));
             }
         }
-        public void updateSubscribers(SubscriberLevel lvl) {
-            if (!subscribers.ContainsKey(lvl)) return;
+        public int updateSubscribers(SubscriberLevel lvl) {
+            int count = 0;
+            if (!subscribers.ContainsKey(lvl)) return count;
             foreach (Player player in subscribers[lvl]) {
                 PlayerWebsocketConnections.sendMessage(player, getUpdateData(lvl).toJson());
+                count++;
             }
+            return count;
         }
 
         abstract public void onDemandCalculation();

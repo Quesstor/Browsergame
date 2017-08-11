@@ -1,6 +1,7 @@
 ﻿using Browsergame.Game;
 using Browsergame.Game.Engine;
 using Browsergame.Game.Event;
+using Browsergame.Game.Event.Instant;
 using Browsergame.Services;
 using System.Net.Http;
 using System.Web.Http;

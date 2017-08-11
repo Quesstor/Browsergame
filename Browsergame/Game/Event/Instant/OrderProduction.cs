@@ -1,12 +1,13 @@
 ﻿using Browsergame.Game.Entities;
+using Browsergame.Game.Event.Timed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Browsergame.Game.Event {
-    class OrderProduction : Event {
+namespace Browsergame.Game.Event.Instant {
+    class OrderProduction : InstantEvent {
         private long playerID;
         private long planetID;
         private int amount;
@@ -46,5 +47,8 @@ namespace Browsergame.Game.Event {
             }
             Building.orderedProductions += amount;
         }
+
+        public override void addTimedEvents(List<TimedEvent> list) { return; }
+
     }
 }

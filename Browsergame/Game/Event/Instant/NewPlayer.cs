@@ -1,4 +1,5 @@
 ﻿using Browsergame.Game.Entities;
+using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Utils;
 using System;
 using System.Collections.Generic;
@@ -6,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Browsergame.Game.Event {
-    class NewPlayer : Event {
+namespace Browsergame.Game.Event.Instant {
+    class NewPlayer : InstantEvent {
         private string name;
         private string token;
 
@@ -41,5 +42,8 @@ namespace Browsergame.Game.Event {
             getPlanet(planet.id, SubscriberLevel.Other);
 
         }
+
+        public override void addTimedEvents(List<TimedEvent> list) { return; }
+
     }
 }

@@ -102,8 +102,11 @@
     syncService.connect = function(){
         if(syncService.connected) return;
         syncService.connected = true;
-        console.log("Connecting");
-        $rootScope.socket = $websocket('ws://127.0.0.1:2121')
+
+        var socketUrl = "ws:"+$location.absUrl().split(":")[1]+":2121";
+        console.log("Connecting to " + socketUrl);
+
+        $rootScope.socket = $websocket(socketUrl)
             .onMessage(function(message){
                 var data = JSON.parse(message.data);
                 console.log("Received Message: "+message.data);

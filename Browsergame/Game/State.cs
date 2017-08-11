@@ -1,5 +1,6 @@
 ﻿using Browsergame.Game.Entities;
 using Browsergame.Game.Event;
+using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Utils;
 using System;
 using System.Collections.Generic;
@@ -12,13 +13,15 @@ namespace Browsergame.Game {
     [DataContract]
     [KnownType(typeof(Planet))]
     [KnownType(typeof(Unit))]
-    [KnownType(typeof(Event.Timed.buildingUpgrade))]
+    [KnownType(typeof(TimedEvent))]
+    [KnownType(typeof(Fight))]
+    [KnownType(typeof(BuildinUpgrade))]
     class State {
         [DataMember] public Dictionary<long, Player> players = new Dictionary<long, Player>();
         [DataMember] public Dictionary<long, Unit> units = new Dictionary<long, Unit>();
         [DataMember] public Dictionary<long, Planet> planets = new Dictionary<long, Planet>();
         [DataMember] public Dictionary<long, Item> items = new Dictionary<long, Item>();
-        [DataMember] public SortedList<DateTime, IEvent> timedEventList = new SortedList<DateTime, IEvent>();
+        [DataMember] public SortedList<DateTime, TimedEvent> timedEventList = new SortedList<DateTime, TimedEvent>();
 
         public Player getPlayer(string token) {
             return (from p in players.Values where p.token == token select p).FirstOrDefault();

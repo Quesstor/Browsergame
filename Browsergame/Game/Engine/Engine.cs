@@ -1,5 +1,7 @@
 ﻿using Browsergame.Game.Entities;
 using Browsergame.Game.Event;
+using Browsergame.Game.Event.Instant;
+using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Utils;
 using Browsergame.Services;
 using System;
@@ -24,32 +26,25 @@ namespace Browsergame.Game.Engine {
         public static void Stop() {
             Logger.log(31, Category.Engine, Severity.Info, "Engine shutting down");
             TickEngine.Dispose();
-            List<IEvent> a;
-            SubscriberUpdates b;
-            EventEngine.tick(out a, out b); //Wait for next tick so all events get calculated
+            List<InstantEvent> InstantEventsProcessed = new List<InstantEvent>();
+            List<TimedEvent> TimedEventsProcessed = new List<TimedEvent>();
+            EventEngine.tick(out InstantEventsProcessed, out TimedEventsProcessed); //Wait for next tick so all events get calculated
             StateEngine.Dispose();
         }
         public static void tick() {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            List<IEvent> eventsProcessed;
-            SubscriberUpdates SubscriberUpdates;
+            List<InstantEvent> InstantEventsProcessed = new List<InstantEvent>();
+            List<TimedEvent> TimedEventsProcessed = new List<TimedEvent>();
 
-            EventEngine.tick(out eventsProcessed, out SubscriberUpdates);
+            EventEngine.tick(out InstantEventsProcessed,out TimedEventsProcessed);
             StateEngine.tick(tickcount);
-            foreach (IEvent e in eventsProcessed) { e.processed.Set(); }
-            SubscriberUpdates.updateSubscribers();
-
+            //Set processed after StateEngine to get fresh state
+            foreach (var e in InstantEventsProcessed) e.processed.Set();
+            foreach (var e in TimedEventsProcessed) e.processed.Set();
             stopwatch.Stop();
 
-            //Log
-            if (eventsProcessed.Count > 0) {
-                string eventNames = "Events: ";
-                foreach (IEvent e in eventsProcessed) eventNames += e.GetType().Name + " ";
-                string msg = String.Format("{0} events processed in {2}ms. ", eventsProcessed.Count, SubscriberUpdates.getAllSubscribables().Count, stopwatch.ElapsedMilliseconds);
-                Logger.log(1, Category.EventEngine, Severity.Debug, msg + eventNames);
-            }
 
             var ms = stopwatch.ElapsedMilliseconds;
             if (ms > Settings.tickIntervallInMillisec) Logger.log(3, Category.TickEngine, Severity.Warn, String.Format("Tick took longer than expected: {0}ms", ms));
