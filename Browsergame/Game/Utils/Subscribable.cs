@@ -39,6 +39,7 @@ namespace Browsergame.Game.Utils {
             }
         }
         public void updateSubscribers(SubscriberLevel lvl) {
+            if (!subscribers.ContainsKey(lvl)) return;
             foreach (Player player in subscribers[lvl]) {
                 PlayerWebsocketConnections.sendMessage(player, getUpdateData(lvl).toJson());
             }

@@ -86,22 +86,13 @@ namespace Browsergame.Game.Engine {
             }
             catch (Exception e) {
                 Logger.log(8, Category.StateEngine, Severity.Error, "Failed to load state: " + e.ToString());
-                return newState();
+                return new State();
             }
         }
 
         public static void resetState() {
-            writeState = newState();
-        }
-        private static State newState() {
-            State state = new State();
-            for(var i =0; i<5; i++) {
-                var bot = state.addPlayer("Bot "+i, "botToken"+i);
-                bot.isBot = true;
-                state.addPlanet("Bot "+i+" Planet", bot);
-            }
-
-            return state;
+            writeState = new State();
+            new Event.NewPlayer(0, "Bot", "BotToken");
         }
     }
 }

@@ -238,7 +238,6 @@ itemsquare, unitsquare {
         box-shadow: 0px 0px 8px 2px #cccccc;
     }
 }
-
 .gly-spin {
   -webkit-animation: spin 2s infinite linear;
   -moz-animation: spin 2s infinite linear;

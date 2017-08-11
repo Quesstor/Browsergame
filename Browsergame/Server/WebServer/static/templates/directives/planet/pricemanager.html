@@ -17,7 +17,7 @@
         </td>
         <!--Angebote-->
         <td class="square-td">
-            <itemsquare item="item" quant="Math.abs(offer(key).quant)" itemprice="offer(key).price" hideplanetquant="true"></itemsquare>
+            <itemsquare item="item" quant="Math.abs(offer(key).quant)" itemprice="(offer(key).quant<0?-1:1)*offer(key).price" hideplanetquant="true"></itemsquare>
         </td>
         <!--Verkauf-->
         <td class="btn-td">
@@ -28,9 +28,7 @@
             </div>
             <div ng-show="editPrice" style="float: right;">
                 <div class="input-group input-group-sm" style="width: 220px;">
-                    <input class="form-control" type="number" min="1" placeholder="Menge"
-                           ng-model="offer(key).setQuant"
-                           ng-init="offer(key).setQuant=Math.abs(offer(key).quant||0)" />
+                    <input class="form-control" type="number" min="1" ng-model="offer(key).setQuant"/>
                     <span class="input-group-addon">Kiste{{offer(key).setQuant>1?'n':''}}</span>
                 </div>
                 <div class="input-group input-group-sm" style="width: 220px;">

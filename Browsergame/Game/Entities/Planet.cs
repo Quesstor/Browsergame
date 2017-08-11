@@ -22,7 +22,7 @@ namespace Browsergame.Game.Entities {
         [DataMember] public Dictionary<ItemType, Item> items = Item.newItemDict();
         [DataMember] public Dictionary<ItemType, Offer> offers = Offer.newOfferDict();
         [DataMember] public Dictionary<BuildingType, Building> buildings = Building.newBuildingList();
-
+        [DataMember] public List<Unit> units = new List<Unit>();
 
         public Planet(string name, Player owner, Location location) {
             Random rand = new Random();
@@ -34,8 +34,6 @@ namespace Browsergame.Game.Entities {
             lastProduced = DateTime.Now;
             owner.planets.Add(this);
             type = rand.Next(0, 10);
-            buildings[BuildingType.DeuteriumCollector].lvl = 1;
-            foreach (Item item in this.items.Values) item.quant = 500;
         }
 
         public override UpdateData getUpdateData(SubscriberLevel subscriber) {

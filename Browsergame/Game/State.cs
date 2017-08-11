@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace Browsergame.Game {
     [DataContract]
     [KnownType(typeof(Planet))]
+    [KnownType(typeof(Unit))]
     [KnownType(typeof(Event.Timed.buildingUpgrade))]
     class State {
         [DataMember] public Dictionary<long, Player> players = new Dictionary<long, Player>();
@@ -34,22 +35,19 @@ namespace Browsergame.Game {
         public Player addPlayer(string name, string token) {
             Player exists = getPlayer(token);
             if (exists != null) return exists;
-
             Player newPlayer = new Player(name, token, 1000);
             addAndSetID<Player>(players, newPlayer);
             makeSubscriptions();
             return newPlayer;
         }
-        public Planet addPlanet(string name, Player owner) {
-            Location location = new Location();
-            location.random();
+        public Planet addPlanet(string name, Player owner, Location location) {
             Planet planet = new Planet(name, owner, location);
             addAndSetID<Planet>(planets, planet);
             makeSubscriptions();
             return planet;
         }
-        public Unit addUnit(Player owner) {
-            Unit unit = new Unit(owner);
+        public Unit addUnit(Player owner, Planet location, UnitType unitType) {
+            Unit unit = new Unit(owner, location, unitType);
             addAndSetID<Unit>(units, unit);
             makeSubscriptions();
             return unit;

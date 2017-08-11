@@ -7,15 +7,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Browsergame.Game.Event {
-    class startBuildingUpgrade : Event {
+    class StartBuildingUpgrade : Event {
         //{planetid: 1, buildingType: 0}
         private long PlayerID;
         private long PlanetID;
         private BuildingType BuildingType;
         private DateTime executionTime;
-        public startBuildingUpgrade(long playerID, long planetid, BuildingType buildingType) {
+        public StartBuildingUpgrade(long playerID, long planetID, BuildingType buildingType) {
             PlayerID = playerID;
-            PlanetID = planetid;
+            PlanetID = planetID;
             BuildingType = buildingType;
             executionTime = DateTime.Now.AddSeconds(Building.settings[buildingType].buildTimeInSeconds);
             register();
@@ -24,11 +24,12 @@ namespace Browsergame.Game.Event {
         public override bool conditions() {
             var player = getPlayer(PlayerID, Utils.SubscriberLevel.Owner);
             var planet = getPlanet(PlanetID, Utils.SubscriberLevel.Owner);
+            var building = planet.buildings[BuildingType];
             if (planet.owner.id != player.id) return false;
-            if (player.money < Building.settings[BuildingType].buildPrice) return false;
-            if (planet.buildings[BuildingType].upgradesAt != DateTime.MaxValue) return false;
-            foreach(var cost in Building.settings[BuildingType].buildCosts) {
-                if (planet.items[cost.Key].quant < cost.Value * (planet.buildings[BuildingType].lvl+1)) return false;
+            if (player.money < building.setting.buildPrice) return false;
+            if (building.isUpgrading) return false;
+            foreach(var cost in building.setting.buildCosts) {
+                if (planet.items[cost.Key].quant < cost.Value * (building.lvl+1)) return false;
             }
             return true;
         }
@@ -36,12 +37,20 @@ namespace Browsergame.Game.Event {
         public override void execute() {
             var player = getPlayer(PlayerID, Utils.SubscriberLevel.Owner);
             var planet = getPlanet(PlanetID, Utils.SubscriberLevel.Owner);
-            player.money -= Building.settings[BuildingType].buildPrice;
-            foreach (var cost in Building.settings[BuildingType].buildCosts) {
-                planet.items[cost.Key].quant -= cost.Value * (planet.buildings[BuildingType].lvl + 1);
+            var building = planet.buildings[BuildingType];
+            player.money -= building.setting.buildPrice * (building.lvl+1);
+            if(building.setting.educts.Count > 0) { //Remove ordered Productions
+                foreach (var educt in building.setting.educts) {
+                    planet.items[educt.Key].quant += educt.Value * building.lvl * building.orderedProductions;
+                }
+                building.orderedProductions = 0;
             }
-            planet.buildings[BuildingType].upgradesAt = executionTime;
-            new Timed.buildingUpgrade(PlanetID, BuildingType, executionTime, getStateForTimedEvents());
+            foreach (var cost in building.setting.buildCosts) {
+                planet.items[cost.Key].quant -= cost.Value * (building.lvl + 1);
+            }
+            building.upgradesAt = executionTime;
+            building.isUpgrading = true;
+            new Timed.buildingUpgrade(PlanetID, BuildingType, executionTime);
         }
     }
 }

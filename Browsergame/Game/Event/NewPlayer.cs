@@ -23,7 +23,19 @@ namespace Browsergame.Game.Event {
 
         public override void execute() {
             Player player = addPlayer(name, token);
-            Planet planet = addPlanet(string.Format("Homeplanet of {0}", name), player);
+
+            Location startLoc = new Location();
+            startLoc.random();
+
+            Planet planet = addPlanet(string.Format("Homeplanet of {0}", name), player, startLoc);
+
+            addUnit(player, planet, UnitType.Trader);
+            addUnit(player, planet, UnitType.Fighter);
+            addUnit(player, planet, UnitType.Fighter);
+
+            planet.buildings[BuildingType.DeuteriumCollector].lvl = 1;
+            foreach (Item item in planet.items.Values) item.quant = 500;
+
 
             getPlayer(player.id, SubscriberLevel.Other);
             getPlanet(planet.id, SubscriberLevel.Other);

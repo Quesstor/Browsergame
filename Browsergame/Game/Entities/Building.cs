@@ -15,7 +15,8 @@ namespace Browsergame.Game.Entities {
         [DataMember] public BuildingType type;
         [DataMember] public int lvl;
         [DataMember] public double orderedProductions = 0;
-        [DataMember] public DateTime upgradesAt = DateTime.MaxValue;
+        [DataMember] public DateTime upgradesAt = DateTime.Now;
+        [DataMember] public bool isUpgrading = false;
 
         public Building(BuildingType type) {
             this.type = type;
@@ -26,8 +27,8 @@ namespace Browsergame.Game.Entities {
             var data = new UpdateData(type.ToString());
             data["type"] = type;
             data["lvl"] = lvl;
-            if (setting.educts.Count > 0) data["ordered"] = orderedProductions;
-            if (upgradesAt != DateTime.MaxValue) data["upgradeDuration"] = (upgradesAt - DateTime.Now).TotalSeconds;
+            if (setting.educts.Count > 0) data["orderedProductions"] = orderedProductions;
+            if (isUpgrading) data["upgradeDuration"] = (upgradesAt - DateTime.Now).TotalSeconds;
             return data;
         }
 
@@ -72,6 +73,7 @@ namespace Browsergame.Game.Entities {
         public override void onDemandCalculation() {
             return;
         }
+
 
 
         public class Setting {

@@ -7,7 +7,7 @@
         //Delete Marker not in Data
         angular.forEach(marker.planets, function (m, id) {
             map.removeLayer(marker.planets[id]);
-            marker.planets[id]=false;
+            marker.planets[id] = false;
         });
         //Draw missing Marker
         angular.forEach($rootScope.planets, function (planet, id) {
@@ -50,10 +50,10 @@
         mapService.drawPolyLine("order" + order.id, startlocation, targetlocation, ordercorlor[order.type]);
 
         var backVector = { lat: startlocation.x - targetlocation.x, lng: startlocation.y - targetlocation.y };
-        var backVectorLength = Math.sqrt(Math.pow(backVector.lat, 2) + Math.pow(backVector.lng, 2));
-        var normedBackVector = { lat: backVector.lat / backVectorLength, lng: backVector.lng / backVectorLength };
+        var backVectorLength = Math.sqrt(Math.pow(backVector.x, 2) + Math.pow(backVector.y, 2));
+        var normedBackVector = { lat: backVector.x / backVectorLength, lng: backVector.y / backVectorLength };
         var distanceLeft = order.duration * order.movespeed;
-        marker.order[order.id] = L.marker([targetlocation.x + normedBackVector.lat * distanceLeft, targetlocation.y + normedBackVector.lng * distanceLeft], {
+        marker.order[order.id] = L.marker([targetlocation.x + normedBackVector.x * distanceLeft, targetlocation.y + normedBackVector.y * distanceLeft], {
             icon: L.divIcon({
                 html: "<ordermarker order='$root.orders[" + order.id + "]' style='display:block; margin: -11px 0 0 -12px;'></ordermarker>",
                 className: 'mapmarker angularCompile ',
@@ -76,10 +76,10 @@
             } else { //Update marker
                 var distanceLeft = order.duration * order.movespeed;
                 var newLocation = {
-                    lat: marker.order[order.id].targetlocation.x + marker.order[order.id].normedBackVector.lat * distanceLeft,
-                    lng: marker.order[order.id].targetlocation.y + marker.order[order.id].normedBackVector.lng * distanceLeft
+                    lat: marker.order[order.id].targetlocation.x + marker.order[order.id].normedBackVector.x * distanceLeft,
+                    lng: marker.order[order.id].targetlocation.y + marker.order[order.id].normedBackVector.y * distanceLeft
                 }
-                marker.order[order.id].setLatLng(new L.LatLng(newLocation.lat, newLocation.lng));
+                marker.order[order.id].setLatLng(new L.LatLng(newLocation.x, newLocation.y));
             }
         }, 1000 / FPS);
 
@@ -100,22 +100,18 @@
         this.drawPolyLine(unit.id, unit.location, $rootScope.planets[unit.targetplanet].location);
     }
     this.drawPolyLine = function (lineId, locX, locY, color) {
-        return;
+        console.log("Line");
         if (!locX || !locY) { return; }
-        try {
-            if (lines[lineId]) mapService.deletePolyLine(lineId);
-            lines[lineId] = L.polyline([
-                [locX.lat, locX.lng],
-                [locY.lat, locY.lng]],
-                {
-                    color: color || 'white',
-                    weight: 1,
-                    opacity: 0.5
-                }
-            ).addTo(map);
-        } catch (ex) {
-            console.warn(ex);
-        }
+        if (lines[lineId]) mapService.deletePolyLine(lineId);
+        lines[lineId] = L.polyline([
+            [locX.x, locX.y],
+            [locY.x, locY.y]],
+            {
+                color: color || 'white',
+                weight: 1,
+                opacity: 0.5
+            }
+        ).addTo(map);
     }
     this.deletePolyLine = function (lineId) {
         if (lines[lineId]) map.removeLayer(lines[lineId]);
