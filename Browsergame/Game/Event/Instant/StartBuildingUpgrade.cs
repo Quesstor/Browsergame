@@ -7,25 +7,39 @@ using System.Text;
 using System.Threading.Tasks;
 using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Entities.Settings;
+using Browsergame.Game.Utils;
 
 namespace Browsergame.Game.Event.Instant {
-    class StartBuildingUpgrade : InstantEvent {
+    class StartBuildingUpgrade : Event {
         //{planetid: 1, buildingType: 0}
         private long PlayerID;
         private long PlanetID;
         private BuildingType BuildingType;
+
         public StartBuildingUpgrade(long playerID, long planetID, BuildingType buildingType) {
             PlayerID = playerID;
             PlanetID = planetID;
             BuildingType = buildingType;
-            register();
         }
 
+        private Player player;
+        private Planet planet;
+        private Building building;
+        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates) {
+            needsOnDemandCalculation = new HashSet<Subscribable>();
+            SubscriberUpdates = new SubscriberUpdates();
 
+            player = state.getPlayer(PlayerID);
+            needsOnDemandCalculation.Add(player);
+            SubscriberUpdates.Add(player, SubscriberLevel.Owner);
+
+            planet = state.getPlanet(PlanetID);
+            needsOnDemandCalculation.Add(planet);
+            SubscriberUpdates.Add(planet, SubscriberLevel.Owner);
+
+            building = planet.buildings[BuildingType];
+        }
         public override bool conditions() {
-            var player = getPlayer(PlayerID, Utils.SubscriberLevel.Owner);
-            var planet = getPlanet(PlanetID, Utils.SubscriberLevel.Owner);
-            var building = planet.buildings[BuildingType];
             if (planet.owner.id != player.id) return false;
             if (player.money < building.setting.buildPrice) return false;
             if (building.BuildinUpgrade != null) return false;
@@ -35,10 +49,7 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
-        private BuildinUpgrade upgradeEvent;
-        public override void execute() {
-            var player = getPlayer(PlayerID, Utils.SubscriberLevel.Owner);
-            var planet = getPlanet(PlanetID, Utils.SubscriberLevel.Owner);
+        public override List<TimedEvent> execute() {
             var building = planet.buildings[BuildingType];
             player.money -= building.setting.buildPrice * (building.lvl + 1);
             if (building.setting.educts.Count > 0) { //Remove ordered Productions
@@ -51,9 +62,12 @@ namespace Browsergame.Game.Event.Instant {
                 planet.items[cost.Key].quant -= cost.Value * (building.lvl + 1);
             }
             var executionTime = DateTime.Now.AddSeconds(building.setting.buildTimeInSeconds);
-            upgradeEvent = new Timed.BuildinUpgrade(PlanetID, BuildingType, executionTime);
+
+            var newTimedEvents = new List<TimedEvent>();
+            var upgradeEvent = new Timed.BuildinUpgrade(PlanetID, BuildingType, executionTime);
             building.BuildinUpgrade = upgradeEvent;
-            TimedEvents.Add(upgradeEvent);
+            newTimedEvents.Add(upgradeEvent);
+            return newTimedEvents;
         }
 
     }

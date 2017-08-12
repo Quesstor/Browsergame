@@ -6,9 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Browsergame.Game.Utils;
 
 namespace Browsergame.Game.Event.Instant {
-    class OrderProduction : InstantEvent {
+    class OrderProduction : Event {
         private long playerID;
         private long planetID;
         private int amount;
@@ -19,27 +20,33 @@ namespace Browsergame.Game.Event.Instant {
             this.planetID = planetID;
             this.amount = amount;
             BuildingType = buildingType;
-
-            register();
         }
 
+        private Planet Planet;
+        private Player Player;
+
+        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates) {
+            needsOnDemandCalculation = new HashSet<Subscribable>();
+            SubscriberUpdates = new SubscriberUpdates();
+
+            Planet = state.getPlanet(planetID);//getPlanet(planetID, Utils.SubscriberLevel.Owner);
+            SubscriberUpdates.Add(Planet, SubscriberLevel.Owner);
+            Player = state.getPlayer(playerID);
+        }
         public override bool conditions() {
-            var Planet = getPlanet(planetID, Utils.SubscriberLevel.Owner);
-            var Player = getPlayer(playerID, Utils.SubscriberLevel.None);
+
             var Building = Planet.buildings[BuildingType];
 
             if (Planet.owner.id != Player.id) return false;
             if (Building.lvl == 0) return false;
-            foreach(var e in Building.setting.educts) {
+            foreach (var e in Building.setting.educts) {
                 var amountNeeded = amount * e.Value * Building.lvl;
                 if (Planet.items[e.Key].quant < amountNeeded) return false;
             }
             return true;
         }
 
-        public override void execute() {
-            var Planet = getPlanet(planetID, Utils.SubscriberLevel.Owner);
-            var Player = getPlayer(playerID, Utils.SubscriberLevel.None);
+        public override List<TimedEvent> execute() {
             var Building = Planet.buildings[BuildingType];
 
             foreach (var e in Building.setting.educts) {
@@ -47,6 +54,7 @@ namespace Browsergame.Game.Event.Instant {
                 Planet.items[e.Key].quant -= amountNeeded;
             }
             Building.orderedProductions += amount;
+            return null;
         }
     }
 }

@@ -9,23 +9,28 @@ using Browsergame.Game.Entities;
 using Browsergame.Game.Event.Timed;
 
 namespace Browsergame.Game.Event.Instant {
-    class PlayerOnline : InstantEvent {
+    class PlayerOnline : Event {
         private bool newOnlineStatus;
         private long playerID;
 
         public PlayerOnline(long playerID, bool newOnlineStatus) {
             this.newOnlineStatus = newOnlineStatus;
             this.playerID = playerID;
-            register();
         }
 
-        public override void execute() {
-            Player player = getPlayer(playerID, SubscriberLevel.Other);
-            player.online = newOnlineStatus;
+        private Player player;
+        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates) {
+            needsOnDemandCalculation = new HashSet<Subscribable>();
+            SubscriberUpdates = new SubscriberUpdates();
+            player = state.getPlayer(playerID);
+            SubscriberUpdates.Add(player, SubscriberLevel.Other);
         }
-
         public override bool conditions() {
             return true;
+        }
+        public override List<TimedEvent> execute() {
+            player.online = newOnlineStatus;
+            return null;
         }
     }
 }

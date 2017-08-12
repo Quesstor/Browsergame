@@ -31,7 +31,10 @@
                 <planetinfo />
                 <div ng-if="$root.selectedPlanet.owner == $root.player.id">
                     <units ng-show="$parent.show=='units'"/>
-                    <manager ng-show="$parent.show=='manager'"/>
+                    <div ng-show="$parent.show=='manager'">
+                        <unitmanger ng-show="$root.selectedUnit.planet==$root.selectedPlanet.id"></unitmanger>
+                        <pricemanager ng-show="$root.selectedPlanet.owner==$root.player.id"></pricemanager>
+                    </div>
                     <buildings ng-show="$parent.show=='buildings'"/>
                 </div>
             </div>

@@ -15,10 +15,10 @@ using Browsergame.Game.Event.Timed;
 namespace Browsergame.Game.Engine {
     static class EventEngine {
         private static object eventListLock = new object();
-        private static List<InstantEvent> InstantEventList = new List<InstantEvent>();
+        private static List<Event.Event> InstantEventList = new List<Event.Event>();
         private static ManualResetEvent gettingEventsFromQueue = new ManualResetEvent(false);
 
-        public static void AddEvent(InstantEvent e) {
+        public static void AddEvent(Event.Event e) {
             gettingEventsFromQueue.WaitOne();
             lock (eventListLock) {
                 InstantEventList.Add(e);
@@ -34,27 +34,27 @@ namespace Browsergame.Game.Engine {
                 currentWriteState.timedEventList.Add(e.executionTime, e);
             }
         }
-        private static void GetEventList(State state, out List<Event.Instant.InstantEvent> InstantEvents, out List<Event.Timed.TimedEvent> TimedEvents) {
+        private static List<IEvent> GetEventList(State state) {
             try {
-                InstantEvents = new List<InstantEvent>();
-                TimedEvents = new List<TimedEvent>();
+                var events = new List<IEvent>();
                 gettingEventsFromQueue.Reset(); //Block new events from coming in eventList
                 lock (eventListLock) { //Wait until last event is added
                     //get all Events
-                    InstantEvents = EventEngine.InstantEventList;
-                    EventEngine.InstantEventList = new List<InstantEvent>();
+                    foreach (var e in EventEngine.InstantEventList) events.Add(e);
+                    EventEngine.InstantEventList = new List<Event.Event>();
 
                     //add timed Events
                     List<DateTime> eventsToRemove = new List<DateTime>();
                     foreach (var e in state.timedEventList) {
                         if (e.Key < DateTime.Now) {
                             eventsToRemove.Add(e.Key);
-                            TimedEvents.Add(e.Value);
+                            events.Add(e.Value);
                         }
                         else break;
                     }
                     eventsToRemove.ForEach(k => state.timedEventList.Remove(k));
                 }
+                return events;
             }
             catch (Exception e) {
                 throw e;
@@ -63,42 +63,50 @@ namespace Browsergame.Game.Engine {
                 gettingEventsFromQueue.Set(); //Allow events to be added again
             }
         }
-        private static void RunEvent(State state, IEvent e, SubscriberUpdates SubscriberUpdates, List<TimedEvent> newTimedEvents) {
-            e.setState(state);
-            if (e.conditions()) {
-                e.execute();
-                if(e.TimedEvents != null) newTimedEvents.Union(e.TimedEvents);
-                SubscriberUpdates.Union(e.updates);
-                e.processed.Set();
-            }
-            else {
-                Logger.log(40, Category.Event, Severity.Warn, "Event rejected: " + e.GetType().ToString());
-            }
-        }
-        public static void Tick(out List<InstantEvent> InstantEvents, out List<TimedEvent>  TimedEvents) {
+        public static List<IEvent> ProcessEvents() {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
+
             State state = StateEngine.GetWriteState();
-            GetEventList(state, out InstantEvents,out TimedEvents);
+            List<IEvent> processingEvents = GetEventList(state);
 
             var SubscriberUpdates = new SubscriberUpdates();
+            var OnDemandCalculations = new HashSet<Subscribable>();
             var newTimedEvents = new List<TimedEvent>();
-            foreach (IEvent e in InstantEvents) RunEvent(state, e, SubscriberUpdates, newTimedEvents);
-            foreach (IEvent e in TimedEvents) RunEvent(state, e, SubscriberUpdates, newTimedEvents);
 
-            foreach (TimedEvent newTimedEvent in newTimedEvents) AddTimedEvent(newTimedEvent, state);
-
-            var sentCount = SubscriberUpdates.updateSubscribers();
+            HashSet<Subscribable> needsOnDemandCalculation = null;
+            SubscriberUpdates newSubscriberUpdates = null;
+            var sentCount = 0;
+            foreach (IEvent e in processingEvents) {
+                e.getEntities(state, out needsOnDemandCalculation, out newSubscriberUpdates);
+                OnDemandCalculations.Union(needsOnDemandCalculation);
+                SubscriberUpdates.Union(newSubscriberUpdates);
+            }
+            if (processingEvents.Count > 0) {
+                foreach (var s in needsOnDemandCalculation) s.onDemandCalculation();
+                foreach (var e in processingEvents) {
+                    if (e.conditions()) {
+                        var timedEvents = e.execute();
+                        if (timedEvents != null) newTimedEvents.AddRange(timedEvents);
+                    }
+                    else {
+                        Logger.log(40, Category.Event, Severity.Warn, "Event rejected: " + e.GetType().ToString());
+                    }
+                }
+                foreach (TimedEvent newTimedEvent in newTimedEvents) AddTimedEvent(newTimedEvent, state);
+                state.makeSubscriptions();
+                sentCount = SubscriberUpdates.updateSubscribers();
+            }
 
             //Log
             stopwatch.Stop();
-            if (TimedEvents.Count > 0 || InstantEvents.Count >0) {
+            if (processingEvents.Count >0) {
                 string eventNames = "Events: ";
-                foreach (IEvent e in InstantEvents) eventNames += e.GetType().Name + " ";
-                foreach (IEvent e in TimedEvents) eventNames += e.GetType().Name + " ";
-                string msg = String.Format("{0} timed {1} instant events processed. {2} subscribables sent in {3}ms. ", TimedEvents.Count, InstantEvents.Count, sentCount, stopwatch.ElapsedMilliseconds);
+                foreach (IEvent e in processingEvents) eventNames += e.GetType().Name + " ";
+                string msg = String.Format("{0} events processed. {3} new timed Events. {1} subscribables sent in {2}ms. ", processingEvents.Count, sentCount, stopwatch.ElapsedMilliseconds, newTimedEvents.Count);
                 Logger.log(1, Category.EventEngine, Severity.Debug, msg + eventNames);
             }
+            return processingEvents;
         }
     }
 }

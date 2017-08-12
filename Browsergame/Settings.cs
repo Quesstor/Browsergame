@@ -23,5 +23,6 @@ namespace Browsergame
 
         public static int productionsPerMinute = 1;
 
+        public static double MoveSpeed = 1000;
     }
 }

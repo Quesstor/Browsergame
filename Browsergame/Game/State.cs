@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game {
     [DataContract]
+    [KnownType(typeof(Player))]
     [KnownType(typeof(Planet))]
     [KnownType(typeof(Unit))]
     [KnownType(typeof(TimedEvent))]
@@ -40,19 +41,16 @@ namespace Browsergame.Game {
             if (exists != null) return exists;
             Player newPlayer = new Player(name, token, 1000);
             addAndSetID<Player>(players, newPlayer);
-            makeSubscriptions();
             return newPlayer;
         }
         public Planet addPlanet(string name, Player owner, Location location) {
             Planet planet = new Planet(name, owner, location);
             addAndSetID<Planet>(planets, planet);
-            makeSubscriptions();
             return planet;
         }
         public Unit addUnit(Player owner, Planet location, Entities.Settings.UnitType unitType) {
             Unit unit = new Unit(owner, location, unitType);
             addAndSetID<Unit>(units, unit);
-            makeSubscriptions();
             return unit;
         }
 

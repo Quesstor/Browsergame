@@ -6,6 +6,9 @@ using System.Reflection;
 using Fleck;
 using Newtonsoft.Json;
 using Browsergame.Game.Entities;
+using Browsergame.Game.Event.Instant;
+using Browsergame.Game.Engine;
+using Browsergame.Game.Event;
 
 namespace Browsergame.Server.SocketServer {
     class socketMessage {
@@ -69,7 +72,10 @@ namespace Browsergame.Server.SocketServer {
                 }
                 constructorParams[param.Position] = paramValue;
             }
-            var eventObject = Activator.CreateInstance(message.eventType, constructorParams);
+
+            var eventObject = (Event) Activator.CreateInstance(message.eventType, constructorParams); //constructorParams
+            EventEngine.AddEvent(eventObject);
+
             return true;
         }
         private static bool routeToController(PlayerWebsocket socket, socketMessage message) {

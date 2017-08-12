@@ -22,7 +22,7 @@
         <td>
             <div ng-show="hasEducts(building) && building.lvl>0" style="position:relative; display:table;" ng-mouseenter="showSetProduction = true"
                 ng-mouseleave="showSetProduction=false">
-                <div ng-click="orderProduct(building); showSetProduction=false;" class="btn btn-sm btn-default" ng-class="{'btn-success':showSetProduction}"
+                <div ng-click="orderProduct(building); showSetProduction=false;" class="btn btn-sm btn-default" ng-class="{'btn-success':showSetProduction, 'btn-warning':!showSetProduction && building.orderedProductions==0}"
                     style="min-width: 70px; padding-right: 0;">
                     <span>{{showSetProduction?"+"+building.setProduction : building.orderedProductions.toFixed(1)}}</span>
                     <span ng-show="building.orderedProductions>0" class="glyphicon glyphicon-cog text-success gly-spin"></span>
@@ -54,7 +54,7 @@
                     </table>
                 </div>
                 <div ng-hide="showUpgrade || showProduce || building.upgradeDuration">
-                    <div ng-click="showUpgrade=true" class="btn btn-sm btn-default">
+                    <div ng-click="showUpgrade=true" class="btn btn-sm btn-primary">
                         <span class="glyphicon glyphicon-open"></span> {{building.lvl==0?'Bauen':'Investieren'}}
                     </div>
                 </div>

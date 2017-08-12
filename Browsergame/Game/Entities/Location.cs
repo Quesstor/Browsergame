@@ -13,9 +13,15 @@ namespace Browsergame.Game.Entities {
 
         public void random() {
             Random rand = new Random();
-            double sqrlength = 0.002;
+            double sqrlength = 0.01;
             x = (rand.Next(0, 1000) / 1000f - 0.5) * 2 * sqrlength; //Bounded to: -85 to +85
             y = (rand.Next(0, 1000) / 1000f - 0.5) * 2 * sqrlength; //Bounded to: -180 to +180
+        }
+
+        public double range(Location loc2) {
+            var t1 = Math.Pow(loc2.x - this.x, 2);
+            var t2 = Math.Pow(loc2.y - this.y, 2);
+            return Math.Sqrt(Math.Pow(loc2.x - this.x, 2) + Math.Pow(loc2.y - this.y, 2));
         }
     }
 }

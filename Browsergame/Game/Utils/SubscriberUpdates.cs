@@ -8,12 +8,9 @@ using System.Threading.Tasks;
 namespace Browsergame.Game.Utils {
     class SubscriberUpdates {
         public Dictionary<SubscriberLevel, HashSet<Subscribable>> dict = new Dictionary<SubscriberLevel, HashSet<Subscribable>>();
-        public void Add(SubscriberLevel forLevel, Subscribable data) {
+        public void Add(Subscribable data, SubscriberLevel forLevel) {
             if (!dict.ContainsKey(forLevel)) dict[forLevel] = new HashSet<Subscribable>();
             dict[forLevel].Add(data);
-        }
-        public void Add(Subscribable data) {
-            this.Add(SubscriberLevel.Owner, data);
         }
         public void Union(SubscriberUpdates other) {
             if (other == null) return;

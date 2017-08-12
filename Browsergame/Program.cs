@@ -46,7 +46,7 @@ namespace Browsergame
                     case "R":
                         stop();
                         start();
-                        StateEngine.ResetState();
+                        StateEngine.resetState();
 
                         Console.WriteLine("Game reset done");
                         break;

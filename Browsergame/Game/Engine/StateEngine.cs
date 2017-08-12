@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using System.Threading;
 using Browsergame.Services;
+using System.Diagnostics;
 
 namespace Browsergame.Game.Engine {
     static class StateEngine {
@@ -16,50 +17,52 @@ namespace Browsergame.Game.Engine {
         private static State readState;
 
         public static void Init() {
-            writeState = LoadState(Settings.persistenSavePath);
-            Tick(1); //once to fill readstate
+            writeState = loadState(Settings.persistenSavePath);
+            CopyWriteStateToReadState();
         }
         public static State GetState() {
+            CopyingWriteStateToReadState.WaitOne();
             return readState;
         }
         public static State GetWriteState() {
             return writeState;
         }
 
-        public static void Tick(int tickcount) {
-            //DeepCopy writestate into readstate, now no changes are made in writestate -> Engine.tick() is single-threaded
+        private static ManualResetEvent CopyingWriteStateToReadState = new ManualResetEvent(true);
+        public static void CopyWriteStateToReadState() {
             using (var ms = new MemoryStream()) {
                 DataContractSerializer serializer = new DataContractSerializer(typeof(State));
-                serializer.WriteObject(ms, writeState);
+                serializer.WriteObject(ms, writeState); //no changes are made in writestate -> Engine.tick() is single-threaded
                 ms.Position = 0;
+                CopyingWriteStateToReadState.Reset(); //Block new state requests
                 readState = (State)serializer.ReadObject(ms);
+                CopyingWriteStateToReadState.Set();
+
             }
-            if (tickcount % Settings.persistenSaveEveryXTick == 0) PersistentSaveAsync();
+
         }
-        public static async void Dispose() {
-            Logger.log(4, Category.StateEngine, Severity.Info, "Making persistent save before shutting down.");
-            var task = PersistentSaveAsync();
-            task.Wait();
-        }
-        public static AutoResetEvent isSavingLock = new AutoResetEvent(true);
-        public static Task PersistentSaveAsync() {
-            return Task.Run(() => {
-                if (!isSavingLock.WaitOne(0)) {
+
+        public static AutoResetEvent makingPersistentSave = new AutoResetEvent(true);
+        public static void TryPersistentSave() {
+            Task.Run(() => {
+                if (!makingPersistentSave.WaitOne(0)) {
                     Logger.log(5, Category.StateEngine, Severity.Warn, "persistentSave still in progress");
                     return;
                 }
                 try {
-                    PeristentSave();
+                    peristentSave();
                 }
                 catch (Exception e) {
                     Logger.log(6, Category.StateEngine, Severity.Error, e.ToString());
                 }
                 finally {
-                    isSavingLock.Set();
+                    makingPersistentSave.Set();
                 }
             });
         }
-        public static void PeristentSave() {
+        public static void peristentSave() {
+            var sw = new Stopwatch();
+            sw.Start();
             using (var ms = new MemoryStream()) {
                 DataContractSerializer serializer = new DataContractSerializer(typeof(State));
                 State state = GetState();
@@ -69,17 +72,18 @@ namespace Browsergame.Game.Engine {
                 string data = reader.ReadToEnd();
                 File.WriteAllText(Settings.persistenSavePath, data);
             }
+            sw.Stop();
+            Logger.log(47, Category.StateEngine, Severity.Debug, string.Format("Persistent save took {0}ms", sw.ElapsedMilliseconds));
         }
-        private static State LoadState(string path) {
+        private static State loadState(string path) {
             State state = new State();
             try {
                 using (var fs = new FileStream(Settings.persistenSavePath, FileMode.Open, FileAccess.Read)) {
                     DataContractSerializer serializer = new DataContractSerializer(typeof(State));
                     state = (State)serializer.ReadObject(fs);
                 }
-                foreach(var e in state.timedEventList) {
+                foreach (var e in state.timedEventList) {
                     if (e.Value.processed == null) e.Value.processed = new ManualResetEvent(false);
-                    if (e.Value.updates == null) e.Value.updates = new Utils.SubscriberUpdates();
                 }
                 Logger.log(7, Category.StateEngine, Severity.Info, string.Format("State {0} loaded", path));
                 return state;
@@ -89,10 +93,15 @@ namespace Browsergame.Game.Engine {
                 return new State();
             }
         }
-
-        public static void ResetState() {
+        public static async void Dispose() {
+            Logger.log(4, Category.StateEngine, Severity.Info, "Making persistent save before shutting down.");
+            makingPersistentSave.WaitOne();
+            peristentSave();
+            makingPersistentSave.Set();
+        }
+        public static void resetState() {
             writeState = new State();
-            new Event.Instant.NewPlayer(0, "Bot", "BotToken");
+            EventEngine.AddEvent(new Event.Instant.NewPlayer(0, "Bot", "BotToken"));
         }
     }
 }
