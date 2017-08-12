@@ -18,14 +18,14 @@ namespace Browsergame.Server.SocketServer
         public long playerID;
         public bool isAuthenticated;
         private Player getPlayer() {
-            return StateEngine.getState().getPlayer(playerID);
+            return StateEngine.GetState().getPlayer(playerID);
         }
         public PlayerWebsocket(IWebSocketConnection socket) {
             this.socket = socket;
             this.isAuthenticated = Security.authenticateRequest(socket);
             if (isAuthenticated) {
                 this.token = socket.ConnectionInfo.Cookies["token"];
-                this.playerID = StateEngine.getState().getPlayer(token).id;
+                this.playerID = StateEngine.GetState().getPlayer(token).id;
             }
         }
 

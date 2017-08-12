@@ -55,7 +55,7 @@ namespace Browsergame.Services {
                 Logger.log(20, Category.Security, Severity.Warn, String.Format("Token missing requesting {0}", requestPathForLogging));
                 return false;
             }
-            State state = StateEngine.getState();
+            State state = StateEngine.GetState();
             if (state.getPlayer(token) == null)
             {
                 Logger.log(21, Category.Security, Severity.Warn, String.Format("Token wrong requesting {0}", requestPathForLogging));

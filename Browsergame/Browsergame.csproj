@@ -108,6 +108,9 @@
     <Compile Include="Game\Entities\Message.cs" />
     <Compile Include="Game\Entities\Planet.cs" />
     <Compile Include="Game\Entities\Player.cs" />
+    <Compile Include="Game\Entities\Settings\BuildingSettings.cs" />
+    <Compile Include="Game\Entities\Settings\ItemSettings.cs" />
+    <Compile Include="Game\Entities\Settings\UnitSettings.cs" />
     <Compile Include="Game\Entities\Unit.cs" />
     <Compile Include="Game\Event\Instant\_InstantEvent.cs" />
     <Compile Include="Game\Event\Instant\PlayerOnline.cs" />

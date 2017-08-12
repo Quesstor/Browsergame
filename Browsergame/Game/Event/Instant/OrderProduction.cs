@@ -1,4 +1,5 @@
 ﻿using Browsergame.Game.Entities;
+using Browsergame.Game.Entities.Settings;
 using Browsergame.Game.Event.Timed;
 using System;
 using System.Collections.Generic;
@@ -47,8 +48,5 @@ namespace Browsergame.Game.Event.Instant {
             }
             Building.orderedProductions += amount;
         }
-
-        public override void addTimedEvents(List<TimedEvent> list) { return; }
-
     }
 }

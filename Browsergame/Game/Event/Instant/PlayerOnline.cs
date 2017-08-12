@@ -27,8 +27,5 @@ namespace Browsergame.Game.Event.Instant {
         public override bool conditions() {
             return true;
         }
-
-        public override void addTimedEvents(List<TimedEvent> list) { return; }
-
     }
 }

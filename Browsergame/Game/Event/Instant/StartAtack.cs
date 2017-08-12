@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Browsergame.Game.Event.Timed;
+using Browsergame.Game.Entities.Settings;
 
 namespace Browsergame.Game.Event.Instant {
     class StartAtack : InstantEvent {
@@ -47,10 +48,7 @@ namespace Browsergame.Game.Event.Instant {
                     startPlanet.units.Remove(u);
                 }
             }
-        }
-
-        public override void addTimedEvents(List<TimedEvent> list) {
-            list.Add(new Timed.Fight(playerID, targetPlanetID, startPlanetID, units, DateTime.Now.AddSeconds(10)));
+            TimedEvents.Add(new Timed.Fight(playerID, targetPlanetID, startPlanetID, units, DateTime.Now.AddSeconds(10)));
         }
     }
 }

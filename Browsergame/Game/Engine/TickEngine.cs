@@ -25,7 +25,7 @@ namespace Browsergame.Game.Engine {
         private static void tick(Object stateInfo) {
             while (true) {
                 runTickEvent.WaitOne();
-                Engine.tick();
+                Engine.Tick();
             }
         }
 

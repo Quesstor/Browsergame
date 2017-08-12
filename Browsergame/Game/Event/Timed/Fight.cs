@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Browsergame.Game.Entities;
 using System.Runtime.Serialization;
+using Browsergame.Game.Entities.Settings;
 
 namespace Browsergame.Game.Event.Timed {
     [DataContract]
@@ -36,7 +37,5 @@ namespace Browsergame.Game.Event.Timed {
             targetPlanet.owner = player;
 
         }
-        public override void addTimedEvents(List<TimedEvent> list) { return; }
-
     }
 }

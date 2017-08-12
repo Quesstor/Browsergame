@@ -11,7 +11,7 @@ namespace Browsergame.Game.Event.Instant {
         public void register() {
             if (isRegistered) return;
             isRegistered = true;
-            EventEngine.addEvent(this);
+            EventEngine.AddEvent(this);
         }
     }
 }

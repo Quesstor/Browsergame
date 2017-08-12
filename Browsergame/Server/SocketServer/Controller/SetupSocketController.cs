@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 namespace Browsergame.Server.SocketServer.Controller {
     static class SetupSocketController {
         public static void onMessage(PlayerWebsocket socket, dynamic json) {
-            Player player = Browsergame.Game.Engine.StateEngine.getState().getPlayer(socket.playerID);
+            Player player = Browsergame.Game.Engine.StateEngine.GetState().getPlayer(socket.playerID);
 
             var data = new List<Dictionary<string,object>>();
 
             var settings = new UpdateData("settings");
             settings.Add("location", player.planets.First().location);
-            settings.Add("buildings", Building.settings);
-            settings.Add("units", Unit.settings);
-            settings.Add("items", Item.settings);
+            settings.Add("buildings", Game.Entities.Settings.BuildingSettings.settings);
+            settings.Add("units", Game.Entities.Settings.UnitSettings.settings);
+            settings.Add("items", Game.Entities.Settings.ItemSettings.settings);
             settings.Add("productionsPerMinute", Settings.productionsPerMinute);
             data.Add(settings.toDictWithKey());
 

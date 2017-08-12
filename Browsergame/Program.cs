@@ -22,7 +22,7 @@ namespace Browsergame
         private static void start() {
             WebServer = new Server.WebServer.WebServer();
             SocketServer = new Server.SocketServer.SocketServer();
-            Game.Engine.Engine.init();
+            Game.Engine.Engine.Init();
         }
         private static void stop() {
             PlayerWebsocketConnections.closeAll();
@@ -46,7 +46,7 @@ namespace Browsergame
                     case "R":
                         stop();
                         start();
-                        StateEngine.resetState();
+                        StateEngine.ResetState();
 
                         Console.WriteLine("Game reset done");
                         break;

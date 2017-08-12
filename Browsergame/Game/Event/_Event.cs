@@ -19,7 +19,7 @@ namespace Browsergame.Game.Event {
         void setState(State state);
         bool conditions();
         void execute();
-        void addTimedEvents(List<TimedEvent> TimedEvents);
+        List<TimedEvent> TimedEvents { get; }
     }
     [DataContract]
 
@@ -27,7 +27,8 @@ namespace Browsergame.Game.Event {
         public abstract bool conditions();
         public abstract void execute();
 
-        public abstract void addTimedEvents(List<TimedEvent> list);
+        public List<TimedEvent> TimedEvents = new List<TimedEvent>();
+        List<TimedEvent> IEvent.TimedEvents { get => TimedEvents; }
 
         public ManualResetEvent processed = new ManualResetEvent(false);
         ManualResetEvent IEvent.processed { get => processed; set => processed = value; }
@@ -40,7 +41,8 @@ namespace Browsergame.Game.Event {
 
         protected Player getPlayer(long playerID, SubscriberLevel updateSubscribersWithThisLevel) {
             Player player = state.getPlayer(playerID);
-            updateSubscribers(player, updateSubscribersWithThisLevel);
+            if (updateSubscribersWithThisLevel != SubscriberLevel.None)
+                updateSubscribers(player, updateSubscribersWithThisLevel);
             return player;
         }
         protected Planet getPlanet(long planetID, SubscriberLevel updateSubscribersWithThisLevel) {
@@ -59,16 +61,18 @@ namespace Browsergame.Game.Event {
             updates.Add(SubscriberLevel.Other, planet);
             return planet;
         }
-        protected Unit addUnit(Player owner, Planet location, UnitType unitType) {
+        protected Unit addUnit(Player owner, Planet location, Entities.Settings.UnitType unitType) {
             var unit = state.addUnit(owner, location, unitType);
             updates.Add(SubscriberLevel.Owner, unit);
             return unit;
         }
 
+        private HashSet<Subscribable> onDemandCalculated = new HashSet<Subscribable>();
         protected void updateSubscribers(Subscribable s, SubscriberLevel updateSubscribersWithThisLevel) {
-            if (!updates.contains(updateSubscribersWithThisLevel, s)) {
+            if (!onDemandCalculated.Contains(s) && !updates.contains(updateSubscribersWithThisLevel, s)) {
                 Logger.log(41, Category.EventEngine, Severity.Debug, "On Demand calculation " + s.ToString());
                 s.onDemandCalculation();
+                onDemandCalculated.Add(s);
             }
             updates.Add(updateSubscribersWithThisLevel, s);
         }

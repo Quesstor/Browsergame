@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Browsergame.Game.Event.Timed;
+using Browsergame.Game.Entities.Settings;
 
 namespace Browsergame.Game.Event.Instant {
     class StartBuildingUpgrade : InstantEvent {
@@ -13,12 +14,10 @@ namespace Browsergame.Game.Event.Instant {
         private long PlayerID;
         private long PlanetID;
         private BuildingType BuildingType;
-        private DateTime executionTime;
         public StartBuildingUpgrade(long playerID, long planetID, BuildingType buildingType) {
             PlayerID = playerID;
             PlanetID = planetID;
             BuildingType = buildingType;
-            executionTime = DateTime.Now.AddSeconds(Building.settings[buildingType].buildTimeInSeconds);
             register();
         }
 
@@ -29,13 +28,14 @@ namespace Browsergame.Game.Event.Instant {
             var building = planet.buildings[BuildingType];
             if (planet.owner.id != player.id) return false;
             if (player.money < building.setting.buildPrice) return false;
-            if (building.isUpgrading) return false;
+            if (building.BuildinUpgrade != null) return false;
             foreach (var cost in building.setting.buildCosts) {
                 if (planet.items[cost.Key].quant < cost.Value * (building.lvl + 1)) return false;
             }
             return true;
         }
 
+        private BuildinUpgrade upgradeEvent;
         public override void execute() {
             var player = getPlayer(PlayerID, Utils.SubscriberLevel.Owner);
             var planet = getPlanet(PlanetID, Utils.SubscriberLevel.Owner);
@@ -50,12 +50,11 @@ namespace Browsergame.Game.Event.Instant {
             foreach (var cost in building.setting.buildCosts) {
                 planet.items[cost.Key].quant -= cost.Value * (building.lvl + 1);
             }
-            building.upgradesAt = executionTime;
-            building.isUpgrading = true;
+            var executionTime = DateTime.Now.AddSeconds(building.setting.buildTimeInSeconds);
+            upgradeEvent = new Timed.BuildinUpgrade(PlanetID, BuildingType, executionTime);
+            building.BuildinUpgrade = upgradeEvent;
+            TimedEvents.Add(upgradeEvent);
         }
 
-        public override void addTimedEvents(List<TimedEvent> list) {
-            list.Add(new Timed.BuildinUpgrade(PlanetID, BuildingType, executionTime));
-        }
     }
 }

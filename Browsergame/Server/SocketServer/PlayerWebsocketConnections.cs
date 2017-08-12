@@ -32,7 +32,7 @@ namespace Browsergame.Server.SocketServer {
                 sockets[socket.playerID] = socket;
                 IEvent e = new PlayerOnline(socket.playerID, true);
 
-                Player player = Browsergame.Game.Engine.StateEngine.getState().getPlayer(socket.playerID);
+                Player player = Browsergame.Game.Engine.StateEngine.GetState().getPlayer(socket.playerID);
                 string msg = string.Format("Socket opened. Player {0}. Token: {1}. Thread: {2}", player.name, player.token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);
                 Logger.log(10, Category.WebSocket, Severity.Debug, msg);
             }
@@ -46,7 +46,7 @@ namespace Browsergame.Server.SocketServer {
             }
             new PlayerOnline(socket.playerID, false);
 
-            Player player = Browsergame.Game.Engine.StateEngine.getState().getPlayer(socket.playerID);
+            Player player = Browsergame.Game.Engine.StateEngine.GetState().getPlayer(socket.playerID);
             string msg = string.Format("Socket closed. Player {0}. Token: {1}. Thread: {2}", player.name, player.token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);
             Logger.log(11, Category.WebSocket, Severity.Debug, msg);
         }

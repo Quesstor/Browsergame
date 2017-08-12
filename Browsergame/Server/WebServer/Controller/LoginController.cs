@@ -17,7 +17,7 @@ namespace Browsergame.Server.WebServer.Controller {
             if (logindata == null) return new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest);
 
             string token = Security.getToken(logindata.name, logindata.pw);
-            State state = StateEngine.getState();
+            State state = StateEngine.GetState();
             if (state.getPlayer(token) == null) {
                 IEvent e = new NewPlayer(0, logindata.name, token);
                 e.processed.WaitOne();

@@ -1,4 +1,5 @@
-﻿using Browsergame.Game.Event;
+﻿using Browsergame.Game.Entities.Settings;
+using Browsergame.Game.Event;
 using Browsergame.Game.Utils;
 using System;
 using System.Collections.Generic;
@@ -68,7 +69,7 @@ namespace Browsergame.Game.Entities {
 
         public override void onDemandCalculation() {
             double TotalMilliseconds = (int)Math.Floor((DateTime.Now - lastProduced).TotalMilliseconds);
-            double productionCycles = TotalMilliseconds * 0.001 * Settings.productionsPerMinute / 60;
+            double productionCycles = TotalMilliseconds * 0.001 * Browsergame.Settings.productionsPerMinute / 60;
             if (productionCycles > 0) {
                 foreach (var building in this.buildings.Values) {
                     var productions = productionCycles;

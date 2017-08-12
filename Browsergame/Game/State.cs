@@ -49,7 +49,7 @@ namespace Browsergame.Game {
             makeSubscriptions();
             return planet;
         }
-        public Unit addUnit(Player owner, Planet location, UnitType unitType) {
+        public Unit addUnit(Player owner, Planet location, Entities.Settings.UnitType unitType) {
             Unit unit = new Unit(owner, location, unitType);
             addAndSetID<Unit>(units, unit);
             makeSubscriptions();

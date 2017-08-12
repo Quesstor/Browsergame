@@ -1,4 +1,5 @@
 ﻿using Browsergame.Game.Entities;
+using Browsergame.Game.Entities.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +25,7 @@ namespace Browsergame.Game.Event.Timed {
         public override void execute() {
             var building = getPlanet(PlanetID, Utils.SubscriberLevel.Owner).buildings[BuildingType];
             building.lvl += 1;
-            building.isUpgrading = false;
+            building.BuildinUpgrade = null;
         }
-
-        public override void addTimedEvents(List<TimedEvent> list) { return; }
     }
 }

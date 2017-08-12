@@ -8,8 +8,13 @@ namespace Browsergame
 {
     static class Settings
     {
-        public static string webserverUrl = "http://*:21212/";
-        public static string socketServerUrl = "ws://0.0.0.0:2121";
+        //Local
+        public static string webserverUrl = "http://127.0.0.1:21212/";
+        public static string socketServerUrl = "ws://127.0.0.1:2121";
+
+        ////Public
+        //public static string webserverUrl = "http://*:21212/";
+        //public static string socketServerUrl = "ws://0.0.0.0:2121";
 
         public static int tickIntervallInMillisec = 500;
 

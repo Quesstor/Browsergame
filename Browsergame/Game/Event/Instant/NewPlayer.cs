@@ -1,4 +1,5 @@
 ﻿using Browsergame.Game.Entities;
+using Browsergame.Game.Entities.Settings;
 using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Utils;
 using System;
@@ -35,15 +36,12 @@ namespace Browsergame.Game.Event.Instant {
             addUnit(player, planet, UnitType.Fighter);
 
             planet.buildings[BuildingType.DeuteriumCollector].lvl = 1;
-            foreach (Item item in planet.items.Values) item.quant = 500;
+            foreach (Entities.Item item in planet.items.Values) item.quant = 500;
 
 
             getPlayer(player.id, SubscriberLevel.Other);
             getPlanet(planet.id, SubscriberLevel.Other);
 
         }
-
-        public override void addTimedEvents(List<TimedEvent> list) { return; }
-
     }
 }

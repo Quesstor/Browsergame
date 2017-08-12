@@ -1,4 +1,5 @@
 ﻿using Browsergame.Game.Entities;
+using Browsergame.Game.Entities.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Utils {
     interface HasItems {
-        Item getItem(ItemType ItemType);
+        Entities.Item getItem(ItemType ItemType);
     }
 }

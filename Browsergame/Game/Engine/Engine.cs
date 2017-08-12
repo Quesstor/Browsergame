@@ -13,14 +13,14 @@ namespace Browsergame.Game.Engine {
     static class Engine {
         private static int tickcount = 1;
         private static bool entitiesInitialized = false;
-        public static void init() {
+        public static void Init() {
             if (!entitiesInitialized) {
-                Building.makeSettings();
-                Unit.makeSettings();
-                Item.makeSettings();
+                Entities.Settings.BuildingSettings.makeSettings();
+                Entities.Settings.UnitSettings.makeSettings();
+                Entities.Settings.ItemSettings.makeSettings();
                 entitiesInitialized = true;
             }
-            StateEngine.init();
+            StateEngine.Init();
             TickEngine.init();
         }
         public static void Stop() {
@@ -28,18 +28,18 @@ namespace Browsergame.Game.Engine {
             TickEngine.Dispose();
             List<InstantEvent> InstantEventsProcessed = new List<InstantEvent>();
             List<TimedEvent> TimedEventsProcessed = new List<TimedEvent>();
-            EventEngine.tick(out InstantEventsProcessed, out TimedEventsProcessed); //Wait for next tick so all events get calculated
+            EventEngine.Tick(out InstantEventsProcessed, out TimedEventsProcessed); //Wait for next tick so all events get calculated
             StateEngine.Dispose();
         }
-        public static void tick() {
+        public static void Tick() {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
             List<InstantEvent> InstantEventsProcessed = new List<InstantEvent>();
             List<TimedEvent> TimedEventsProcessed = new List<TimedEvent>();
 
-            EventEngine.tick(out InstantEventsProcessed,out TimedEventsProcessed);
-            StateEngine.tick(tickcount);
+            EventEngine.Tick(out InstantEventsProcessed,out TimedEventsProcessed);
+            StateEngine.Tick(tickcount);
             //Set processed after StateEngine to get fresh state
             foreach (var e in InstantEventsProcessed) e.processed.Set();
             foreach (var e in TimedEventsProcessed) e.processed.Set();
