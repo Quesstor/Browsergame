@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Browsergame.Game.Event.Instant;
+using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Event.Timed;
 
 namespace Browsergame.Game.Engine {
@@ -24,7 +24,7 @@ namespace Browsergame.Game.Engine {
                 InstantEventList.Add(e);
             }
         }
-        private static void AddTimedEvent(TimedEvent e, State currentWriteState) {
+        public static void AddTimedEvent(TimedEvent e, State currentWriteState) {
             gettingEventsFromQueue.WaitOne();
             lock (eventListLock) {
                 while (currentWriteState.timedEventList.ContainsKey(e.executionTime)) {

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Browsergame.Game.Event.Instant {
+namespace Browsergame.Game.Event.Timed {
     class NewPlayer : Event {
         private string name;
         private string token;
@@ -30,11 +30,11 @@ namespace Browsergame.Game.Event.Instant {
 
             Planet planet = state.addPlanet(string.Format("Homeplanet of {0}", name), player, startLoc);
 
-            state.addUnit(player, planet, UnitType.Trader);
-            state.addUnit(player, planet, UnitType.Fighter);
-            state.addUnit(player, planet, UnitType.Fighter);
+            state.addUnit(planet, UnitType.Trader);
+            state.addUnit(planet, UnitType.Fighter);
+            state.addUnit(planet, UnitType.Fighter);
 
-            planet.buildings[BuildingType.DeuteriumCollector].lvl = 1;
+            planet.buildings[BuildingType.ShipYard].lvl = 1;
             foreach (Entities.Item item in planet.items.Values) item.quant = 500;
 
             SubscriberUpdates.Add(player, SubscriberLevel.Other);

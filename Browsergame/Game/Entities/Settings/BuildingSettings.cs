@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Entities.Settings {
     enum BuildingType {
-        WaterPurification, DeuteriumCollector, MetalMine
+        WaterPurification, DeuteriumCollector, MetalMine, ShipYard
     }
     class BuildingSettings {
         public static Dictionary<BuildingType, Settings.BuildingSettings> settings = new Dictionary<BuildingType, Settings.BuildingSettings>();
@@ -17,7 +17,7 @@ namespace Browsergame.Game.Entities.Settings {
         public Dictionary<UnitType, int> unitProducts = new Dictionary<UnitType, int>();
 
         public Dictionary<BuildingType, int> buildRequirements = new Dictionary<BuildingType, int>();
-        public int buildTimeInSeconds = 10;
+        public int buildTimeInSeconds = 3;
         public Dictionary<ItemType, int> buildCosts = new Dictionary<ItemType, int>();
         public int buildPrice = 100;
 
@@ -40,7 +40,12 @@ namespace Browsergame.Game.Entities.Settings {
                         setting.buildPrice = 200;
                         setting.educts.Add(ItemType.Water, 5);
                         setting.educts.Add(ItemType.Deuterium, 1);
-                        setting.itemProducts.Add(ItemType.Metal, 10);
+                        setting.itemProducts.Add(ItemType.Metal, 10); break;
+                    case BuildingType.ShipYard:
+                        setting.buildCosts.Add(ItemType.Metal, 100);
+                        setting.educts.Add(ItemType.Metal, 50);
+                        setting.educts.Add(ItemType.Deuterium, 100);
+                        setting.unitProducts.Add(UnitType.Fighter, 1);
                         break;
 
                 }

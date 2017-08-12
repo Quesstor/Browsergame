@@ -1,6 +1,6 @@
 ﻿using Browsergame.Game.Entities;
 using Browsergame.Game.Event;
-using Browsergame.Game.Event.Instant;
+using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Utils;
 using Browsergame.Services;

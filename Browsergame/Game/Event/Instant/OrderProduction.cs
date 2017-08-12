@@ -7,8 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Browsergame.Game.Utils;
+using Browsergame.Game.Engine;
 
-namespace Browsergame.Game.Event.Instant {
+namespace Browsergame.Game.Event.Timed {
     class OrderProduction : Event {
         private long playerID;
         private long planetID;
@@ -24,7 +25,6 @@ namespace Browsergame.Game.Event.Instant {
 
         private Planet Planet;
         private Player Player;
-
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
             SubscriberUpdates = new SubscriberUpdates();
@@ -48,13 +48,25 @@ namespace Browsergame.Game.Event.Instant {
 
         public override List<TimedEvent> execute() {
             var Building = Planet.buildings[BuildingType];
-
+            var list = new List<TimedEvent>();
             foreach (var e in Building.setting.educts) {
                 var amountNeeded = amount * e.Value * Building.lvl;
                 Planet.items[e.Key].quant -= amountNeeded;
             }
-            Building.orderedProductions += amount;
-            return null;
+            if (Building.setting.unitProducts.Count > 0) {
+                double productionTimePerUnit = 1f / Browsergame.Settings.productionsPerMinute;
+                DateTime startProductionTime = DateTime.Now.AddMinutes(Building.orderedProductions * productionTimePerUnit);
+
+                foreach (var production in Building.setting.unitProducts) {
+                    for (var i = 1; i <=amount; i++) {
+                        var finishedTime = startProductionTime.AddMinutes(i*productionTimePerUnit);
+                        list.Add(new AddUnit(Planet.id, production.Key, production.Value, finishedTime));
+                }
+            }
         }
-    }
+            if (Building.orderedProductions <= 0) Building.lastProduced = DateTime.Now;
+            Building.orderedProductions += amount;
+            return list;
+        }
+}
 }

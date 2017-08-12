@@ -37,7 +37,7 @@
         <!--Produkte-->
         <td class="square-td" style="opacity: {{building.lvl==0?0.3:1}}">
             <itemsquare ng-repeat="(type,quant) in building.itemProducts" item="{type:type}" quant="'+'+(quant * building.lvl)" hideplanetquant="true"></itemsquare>
-            <unitsquare ng-repeat="unit in building.unitProducts" unittype="unit"></unitsquare>
+            <unitsquare ng-repeat="(type,quant) in building.unitProducts" unit="{type:type}" count="quant"></unitsquare>
         </td>
         <td class="btn-td">
             <!--Build Costs-->

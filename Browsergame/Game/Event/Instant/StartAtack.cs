@@ -8,7 +8,7 @@ using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Entities.Settings;
 using Browsergame.Game.Utils;
 
-namespace Browsergame.Game.Event.Instant {
+namespace Browsergame.Game.Event.Timed {
     class StartAtack : Event {
         private long playerID;
         private long targetPlanetID;

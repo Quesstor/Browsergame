@@ -1,4 +1,5 @@
-﻿using Browsergame.Game.Entities.Settings;
+﻿using Browsergame.Game.Engine;
+using Browsergame.Game.Entities.Settings;
 using Browsergame.Game.Event;
 using Browsergame.Game.Utils;
 using System;
@@ -18,7 +19,6 @@ namespace Browsergame.Game.Entities {
         [DataMember] public Player owner;
         [DataMember] public int type;
         [DataMember] public int population;
-        [DataMember] public DateTime lastProduced;
 
         [DataMember] public Dictionary<ItemType, Item> items = Item.newItemDict();
         [DataMember] public Dictionary<ItemType, Offer> offers = Offer.newOfferDict();
@@ -32,7 +32,6 @@ namespace Browsergame.Game.Entities {
             this.owner = owner;
             this.location = location;
             this.population = 100;
-            lastProduced = DateTime.Now;
             owner.planets.Add(this);
             type = rand.Next(0, 10);
         }
@@ -55,7 +54,6 @@ namespace Browsergame.Game.Entities {
                 data["items"] = items;
                 data["offers"] = offers;
                 data["population"] = population;
-                data["productionMinutes"] = (DateTime.Now - lastProduced).TotalMinutes;
             }
             return data;
         }
@@ -68,13 +66,12 @@ namespace Browsergame.Game.Entities {
         }
 
         public override void onDemandCalculation() {
-            double TotalMilliseconds = (int)Math.Floor((DateTime.Now - lastProduced).TotalMilliseconds);
-            double productionCycles = TotalMilliseconds * 0.001 * Browsergame.Settings.productionsPerMinute / 60;
-            if (productionCycles > 0) {
-                foreach (var building in this.buildings.Values) {
-                    var productions = productionCycles;
+            foreach (var building in this.buildings.Values) {
+                double TotalMilliseconds = (int)Math.Floor((DateTime.Now - building.lastProduced).TotalMilliseconds);
+                double productions = TotalMilliseconds * 0.001 * Browsergame.Settings.productionsPerMinute / 60;
+                if (productions > 0) {
                     if (building.setting.educts.Count > 0) {
-                        productions = Math.Min(building.orderedProductions, productions);
+                        productions = Math.Min(building.orderedProductions, (double)productions);
                         building.orderedProductions -= productions;
                     }
                     //Produce products
@@ -82,9 +79,8 @@ namespace Browsergame.Game.Entities {
                         double amount = production.Value * building.lvl * productions;
                         items[production.Key].quant += amount;
                     }
-
+                    building.lastProduced = building.lastProduced.AddMilliseconds(TotalMilliseconds);
                 }
-                this.lastProduced = this.lastProduced.AddMilliseconds(TotalMilliseconds);
             }
         }
     }

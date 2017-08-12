@@ -14,16 +14,20 @@ namespace Browsergame.Game.Entities {
         [DataMember] public int lvl;
         [DataMember] public double orderedProductions = 0;
         [DataMember] public Event.Timed.BuildinUpgrade BuildinUpgrade;
+        [DataMember] public DateTime lastProduced;
 
         public Building(BuildingType type) {
             this.type = type;
             this.lvl = 0;
+            lastProduced = DateTime.Now;
         }
 
         public override UpdateData getUpdateData(SubscriberLevel subscriber) {
             var data = new UpdateData(type.ToString());
             data["type"] = type;
             data["lvl"] = lvl;
+            data["productionMinutes"] = (DateTime.Now - lastProduced).TotalMinutes;
+
             if (setting.educts.Count > 0) data["orderedProductions"] = orderedProductions;
             if (BuildinUpgrade != null) data["upgradeDuration"] = (BuildinUpgrade.executionTime - DateTime.Now).TotalSeconds;
             return data;

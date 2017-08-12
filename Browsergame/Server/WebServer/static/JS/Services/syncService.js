@@ -65,7 +65,7 @@
                 angular.forEach(planet.buildings, function (building, key) {
                     var products = $rootScope.settings.buildings[key].itemProducts;
                     var educts = $rootScope.settings.buildings[key].educts;
-                    var productions = building.lvl * planet.productionMinutes * $rootScope.settings.productionsPerMinute;
+                    var productions = building.lvl * building.productionMinutes * $rootScope.settings.productionsPerMinute;
                     if (!angular.equals({}, educts)) {
                         productions = Math.min(building.orderedProductions, productions);
                         building.orderedProductions -= productions;
@@ -74,8 +74,8 @@
                         planet.items[product].quant += productionAmount * productions;
                     });
                     if(building.upgradeDuration) building.upgradeDuration -= 1 * perSecond;
+                    building.productionMinutes = perMinute;
                 });
-                planet.productionMinutes = perMinute;
             }
         });
     }
@@ -109,7 +109,8 @@
         $rootScope.socket = $websocket(socketUrl)
             .onMessage(function(message){
                 var data = JSON.parse(message.data);
-                console.log("Received Message: "+message.data);
+                console.log("Received Message: ");
+                console.log(JSON.parse(message.data));
                 syncService.updateData(data);
             })
             .onClose(syncService.socketClosed)

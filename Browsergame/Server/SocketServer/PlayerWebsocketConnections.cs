@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Browsergame.Game.Event;
 using Fleck;
 using System;
-using Browsergame.Game.Event.Instant;
+using Browsergame.Game.Event.Timed;
 
 namespace Browsergame.Server.SocketServer {
     static class PlayerWebsocketConnections {

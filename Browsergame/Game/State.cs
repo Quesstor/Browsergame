@@ -17,6 +17,7 @@ namespace Browsergame.Game {
     [KnownType(typeof(TimedEvent))]
     [KnownType(typeof(Fight))]
     [KnownType(typeof(BuildinUpgrade))]
+    [KnownType(typeof(AddUnit))]
     class State {
         [DataMember] public Dictionary<long, Player> players = new Dictionary<long, Player>();
         [DataMember] public Dictionary<long, Unit> units = new Dictionary<long, Unit>();
@@ -48,8 +49,8 @@ namespace Browsergame.Game {
             addAndSetID<Planet>(planets, planet);
             return planet;
         }
-        public Unit addUnit(Player owner, Planet location, Entities.Settings.UnitType unitType) {
-            Unit unit = new Unit(owner, location, unitType);
+        public Unit addUnit(Planet planet, Entities.Settings.UnitType unitType) {
+            Unit unit = new Unit(planet.owner, planet, unitType);
             addAndSetID<Unit>(units, unit);
             return unit;
         }

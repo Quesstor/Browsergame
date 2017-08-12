@@ -6,7 +6,7 @@ using System.Reflection;
 using Fleck;
 using Newtonsoft.Json;
 using Browsergame.Game.Entities;
-using Browsergame.Game.Event.Instant;
+using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Engine;
 using Browsergame.Game.Event;
 

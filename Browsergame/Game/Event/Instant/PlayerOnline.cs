@@ -8,7 +8,7 @@ using Browsergame.Game.Utils;
 using Browsergame.Game.Entities;
 using Browsergame.Game.Event.Timed;
 
-namespace Browsergame.Game.Event.Instant {
+namespace Browsergame.Game.Event.Timed {
     class PlayerOnline : Event {
         private bool newOnlineStatus;
         private long playerID;
