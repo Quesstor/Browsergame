@@ -32,6 +32,7 @@ namespace Browsergame.Game.Event.Timed {
             Planet = state.getPlanet(planetID);//getPlanet(planetID, Utils.SubscriberLevel.Owner);
             SubscriberUpdates.Add(Planet, SubscriberLevel.Owner);
             Player = state.getPlayer(playerID);
+            needsOnDemandCalculation.Add(Planet);
         }
         public override bool conditions() {
 
@@ -61,10 +62,11 @@ namespace Browsergame.Game.Event.Timed {
                     for (var i = 1; i <=amount; i++) {
                         var finishedTime = startProductionTime.AddMinutes(i*productionTimePerUnit);
                         list.Add(new AddUnit(Planet.id, production.Key, production.Value, finishedTime));
+                    }
                 }
             }
-        }
-            if (Building.orderedProductions <= 0) Building.lastProduced = DateTime.Now;
+            if (Building.orderedProductions <= 0)
+                Building.lastProduced = DateTime.Now;
             Building.orderedProductions += amount;
             return list;
         }

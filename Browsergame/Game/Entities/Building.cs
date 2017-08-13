@@ -26,7 +26,7 @@ namespace Browsergame.Game.Entities {
             var data = new UpdateData(type.ToString());
             data["type"] = type;
             data["lvl"] = lvl;
-            data["productionMinutes"] = (DateTime.Now - lastProduced).TotalMinutes;
+            data["productionSeconds"] = (DateTime.Now - lastProduced).TotalSeconds;
 
             if (setting.educts.Count > 0) data["orderedProductions"] = orderedProductions;
             if (BuildinUpgrade != null) data["upgradeDuration"] = (BuildinUpgrade.executionTime - DateTime.Now).TotalSeconds;

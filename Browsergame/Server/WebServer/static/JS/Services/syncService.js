@@ -65,7 +65,7 @@
                 angular.forEach(planet.buildings, function (building, key) {
                     var products = $rootScope.settings.buildings[key].itemProducts;
                     var educts = $rootScope.settings.buildings[key].educts;
-                    var productions = building.lvl * building.productionMinutes * $rootScope.settings.productionsPerMinute;
+                    var productions = building.lvl * building.productionSeconds * $rootScope.settings.productionsPerMinute / 60;
                     if (!angular.equals({}, educts)) {
                         productions = Math.min(building.orderedProductions, productions);
                         building.orderedProductions -= productions;
@@ -74,7 +74,7 @@
                         planet.items[product].quant += productionAmount * productions;
                     });
                     if(building.upgradeDuration) building.upgradeDuration -= 1 * perSecond;
-                    building.productionMinutes = perMinute;
+                    building.productionSeconds = perSecond;
                 });
             }
         });
