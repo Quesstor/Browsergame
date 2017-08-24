@@ -16,16 +16,16 @@ namespace Browsergame.Game.Event {
     interface IEvent {
         ManualResetEvent processed { get; }
 
-        void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates);
+        void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
         bool conditions();
-        List<TimedEvent> execute();
+        List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates);
     }
     [DataContract]
 
     abstract class Event : IEvent {
-        public abstract void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates);
+        public abstract void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
         public abstract bool conditions();
-        public abstract List<TimedEvent> execute();
+        public abstract List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates);
 
         public ManualResetEvent processed = new ManualResetEvent(false);
         ManualResetEvent IEvent.processed { get => processed; }

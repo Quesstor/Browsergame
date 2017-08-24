@@ -25,12 +25,10 @@ namespace Browsergame.Game.Event.Timed {
 
         private Planet Planet;
         private Player Player;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates) {
+        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            SubscriberUpdates = new SubscriberUpdates();
 
             Planet = state.getPlanet(planetID);//getPlanet(planetID, Utils.SubscriberLevel.Owner);
-            SubscriberUpdates.Add(Planet, SubscriberLevel.Owner);
             Player = state.getPlayer(playerID);
             needsOnDemandCalculation.Add(Planet);
         }
@@ -47,7 +45,10 @@ namespace Browsergame.Game.Event.Timed {
             return true;
         }
 
-        public override List<TimedEvent> execute() {
+        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+            SubscriberUpdates = new SubscriberUpdates();
+            SubscriberUpdates.Add(Planet, SubscriberLevel.Owner);
+
             var Building = Planet.buildings[BuildingType];
             var list = new List<TimedEvent>();
             foreach (var e in Building.setting.educts) {
@@ -61,7 +62,7 @@ namespace Browsergame.Game.Event.Timed {
                 foreach (var production in Building.setting.unitProducts) {
                     for (var i = 1; i <=amount; i++) {
                         var finishedTime = startProductionTime.AddMinutes(i*productionTimePerUnit);
-                        list.Add(new AddUnit(Planet.id, production.Key, production.Value, finishedTime));
+                        list.Add(new AddUnits(Planet.id, production.Key, production.Value, finishedTime));
                     }
                 }
             }

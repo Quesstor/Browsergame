@@ -28,11 +28,9 @@ namespace Browsergame.Game.Event.Timed {
 
         private Planet planet;
         private Player player;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates) {
+        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            SubscriberUpdates = new SubscriberUpdates();
             planet = state.getPlanet(planetID);
-            SubscriberUpdates.Add(planet, Utils.SubscriberLevel.Owner);
             needsOnDemandCalculation.Add(planet);
 
             player = state.getPlayer(playerID);
@@ -52,11 +50,15 @@ namespace Browsergame.Game.Event.Timed {
             return true;
         }
 
-        public override List<TimedEvent> execute() {
+        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
             if (planet.offers[itemType].quant > 0) planet.items[itemType].quant += planet.offers[itemType].quant; //Return items to planet from old sell orders
             if (newQuant > 0) planet.items[itemType].quant -= newQuant; //Take items from planet for sell orders
             planet.offers[itemType].quant = newQuant;
             planet.offers[itemType].price = newQuant == 0 ? 0 : newPrice;
+
+            SubscriberUpdates = new SubscriberUpdates();
+            SubscriberUpdates.Add(planet, Utils.SubscriberLevel.Owner);
+
             return null;
         }
 

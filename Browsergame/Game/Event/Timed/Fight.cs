@@ -26,22 +26,18 @@ namespace Browsergame.Game.Event.Timed {
         private Player player;
         private Planet targetPlanet;
         private List<Unit> units;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates) {
+        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            SubscriberUpdates = new SubscriberUpdates();
 
             targetPlanet = state.getPlanet(targetPlanetID);
             needsOnDemandCalculation.Add(targetPlanet);
-            SubscriberUpdates.Add(targetPlanet, SubscriberLevel.Owner);
 
             player = state.getPlayer(playerID);
-            SubscriberUpdates.Add(player, SubscriberLevel.Owner);
-            SubscriberUpdates.Add(targetPlanet.owner, SubscriberLevel.Owner);
+
 
             units = new List<Unit>();
             foreach(var id in unitIDs) {
                 var unit = state.getUnit(id);
-                SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
                 units.Add(unit);
             }
 
@@ -50,7 +46,14 @@ namespace Browsergame.Game.Event.Timed {
             return true;
         }
 
-        public override List<TimedEvent> execute() {
+        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+            SubscriberUpdates = new SubscriberUpdates();
+            SubscriberUpdates.Add(player, SubscriberLevel.Owner);
+            SubscriberUpdates.Add(targetPlanet.owner, SubscriberLevel.Owner);
+            SubscriberUpdates.Add(targetPlanet, SubscriberLevel.Owner);
+
+            foreach (Unit unit in units) SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
+
             string msg = string.Format("Du hast Planet {0} eingenommen", targetPlanet.name);
             player.messages.Add(new Message(msg, DateTime.Now));
 

@@ -17,14 +17,12 @@ namespace Browsergame.Game.Event.Timed {
             this.token = token;
         }
 
-        private State state;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates) {
+        private Player player;
+        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            SubscriberUpdates = new SubscriberUpdates();
 
-            this.state = state;
             //Special case: State gets modified here to make updating subcribers possible
-            Player player = state.addPlayer(name, token);
+            player = state.addPlayer(name, token);
             Location startLoc = new Location();
             startLoc.random();
 
@@ -37,14 +35,17 @@ namespace Browsergame.Game.Event.Timed {
             planet.buildings[BuildingType.ShipYard].lvl = 1;
             foreach (Entities.Item item in planet.items.Values) item.quant = 500;
 
-            SubscriberUpdates.Add(player, SubscriberLevel.Other);
         }
 
         public override bool conditions() {
             return true;
         }
 
-        public override List<TimedEvent> execute() {
+        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+
+            SubscriberUpdates = new SubscriberUpdates();
+            SubscriberUpdates.Add(player, SubscriberLevel.Other);
+
             return null;
         }
     }

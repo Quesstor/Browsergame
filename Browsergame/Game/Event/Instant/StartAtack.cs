@@ -26,24 +26,20 @@ namespace Browsergame.Game.Event.Timed {
         private Player player;
         private List<Unit> units;
 
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates) {
+        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            SubscriberUpdates = new SubscriberUpdates();
 
             player = state.getPlayer(playerID);
             targetPlanet = state.getPlanet(targetPlanetID);
 
             startPlanet = state.getPlanet(startPlanetID);
-            SubscriberUpdates.Add(startPlanet, SubscriberLevel.Owner);
             needsOnDemandCalculation.Add(startPlanet);
 
             units = new List<Unit>();
             foreach (var unitgroup in unitCounts) {
                 var planetUnits = (from u in startPlanet.units where u.type == unitgroup.Key select u).Take(unitgroup.Value).ToList();
                 units.AddRange(planetUnits);
-                foreach (var u in planetUnits) {
-                    SubscriberUpdates.Add(u, Utils.SubscriberLevel.Owner);
-                }
+
             }
         }
         public override bool conditions() {
@@ -57,20 +53,24 @@ namespace Browsergame.Game.Event.Timed {
             return true;
         }
 
-        public override List<TimedEvent> execute() {
+        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
             var unitIDs = new List<long>();
+            SubscriberUpdates = new SubscriberUpdates();
 
             foreach (var unit in units) {
                 unit.planet = null;
                 startPlanet.units.Remove(unit);
                 unitIDs.Add(unit.id);
+                SubscriberUpdates.Add(unit, Utils.SubscriberLevel.Owner);
             }
-            var range = targetPlanet.location.range(startPlanet.location);
-            var travelTimeInSeconds = range * Settings.MoveSpeed;
 
-            
+            SubscriberUpdates.Add(startPlanet, SubscriberLevel.Owner);
+
+            var range = targetPlanet.location.range(startPlanet.location);
+            var travelTimeInSeconds = range * Settings.MoveSpeed;          
             var newTimedEvents = new List<TimedEvent>();
             newTimedEvents.Add(new Timed.Fight(playerID, targetPlanetID, startPlanet.id, unitCounts, unitIDs, DateTime.Now.AddSeconds(travelTimeInSeconds)));
+
             return newTimedEvents;
         }
 

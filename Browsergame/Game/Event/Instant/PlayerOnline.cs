@@ -19,16 +19,17 @@ namespace Browsergame.Game.Event.Timed {
         }
 
         private Player player;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates) {
+        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            SubscriberUpdates = new SubscriberUpdates();
             player = state.getPlayer(playerID);
-            SubscriberUpdates.Add(player, SubscriberLevel.Other);
         }
         public override bool conditions() {
             return true;
         }
-        public override List<TimedEvent> execute() {
+        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+            SubscriberUpdates = new SubscriberUpdates();
+            SubscriberUpdates.Add(player, SubscriberLevel.Other);
+
             player.online = newOnlineStatus;
             return null;
         }

@@ -20,11 +20,10 @@ namespace Browsergame.Game.Event.Timed {
         }
 
         private Building building;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates) {
+        private Planet planet;
+        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            SubscriberUpdates = new SubscriberUpdates();
-            var planet= state.getPlanet(PlanetID);
-            SubscriberUpdates.Add(planet, Utils.SubscriberLevel.Owner);
+            planet = state.getPlanet(PlanetID);
             building = planet.buildings[BuildingType];
         }
 
@@ -32,7 +31,10 @@ namespace Browsergame.Game.Event.Timed {
             return true;
         }
 
-        public override List<TimedEvent> execute() {
+        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+            SubscriberUpdates = new SubscriberUpdates();
+            SubscriberUpdates.Add(planet, Utils.SubscriberLevel.Owner);
+
             building.lvl += 1;
             building.BuildinUpgrade = null;
             return null;

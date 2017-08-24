@@ -9,21 +9,21 @@ using System.Runtime.Serialization;
 
 namespace Browsergame.Game.Event.Timed {
     [DataContract]
-    class AddUnit : TimedEvent {
+    class AddUnits : TimedEvent {
 
         [DataMember] private long planetID;
         [DataMember] private UnitType unittype;
         [DataMember] private int count;
 
-        public AddUnit(long planetID, UnitType unittype, int count, DateTime executionTime) : base(executionTime) {
+        public AddUnits(long planetID, UnitType unittype, int count, DateTime executionTime) : base(executionTime) {
             this.planetID = planetID;
             this.unittype = unittype;
             this.count = count;
         }
 
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates) {
+        private SubscriberUpdates SubscriberUpdates;
+        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            SubscriberUpdates = new SubscriberUpdates();
 
             var planet = state.getPlanet(planetID);
             for (var i = 0; i < count; i++) {
@@ -36,7 +36,8 @@ namespace Browsergame.Game.Event.Timed {
             return true;
         }
 
-        public override List<TimedEvent> execute() {
+        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+            SubscriberUpdates = this.SubscriberUpdates;
             return null;
         }
 

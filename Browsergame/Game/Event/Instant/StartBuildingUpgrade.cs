@@ -25,17 +25,14 @@ namespace Browsergame.Game.Event.Timed {
         private Player player;
         private Planet planet;
         private Building building;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation, out SubscriberUpdates SubscriberUpdates) {
+        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            SubscriberUpdates = new SubscriberUpdates();
 
             player = state.getPlayer(PlayerID);
             needsOnDemandCalculation.Add(player);
-            SubscriberUpdates.Add(player, SubscriberLevel.Owner);
 
             planet = state.getPlanet(PlanetID);
             needsOnDemandCalculation.Add(planet);
-            SubscriberUpdates.Add(planet, SubscriberLevel.Owner);
 
             building = planet.buildings[BuildingType];
         }
@@ -49,7 +46,7 @@ namespace Browsergame.Game.Event.Timed {
             return true;
         }
 
-        public override List<TimedEvent> execute() {
+        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
             var building = planet.buildings[BuildingType];
             player.money -= building.setting.buildPrice * (building.lvl + 1);
             if (building.setting.educts.Count > 0) { //Remove ordered Productions
@@ -61,12 +58,17 @@ namespace Browsergame.Game.Event.Timed {
             foreach (var cost in building.setting.buildCosts) {
                 planet.items[cost.Key].quant -= cost.Value * (building.lvl + 1);
             }
-            var executionTime = DateTime.Now.AddSeconds(building.setting.buildTimeInSeconds);
 
+            SubscriberUpdates = new SubscriberUpdates();
+            SubscriberUpdates.Add(player, SubscriberLevel.Owner);
+            SubscriberUpdates.Add(planet, SubscriberLevel.Owner);
+
+            var executionTime = DateTime.Now.AddSeconds(building.setting.buildTimeInSeconds);
             var newTimedEvents = new List<TimedEvent>();
             var upgradeEvent = new Timed.BuildinUpgrade(PlanetID, BuildingType, executionTime);
             building.BuildinUpgrade = upgradeEvent;
             newTimedEvents.Add(upgradeEvent);
+
             return newTimedEvents;
         }
 

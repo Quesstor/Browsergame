@@ -70,7 +70,7 @@ namespace Browsergame.Game.Engine {
             State state = StateEngine.GetWriteState();
             List<IEvent> processingEvents = GetEventList(state);
 
-            var SubscriberUpdates = new SubscriberUpdates();
+            var AllSubscriberUpdates = new SubscriberUpdates();
             var OnDemandCalculations = new HashSet<Subscribable>();
             var newTimedEvents = new List<TimedEvent>();
 
@@ -78,15 +78,16 @@ namespace Browsergame.Game.Engine {
             SubscriberUpdates newSubscriberUpdates = null;
             var sentCount = 0;
             foreach (IEvent e in processingEvents) {
-                e.getEntities(state, out needsOnDemandCalculation, out newSubscriberUpdates);
+                e.getEntities(state, out needsOnDemandCalculation);
                 OnDemandCalculations.Union(needsOnDemandCalculation);
-                SubscriberUpdates.Union(newSubscriberUpdates);
             }
             if (processingEvents.Count > 0) {
                 foreach (var s in needsOnDemandCalculation) s.onDemandCalculation();
                 foreach (var e in processingEvents) {
                     if (e.conditions()) {
-                        var timedEvents = e.execute();
+                        var timedEvents = e.execute(out newSubscriberUpdates);
+                        AllSubscriberUpdates.Union(newSubscriberUpdates);
+
                         if (timedEvents != null) newTimedEvents.AddRange(timedEvents);
                     }
                     else {
@@ -95,7 +96,7 @@ namespace Browsergame.Game.Engine {
                 }
                 foreach (TimedEvent newTimedEvent in newTimedEvents) AddTimedEvent(newTimedEvent, state);
                 state.makeSubscriptions();
-                sentCount = SubscriberUpdates.updateSubscribers();
+                sentCount = AllSubscriberUpdates.updateSubscribers();
             }
 
             //Log
