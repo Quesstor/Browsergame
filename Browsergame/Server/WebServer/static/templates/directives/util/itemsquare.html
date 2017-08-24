@@ -3,7 +3,7 @@
     <table style="width: 120px;">
         <tr>
             <td style="width: 40px;">
-                <div style="box-shadow:inset 0 0 2px 2px {{itemColor()}}; border-radius:3px; padding: 5px;margin:0px 3px">
+                <div style="box-shadow:inset 0 0 2px 2px {{planetMissingQuant()?'rgba(255,0,80,1)':itemColor()}}; border-radius:3px; padding: 5px;margin:0px 3px">
                     <img ng-if="item.type" ng-src="{{'img/icon/items/'+item.type+'.png'}}" style="height:25px;" />
                 </div>
             </td>

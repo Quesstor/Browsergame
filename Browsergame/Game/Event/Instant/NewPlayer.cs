@@ -26,7 +26,9 @@ namespace Browsergame.Game.Event.Timed {
             Location startLoc = new Location();
             startLoc.random();
 
-            Planet planet = state.addPlanet(string.Format("Homeplanet of {0}", name), player, startLoc);
+            string planetName = string.Format("{0} Heimatplanet", name);
+            string info = string.Format("{0} Heimatplanet", name);
+            Planet planet = state.addPlanet(planetName, player, startLoc, info);
 
             state.addUnit(planet, UnitType.Trader);
             state.addUnit(planet, UnitType.Fighter);

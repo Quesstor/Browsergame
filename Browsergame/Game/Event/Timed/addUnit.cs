@@ -21,14 +21,14 @@ namespace Browsergame.Game.Event.Timed {
             this.count = count;
         }
 
-        private SubscriberUpdates SubscriberUpdates;
+        private List<Entities.Unit> units = new List<Entities.Unit>();
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
 
             var planet = state.getPlanet(planetID);
             for (var i = 0; i < count; i++) {
                 var unit = state.addUnit(planet, unittype);
-                SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
+                units.Add(unit);
             }
         }
 
@@ -37,7 +37,8 @@ namespace Browsergame.Game.Event.Timed {
         }
 
         public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
-            SubscriberUpdates = this.SubscriberUpdates;
+            SubscriberUpdates = new SubscriberUpdates();
+            foreach (Entities.Unit unit in units) SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
             return null;
         }
 

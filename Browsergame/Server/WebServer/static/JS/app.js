@@ -12,7 +12,7 @@ app.directive("playersmodal", function () { return { templateUrl: '/templates/di
 app.directive("messagesmodal", function () { return { templateUrl: '/templates/directives/modals/messages.html' } });
 app.directive("planetmodal", function () { return { templateUrl: '/templates/directives/modals/planet.html', controller: 'utilCtrl' } });
 //Planet
-app.directive("planetinfo", function () { return { templateUrl: '/templates/directives/planet/planetinfo.html', controller: 'utilCtrl' } });
+app.directive("planetinfo", function () { return { templateUrl: '/templates/directives/planet/planetinfo.html', controller: 'planetinfo' } });
 app.directive("unitmanager", function () { return { templateUrl: '/templates/directives/planet/unitmanager.html', controller: 'utilCtrl' } });
 app.directive("pricemanager", function () { return { templateUrl: '/templates/directives/planet/pricemanager.html', controller: 'pricemanager' } });
 app.directive("trademanager", function () { return { templateUrl: '/templates/directives/planet/trademanager.html', controller: 'utilCtrl' } });

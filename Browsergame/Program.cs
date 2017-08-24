@@ -6,14 +6,11 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Browsergame
-{
-    class Program
-    {
+namespace Browsergame {
+    class Program {
         private static WebServer WebServer;
         private static SocketServer SocketServer;
-        static void Main(string[] args)
-        {
+        static void Main(string[] args) {
             start();
             waitForInputLoop();
             stop();
@@ -39,7 +36,13 @@ namespace Browsergame
                         Console.WriteLine("\th: Help");
                         Console.WriteLine("\tg: Open Game");
                         Console.WriteLine("\tr: Reset Game");
+                        Console.WriteLine("\tc: Clear line Game");
                         Console.WriteLine("\tEnter: Shutdown Server");
+                        break;
+                    case "C":
+                        Console.WriteLine();
+                        Console.WriteLine("-------------------------------");
+                        Console.WriteLine();
                         break;
                     case "G":
                         Process.Start(Settings.webserverUrl); break;

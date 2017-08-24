@@ -25,10 +25,10 @@ namespace Browsergame.Game.Entities {
         [DataMember] public Dictionary<BuildingType, Building> buildings = Building.newBuildingList();
         [DataMember] public List<Unit> units = new List<Unit>();
 
-        public Planet(string name, Player owner, Location location) {
+        public Planet(string name, Player owner, Location location, string info) {
             Random rand = new Random();
             this.name = name;
-            this.info = string.Format("This is {0}s Planet", owner.name);
+            this.info = info;
             this.owner = owner;
             this.location = location;
             this.population = 100;

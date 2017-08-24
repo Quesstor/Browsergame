@@ -12,7 +12,7 @@ using Browsergame.Game.Event;
 
 namespace Browsergame.Server.SocketServer {
     class socketMessage {
-        private static string[] routableEvents = { "SetOffer", "OrderProduction", "StartBuildingUpgrade", "StartAtack" };
+        private static string[] routableEvents = { "SetOffer", "OrderProduction", "StartBuildingUpgrade", "StartAtack", "UpdatePlanetInfo" };
         public dynamic jsonPayload;
         public string action;
         public Type controllerType;
@@ -25,7 +25,7 @@ namespace Browsergame.Server.SocketServer {
             controllerType = Type.GetType("Browsergame.Server.SocketServer.Controller." + action + "SocketController");
             if (routableEvents.Contains(action)) {
                 eventType = Type.GetType("Browsergame.Game.Event.Instant." + action);
-                if(eventType == null) eventType = Type.GetType("Browsergame.Game.Event.Timed." + action);
+                if (eventType == null) eventType = Type.GetType("Browsergame.Game.Event.Timed." + action);
             }
             if (controllerType == null && eventType == null) {
                 if (routableEvents.Contains(action)) throw new Exception("No Controller or Event found for " + action);
@@ -68,12 +68,16 @@ namespace Browsergame.Server.SocketServer {
                     if (type.GetTypeInfo().IsEnum) {
                         if (jsonParam.Value.GetType().Name == "String") paramValue = Enum.Parse(type, (string)jsonParam.Value);
                         else paramValue = Enum.ToObject(type, jsonParam.Value);
-                    }else paramValue = JsonConvert.DeserializeObject(jsonParam.ToString(), type);
+                    }
+                    else {
+                        if (type == typeof(string)) paramValue = jsonParam.ToString();
+                        else paramValue = JsonConvert.DeserializeObject(jsonParam.ToString(), type);
+                    }
                 }
                 constructorParams[param.Position] = paramValue;
             }
 
-            var eventObject = (Event) Activator.CreateInstance(message.eventType, constructorParams); //constructorParams
+            var eventObject = (Event)Activator.CreateInstance(message.eventType, constructorParams); //constructorParams
             EventEngine.AddEvent(eventObject);
 
             return true;

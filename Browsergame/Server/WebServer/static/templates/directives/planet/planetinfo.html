@@ -6,7 +6,7 @@
     </div>
     <div ng-show="editinfo">
         <div class="btn-group pull-right" ng-click="editinfo=false">
-            <button class="btn btn-default " ng-click="planetService.updatePlanetinfo($root.selectedPlanet,setinfo);">
+            <button class="btn btn-default " ng-click="updatePlanetInfo(setinfo);">
                 Speichern
             </button>
             <button class="btn btn-default">
@@ -14,6 +14,7 @@
             </button>
         </div>
         <br />
-        <textarea class="form-control" ng-model="setinfo"></textarea>
+        <input type="text" class="form-control" ng-model="setName" placeholder="Planeten Name"/>
+        <textarea class="form-control" ng-model="setInfo" placeholder="Planeten Beschreibung" />
     </div>
 </div>

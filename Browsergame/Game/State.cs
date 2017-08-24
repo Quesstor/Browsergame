@@ -44,8 +44,8 @@ namespace Browsergame.Game {
             addAndSetID<Player>(players, newPlayer);
             return newPlayer;
         }
-        public Planet addPlanet(string name, Player owner, Location location) {
-            Planet planet = new Planet(name, owner, location);
+        public Planet addPlanet(string name, Player owner, Location location, string info) {
+            Planet planet = new Planet(name, owner, location, info);
             addAndSetID<Planet>(planets, planet);
             return planet;
         }
