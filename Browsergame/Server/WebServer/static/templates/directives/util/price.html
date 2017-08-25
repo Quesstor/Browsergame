@@ -2,14 +2,14 @@
     <table>
         <tr>
             <td>
-                <div style="box-shadow:inset 0 0 2px 2px {{$root.player.money+value<0?'rgba(255,0,80,1)':'rgba(50,50,255,1)'}}; border-radius:3px; padding: 5px;margin:0px 3px">
+                <div style="box-shadow:inset 0 0 2px 2px {{$root.player.money+value<0?'rgba(255,0,80,1)':'rgba(	127, 219, 255,1)'}}; border-radius:3px; padding: 5px;margin:0px 3px">
                     <div class="glyphicon glyphicon glyphicon-xbt" style="width: 25px; font-size: 21px; padding: 1px 0 0 3px;" />
                 </div>
             </td>
             <td style="line-height: 1;">
                 <span ng-class="{'text-danger':$root.player.money+value<0,'text-success':value>0, 'text-danger':value<0}">{{value>0?'+':''}}{{value}}</span>
                 <div>
-                    {{$root.player.money.toFixed(0)}}
+                    {{utilService.shortNumber($root.player.money.toFixed(0))}}
                 </div>
             </td>
         </tr>

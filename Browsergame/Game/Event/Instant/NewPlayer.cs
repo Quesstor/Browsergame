@@ -33,10 +33,6 @@ namespace Browsergame.Game.Event.Timed {
             state.addUnit(planet, UnitType.Trader);
             state.addUnit(planet, UnitType.Fighter);
             state.addUnit(planet, UnitType.Fighter);
-
-            planet.buildings[BuildingType.ShipYard].lvl = 1;
-            foreach (Entities.Item item in planet.items.Values) item.quant = 500;
-
         }
 
         public override bool conditions() {

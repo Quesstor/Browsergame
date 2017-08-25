@@ -13,6 +13,7 @@
         if (!$rootScope.selectedPlanet) return;
         $scope.setName = $rootScope.selectedPlanet.name;
         $scope.setInfo = $rootScope.selectedPlanet.info;
+        $scope.planet = $rootScope.selectedPlanet;
     }, true);
 
     $scope.updatePlanetInfo = function () {

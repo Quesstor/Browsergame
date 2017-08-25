@@ -24,7 +24,7 @@ namespace Browsergame
         public static double productionsPerMinute = 1;
         public static double consumePerMinute = 1;
 
-        public static double incomePerMinute = 100;
+        public static double incomePerMinutePerPopulation = 5;
 
         public static double MoveSpeed = 1000;
     }

@@ -25,7 +25,7 @@ namespace Browsergame.Game.Entities {
         [DataMember] public Dictionary<ItemType, Offer> offers = Offer.newOfferDict();
         [DataMember] public Dictionary<BuildingType, Building> buildings = Building.newBuildingList();
         [DataMember] public List<Unit> units = new List<Unit>();
-        [DataMember] public List<ItemType> consumes = new List<ItemType>();
+        [DataMember] public Dictionary<ItemType, int> consumes = new Dictionary<ItemType, int>();
 
         public Planet(string name, Player owner, Location location, string info) {
             Random rand = new Random();
@@ -37,7 +37,11 @@ namespace Browsergame.Game.Entities {
             this.lastConsumed = DateTime.Now;
             owner.planets.Add(this);
             type = rand.Next(0, 10);
-            consumes.Add(ItemType.Water);
+            consumes[ItemType.Water] = 5;
+            consumes[ItemType.Deuterium] = 1;
+            buildings[BuildingType.ShipYard].lvl = 1;
+            foreach (Entities.Item item in items.Values) item.quant = 500;
+            items[ItemType.Deuterium].quant = 0;
         }
 
         public override UpdateData getUpdateData(SubscriberLevel subscriber) {
@@ -58,7 +62,7 @@ namespace Browsergame.Game.Entities {
                 data["items"] = items;
                 data["offers"] = offers;
                 data["population"] = population;
-                data["consumes"] = consumes.Select(i => i.ToString());
+                data["consumes"] = consumes;
                 data["consumedSeconds"] = (DateTime.Now - lastConsumed).TotalSeconds;
             }
             return data;
@@ -91,19 +95,26 @@ namespace Browsergame.Game.Entities {
 
             //Consume goods
             double TotalMillisecondsConsumed = (int)Math.Floor((DateTime.Now - this.lastConsumed).TotalMilliseconds);
-            var consumed = population * TotalMillisecondsConsumed / 60000 * Browsergame.Settings.consumePerMinute;
+            var consumeTime =  TotalMillisecondsConsumed / 60000 * Browsergame.Settings.consumePerMinute;
 
-            var incomeMilliSeconds = TotalMillisecondsConsumed;
-            foreach (ItemType type in consumes) {
+            double incomeFactor = 1;
+            foreach (var consume in consumes) {
+                var type = consume.Key;
+                var consumed = consumeTime * consume.Value;
                 var planetQuant = items[type].quant;
-                if(planetQuant < consumed) {
-                    var reducedIncome = planetQuant / consumed;
-                    incomeMilliSeconds = incomeMilliSeconds * reducedIncome;
+
+                if (planetQuant < consumed) {
+                    incomeFactor -= (1 - (planetQuant / consumed)) / consumes.Count;
                     items[type].quant = 0;
-                } else
+                }
+                else {
                     items[type].quant -= consumed;
+                    items[type].quant = Math.Max(0, items[type].quant);
+                }
             }
-            this.owner.money += incomeMilliSeconds / 60000 * Browsergame.Settings.incomePerMinute;
+            var income = population * incomeFactor * TotalMillisecondsConsumed / 60000 * Browsergame.Settings.incomePerMinutePerPopulation;
+
+            this.owner.money += income;
 
             this.lastConsumed = DateTime.Now;
 

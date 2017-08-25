@@ -14,12 +14,6 @@
         .success(successFunction)
         .error(function (data) { alert("Der Händler konnte seine Waren nicht handeln."); });
     };
-    this.setOffer = function (offer, sell) {
-        if (sell) var quant = Math.abs(offer.setQuant);
-        else quant = -Math.abs(offer.setQuant);
-        console.warn(offer);
-        syncService.send("setOffer", { planetid: $rootScope.selectedPlanet.id, itemType: offer.type, price: offer.setPrice, quant: quant })
-    }
     this.tradeOk = function (item, menge) {
         if (!$rootScope.selectedUnit) return false;
         if (menge == 0 || item.offer == 0) return false;
@@ -27,7 +21,7 @@
         if(item.offer < 0){
             if (!$rootScope.selectedUnit.items[item.type] || $rootScope.selectedUnit.items[item.type].quant < menge) return false;
         }else{
-            if ($rootScope.player.gold < item.price * menge || $rootScope.selectedUnit.itemquantsum + menge > $rootScope.selectedUnit.storage) return false;
+            if ($rootScope.player.money < item.price * menge || $rootScope.selectedUnit.itemquantsum + menge > $rootScope.selectedUnit.storage) return false;
         }
         return true;
     }

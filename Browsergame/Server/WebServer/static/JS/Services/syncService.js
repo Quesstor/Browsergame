@@ -82,18 +82,21 @@
             }
             //Consume goods & Get Money incomePerMinute
             var consumed = planet.population * planet.consumedSeconds / 60 * $rootScope.settings.consumePerMinute;
-            var incomeSeconds = planet.consumedSeconds;
-            for (i in planet.consumes) {
-                var type = planet.consumes[i];
+            var consumedMinutes = planet.consumedSeconds / 60;
+            var incomeFactor = 1.0;
+            for (type in planet.consumes) {
+                //var type = planet.consumes[i];
+                var consumed = consumedMinutes * planet.consumes[type];                
                 var planetQuant = planet.items[type].quant;
+                
                 if (planetQuant < consumed) {
-                    var reducedIncome = planetQuant / consumed;
-                    incomeSeconds = incomeSeconds * reducedIncome;
+                    incomeFactor -= (1 - (planetQuant / consumed)) / Object.keys(planet.consumes).length;
                     planet.items[type].quant = 0;
                 } else
                     planet.items[type].quant -= consumed;
             }
-            $rootScope.player.money += incomeSeconds / 60 * $rootScope.settings.incomePerMinute;
+            $rootScope.player.income = planet.population * incomeFactor * $rootScope.settings.incomePerMinute;
+            $rootScope.player.money += $rootScope.player.income * consumedMinutes;
             planet.consumedSeconds = perSecond;
         });
     }

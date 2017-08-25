@@ -1,9 +1,8 @@
 <div style="margin-bottom: 20px;">
     <div ng-hide="editinfo">
-        <button ng-show="$root.selectedPlanet.owner==$root.player.id" class="btn btn-default pull-right" ng-click="editinfo=true; setinfo=$root.selectedPlanet.info">
+        <button ng-show="planet.owner==$root.player.id" class="btn btn-default pull-right" ng-click="editinfo=true; setinfo=planet.info">
             <span class="glyphicon glyphicon-pencil"></span>
-        </button> 
-        {{$root.selectedPlanet.info}}
+        </button> {{planet.info}}
     </div>
     <div ng-show="editinfo">
         <div class="btn-group pull-right" ng-click="editinfo=false">
@@ -15,9 +14,15 @@
             </button>
         </div>
         <br />
-        <input type="text" class="form-control" ng-model="setName" placeholder="Planeten Name"/>
-        <textarea class="form-control" ng-model="setInfo" placeholder="Planeten Beschreibung" />
+        <input type="text" class="form-control" ng-model="setName" placeholder="Planeten Name" maxlength="50" />
+        <textarea class="form-control" ng-model="setInfo" placeholder="Planeten Beschreibung" maxlength="500" />
     </div>
-
-    
+    <table class="table table-condensed">
+        <tr><td>Bevölkerung</td><td>Konsumiert</td><td>Generiert</td></tr>
+        <tr>
+            <td>{{planet.population}}</td>
+            <td><itemsquare item="{type: type}" ng-repeat="(type,quant) in planet.consumes" quant="-planet.population * quant * $root.settings.consumePerMinute" /></td>
+            <td><price value="$root.player.income" /></td>
+        </tr>
+    </table>
 </div>

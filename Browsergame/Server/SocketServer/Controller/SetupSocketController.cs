@@ -21,7 +21,7 @@ namespace Browsergame.Server.SocketServer.Controller {
             settings.Add("items", Game.Entities.Settings.ItemSettings.settings);
             settings.Add("productionsPerMinute", Settings.productionsPerMinute);
             settings.Add("consumePerMinute", Settings.consumePerMinute);
-            settings.Add("incomePerMinute", Settings.incomePerMinute);
+            settings.Add("incomePerMinute", Settings.incomePerMinutePerPopulation);
             data.Add(settings.toDictWithKey());
 
 

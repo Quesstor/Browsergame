@@ -32,6 +32,8 @@ namespace Browsergame.Game.Event.Timed {
 
         }
         public override bool conditions() {
+            if (setName.Length > 50) return false;
+            if (setInfo.Length > 500) return false;
             return true;
         }
         public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
