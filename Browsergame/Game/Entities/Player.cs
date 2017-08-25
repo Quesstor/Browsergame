@@ -14,7 +14,7 @@ namespace Browsergame.Game.Entities {
         [DataMember] public long id { get; set; }
         [DataMember] public string name;
         [DataMember] public string token;
-        [DataMember] public int money;
+        [DataMember] public double money;
         [DataMember] public bool online = false;
 
         [DataMember] public List<Planet> planets = new List<Planet>();

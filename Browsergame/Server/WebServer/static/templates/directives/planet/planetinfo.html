@@ -2,7 +2,8 @@
     <div ng-hide="editinfo">
         <button ng-show="$root.selectedPlanet.owner==$root.player.id" class="btn btn-default pull-right" ng-click="editinfo=true; setinfo=$root.selectedPlanet.info">
             <span class="glyphicon glyphicon-pencil"></span>
-        </button> {{$root.selectedPlanet.info}}
+        </button> 
+        {{$root.selectedPlanet.info}}
     </div>
     <div ng-show="editinfo">
         <div class="btn-group pull-right" ng-click="editinfo=false">
@@ -17,4 +18,6 @@
         <input type="text" class="form-control" ng-model="setName" placeholder="Planeten Name"/>
         <textarea class="form-control" ng-model="setInfo" placeholder="Planeten Beschreibung" />
     </div>
+
+    
 </div>

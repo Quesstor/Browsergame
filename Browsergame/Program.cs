@@ -23,6 +23,7 @@ namespace Browsergame {
         }
         private static void stop() {
             PlayerWebsocketConnections.closeAll();
+            Thread.Sleep(1000);
             WebServer.Dispose();
             SocketServer.Dispose();
             Game.Engine.Engine.Stop();

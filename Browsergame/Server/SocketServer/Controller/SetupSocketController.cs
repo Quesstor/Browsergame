@@ -20,6 +20,8 @@ namespace Browsergame.Server.SocketServer.Controller {
             settings.Add("units", Game.Entities.Settings.UnitSettings.settings);
             settings.Add("items", Game.Entities.Settings.ItemSettings.settings);
             settings.Add("productionsPerMinute", Settings.productionsPerMinute);
+            settings.Add("consumePerMinute", Settings.consumePerMinute);
+            settings.Add("incomePerMinute", Settings.incomePerMinute);
             data.Add(settings.toDictWithKey());
 
 

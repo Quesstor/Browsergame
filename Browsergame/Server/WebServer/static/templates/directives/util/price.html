@@ -9,7 +9,7 @@
             <td style="line-height: 1;">
                 <span ng-class="{'text-danger':$root.player.money+value<0,'text-success':value>0, 'text-danger':value<0}">{{value>0?'+':''}}{{value}}</span>
                 <div>
-                    {{$root.player.money}}
+                    {{$root.player.money.toFixed(0)}}
                 </div>
             </td>
         </tr>

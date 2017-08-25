@@ -30,17 +30,17 @@ namespace Browsergame.Game.Entities.Settings {
                     case BuildingType.DeuteriumCollector:
                         setting.buildCosts.Add(ItemType.Metal, 100);
                         setting.educts.Add(ItemType.Water, 20);
-                        setting.itemProducts.Add(ItemType.Deuterium, 1000); break;
+                        setting.itemProducts.Add(ItemType.Deuterium, 10); break;
                     case BuildingType.WaterPurification:
                         setting.buildCosts.Add(ItemType.Metal, 100);
-                        setting.itemProducts.Add(ItemType.Water, 1000); break;
+                        setting.itemProducts.Add(ItemType.Water, 10); break;
                     case BuildingType.MetalMine:
                         setting.buildCosts.Add(ItemType.Deuterium, 50);
                         setting.buildCosts.Add(ItemType.Water, 200);
                         setting.buildPrice = 200;
                         setting.educts.Add(ItemType.Water, 5);
                         setting.educts.Add(ItemType.Deuterium, 1);
-                        setting.itemProducts.Add(ItemType.Metal, 10); break;
+                        setting.itemProducts.Add(ItemType.Metal, 5); break;
                     case BuildingType.ShipYard:
                         setting.buildCosts.Add(ItemType.Metal, 100);
                         setting.educts.Add(ItemType.Metal, 50);

@@ -5,18 +5,21 @@
     $scope.planetService = planetService;
     $scope.uiService = uiService;
 
-    $scope.$watch(function() {
-        return $rootScope.selectedPlanet;
-      }, function() {
+
+    $scope.$watch(function () {
+        if($rootScope.selectedPlanet)
+        return $rootScope.selectedPlanet.id;
+    }, function () {
+        if (!$rootScope.selectedPlanet) return;
         $scope.setName = $rootScope.selectedPlanet.name;
         $scope.setInfo = $rootScope.selectedPlanet.info;
-      }, true);
+    }, true);
 
     $scope.updatePlanetInfo = function () {
         syncService.send("updatePlanetInfo", {
             planetID: $rootScope.selectedPlanet.id,
-            setName: $scope.setName==""? $rootScope.selectedPlanet.name : $scope.setName,            
-            setInfo: $scope.setInfo==""? $rootScope.selectedPlanet.info : $scope.setInfo 
+            setName: $scope.setName == "" ? $rootScope.selectedPlanet.name : $scope.setName,
+            setInfo: $scope.setInfo == "" ? $rootScope.selectedPlanet.info : $scope.setInfo
         });
     }
 });

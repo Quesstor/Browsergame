@@ -23,11 +23,17 @@ namespace Browsergame.Game.Entities.Settings {
                 setting.name = type.ToString();
                 switch (type) {
                     case ItemType.Water:
-                        setting.rarity = ItemRarity.poor; break;
+                        setting.rarity = ItemRarity.poor; 
+                        setting.name = "Trinkwasser";
+                        break;
                     case ItemType.Metal:
-                        setting.rarity = ItemRarity.common; break;
+                        setting.rarity = ItemRarity.common;
+                        setting.name = "Metall";
+                        break;
                     case ItemType.Deuterium:
-                        setting.rarity = ItemRarity.uncommon; break;
+                        setting.rarity = ItemRarity.uncommon;
+                        setting.name = "Deuterium";
+                        break;
                 }
                 settings.Add(type, setting);
             }

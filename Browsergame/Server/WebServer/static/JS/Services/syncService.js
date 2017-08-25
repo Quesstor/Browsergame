@@ -1,4 +1,4 @@
-﻿angular.module('app').service('syncService', function ($http, $interval, $rootScope, $compile, $location, $timeout, mapService, $websocket) {  
+﻿angular.module('app').service('syncService', function ($http, $interval, $rootScope, $compile, $location, $timeout, mapService, $websocket) {
     var syncService = this;
     syncService.updateData = function (data) {
         if (!data) { console.log("NO SYNC DATA"); return; }
@@ -42,7 +42,7 @@
             for (var k in $rootScope.planets) $rootScope.planets[k].unitcounts = {};
             for (var k in data.units) {
                 var unit = data.units[k];
-                if ((unit.planet || unit.planet===0) && $rootScope.planets[unit.planet]) {
+                if ((unit.planet || unit.planet === 0) && $rootScope.planets[unit.planet]) {
                     $rootScope.planets[unit.planet].unitcounts[unit.type] = ($rootScope.planets[unit.planet].unitcounts[unit.type] + 1) || 1;
                 }
             }
@@ -61,8 +61,10 @@
         var perSecond = syncService.syncLoopIntervall / 1000;
         var perMinute = perSecond / 60;
         angular.forEach($rootScope.planets, function (planet, key) {
+            if (planet.owner != $rootScope.player.id) return;
             if (planet.buildings) {
                 angular.forEach(planet.buildings, function (building, key) {
+                    //Produce
                     var products = $rootScope.settings.buildings[key].itemProducts;
                     var educts = $rootScope.settings.buildings[key].educts;
                     var productions = building.lvl * building.productionSeconds * $rootScope.settings.productionsPerMinute / 60;
@@ -73,21 +75,37 @@
                     angular.forEach(products, function (productionAmount, product) {
                         planet.items[product].quant += productionAmount * productions;
                     });
-                    if(building.upgradeDuration) building.upgradeDuration -= 1 * perSecond;
+
+                    if (building.upgradeDuration) building.upgradeDuration -= 1 * perSecond;
                     building.productionSeconds = perSecond;
                 });
             }
+            //Consume goods & Get Money incomePerMinute
+            var consumed = planet.population * planet.consumedSeconds / 60 * $rootScope.settings.consumePerMinute;
+            var incomeSeconds = planet.consumedSeconds;
+            for (i in planet.consumes) {
+                var type = planet.consumes[i];
+                var planetQuant = planet.items[type].quant;
+                if (planetQuant < consumed) {
+                    var reducedIncome = planetQuant / consumed;
+                    incomeSeconds = incomeSeconds * reducedIncome;
+                    planet.items[type].quant = 0;
+                } else
+                    planet.items[type].quant -= consumed;
+            }
+            $rootScope.player.money += incomeSeconds / 60 * $rootScope.settings.incomePerMinute;
+            planet.consumedSeconds = perSecond;
         });
     }
 
-    syncService.socketError = function (data) { 
-        console.error("Socket error:"); 
-        console.error(data); 
+    syncService.socketError = function (data) {
+        console.error("Socket error:");
+        console.error(data);
         syncService.connected = false;
         $location.path('/login');
     }
-    syncService.socketClosed = function (data) { 
-        console.log("Socket closed:"); 
+    syncService.socketClosed = function (data) {
+        console.log("Socket closed:");
         syncService.connected = false;
         $location.path('/login');
     }
@@ -99,15 +117,15 @@
     }
 
     syncService.connected = false;
-    syncService.connect = function(){
-        if(syncService.connected) return;
+    syncService.connect = function () {
+        if (syncService.connected) return;
         syncService.connected = true;
 
-        var socketUrl = "ws:"+$location.absUrl().split(":")[1]+":2121";
+        var socketUrl = "ws:" + $location.absUrl().split(":")[1] + ":2121";
         console.log("Connecting to " + socketUrl);
 
         $rootScope.socket = $websocket(socketUrl)
-            .onMessage(function(message){
+            .onMessage(function (message) {
                 var data = JSON.parse(message.data);
                 console.log("Received Message: ");
                 console.log(JSON.parse(message.data));
@@ -119,8 +137,8 @@
                 syncService.send("setup");
             });
     }
-    syncService.disconnect = function(){
-        if(!syncService.connected) return;
+    syncService.disconnect = function () {
+        if (!syncService.connected) return;
         syncService.connected = false;
         $rootScope.socket.close();
         console.log("Disconnected");
