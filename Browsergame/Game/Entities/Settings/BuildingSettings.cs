@@ -29,8 +29,8 @@ namespace Browsergame.Game.Entities.Settings {
                 switch (type) {
                     case BuildingType.DeuteriumCollector:
                         setting.buildCosts.Add(ItemType.Metal, 100);
-                        setting.educts.Add(ItemType.Water, 20);
-                        setting.itemProducts.Add(ItemType.Deuterium, 10); break;
+                        setting.educts.Add(ItemType.Water, 5);
+                        setting.itemProducts.Add(ItemType.Deuterium, 1); break;
                     case BuildingType.WaterPurification:
                         setting.buildCosts.Add(ItemType.Metal, 100);
                         setting.itemProducts.Add(ItemType.Water, 10); break;

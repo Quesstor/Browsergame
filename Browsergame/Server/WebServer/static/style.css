@@ -186,7 +186,15 @@ itemsquare, unitsquare {
 .btn label:hover {
     cursor: pointer;
 }
-
+.hovermenu{
+    position: absolute;
+    background: white;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 0 0 5px 5px;
+    border-top: none;
+    top: 0;
+}
 .modal-body {
     transition: all 0.5s ease 0s;
 }

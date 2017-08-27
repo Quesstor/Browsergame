@@ -1,28 +1,69 @@
 <div style="margin-bottom: 20px;">
-    <div ng-hide="editinfo">
-        <button ng-show="planet.owner==$root.player.id" class="btn btn-default pull-right" ng-click="editinfo=true; setinfo=planet.info">
-            <span class="glyphicon glyphicon-pencil"></span>
-        </button> {{planet.info}}
-    </div>
-    <div ng-show="editinfo">
-        <div class="btn-group pull-right" ng-click="editinfo=false">
-            <button class="btn btn-default " ng-click="updatePlanetInfo(setinfo);">
-                Speichern
-            </button>
-            <button class="btn btn-default">
-                <span class="glyphicon glyphicon-remove"></span>
-            </button>
-        </div>
-        <br />
-        <input type="text" class="form-control" ng-model="setName" placeholder="Planeten Name" maxlength="50" />
-        <textarea class="form-control" ng-model="setInfo" placeholder="Planeten Beschreibung" maxlength="500" />
-    </div>
+
     <table class="table table-condensed">
-        <tr><td>Bevölkerung</td><td>Konsumiert</td><td>Generiert</td></tr>
         <tr>
-            <td>{{planet.population}}</td>
-            <td><itemsquare item="{type: type}" ng-repeat="(type,quant) in planet.consumes" quant="-planet.population * quant * $root.settings.consumePerMinute" /></td>
-            <td><price value="$root.player.income" /></td>
+            <td class="btn-td" style="position:relative">
+                <div>
+                    <div ng-show="planet().owner==$root.player.id && !editinfo" class="btn btn-xs btn-default pull-right" ng-click="editinfo=true; setinfo=planet().info">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </div>
+                    {{planet().info}}
+                </div>
+                <div ng-show="editinfo" class="hovermenu" style="min-width: 200px">
+                    Planeten Name
+                    <input type="text" class="form-control" ng-model="setName" placeholder="Planeten Name" maxlength="50" />                    Beschreibung
+                    <textarea class="form-control" ng-model="setInfo" placeholder="Planeten Beschreibung" maxlength="500" />
+                    <br>
+                    <div class="btn-group btn-group-sm pull-right" ng-click="editinfo=false">
+                        <button class="btn btn-primary btn-sm" ng-click="updatePlanetInfo(setinfo);">Speichern</button>
+                        <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span></button>
+                    </div>
+                </div>
+            </td>
+            <td>Produziert</td>
+            <td>Konsumiert</td>
+            <td>Generiert</td>
+        </tr>
+        <tr>
+            <td>Insgesamt</td>
+            <td>
+                <itemsquare item="{type: type}" ng-repeat="(type,quant) in planet().products" quant="'+'+quant" ng-if="quant>0" />
+            </td>
+            <td>
+                <itemsquare item="{type: type}" ng-repeat="(type,quant) in planet().consumes" quant="'-'+quant" ng-if="quant>0" />
+            </td>
+            <td>
+                <price value="totalIncome().toFixed(0)"></price>
+            </td>
         </tr>
     </table>
+    <table class="table table-condensed">
+        <tr class="notopborder">
+            <td>Bevölkerung</td>
+            <td>Konsumiert</td>
+            <td>Generiert</td>
+        </tr>
+        <tr ng-repeat="(population,consumes) in planet().consumesPerPopulation" ng-show="population<=planet().population">
+            <td>{{population}}</td>
+            <td>
+                <itemsquare item="{type: type}" ng-repeat="(type,quant) in consumes" quant="-quant * $root.settings.consumePerMinute"></itemsquare>
+            </td>
+            <td>
+                <price value="$root.player.income[population].toFixed(0) || 0" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div ng-hide="planet().populationSurplus==1">{{(planet().populationSurplus*100).toFixed(2)}}% bis zur nächsten Stufe</div>
+                <div class="btn btn-sm btn-success" ng-show="planet().populationSurplus==1" ng-click="increasePopulation()">
+                    Ausbauen
+                </div>
+            </td>
+            <td style="opacity: 0.3">
+                <itemsquare item="{type: type}" ng-repeat="(type,quant) in planet().consumesPerPopulation[planet().population+1]" quant="-planet().population * quant * $root.settings.consumePerMinute"></itemsquare>
+            </td>
+            <td>
+            </td>
+    </table>
+
 </div>

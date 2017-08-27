@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace Browsergame
-{
-    static class Settings
-    {
+using Browsergame.Game.Entities.Settings;
+namespace Browsergame {
+    static class Settings {
         //Local
         public static string webserverUrl = "http://127.0.0.1:21212/";
         public static string socketServerUrl = "ws://127.0.0.1:2121";
@@ -25,6 +23,14 @@ namespace Browsergame
         public static double consumePerMinute = 1;
 
         public static double incomePerMinutePerPopulation = 5;
+        public static double populationSurplusPerMinute = 5;
+
+        public static Dictionary<ItemType, double> getConsumeGoods(int planetPopulation) {
+            if (planetPopulation == 1) return new Dictionary<ItemType, double> { { ItemType.Water, 1 } };
+            if (planetPopulation == 2) return new Dictionary<ItemType, double> { { ItemType.Water, 2 }, { ItemType.Deuterium, 1 } };
+
+            return new Dictionary<ItemType, double> { { ItemType.Water, 2 }, { ItemType.Deuterium, 1 }, { ItemType.Metal, 1 } };
+        }
 
         public static double MoveSpeed = 1000;
     }

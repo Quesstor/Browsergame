@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Browsergame.Game.Event.Timed {
+namespace Browsergame.Game.Event.Instant {
     class NewPlayer : Event {
         private string name;
         private string token;

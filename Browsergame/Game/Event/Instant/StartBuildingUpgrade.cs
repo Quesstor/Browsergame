@@ -9,7 +9,7 @@ using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Entities.Settings;
 using Browsergame.Game.Utils;
 
-namespace Browsergame.Game.Event.Timed {
+namespace Browsergame.Game.Event.Instant {
     class StartBuildingUpgrade : Event {
         //{planetid: 1, buildingType: 0}
         private long PlayerID;

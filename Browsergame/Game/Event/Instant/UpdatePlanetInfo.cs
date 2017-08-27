@@ -8,7 +8,7 @@ using Browsergame.Game.Utils;
 using Browsergame.Game.Entities;
 using Browsergame.Game.Event.Timed;
 
-namespace Browsergame.Game.Event.Timed {
+namespace Browsergame.Game.Event.Instant {
     class UpdatePlanetInfo : Event {
         private long playerID;
         private long planetID;

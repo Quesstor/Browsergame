@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Browsergame.Game.Utils;
 
-namespace Browsergame.Game.Event.Timed {
+namespace Browsergame.Game.Event.Instant {
     class SetOffer : Event {
         private long playerID;
         private long planetID;

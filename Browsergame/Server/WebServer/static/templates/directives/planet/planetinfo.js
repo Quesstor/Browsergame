@@ -13,14 +13,27 @@
         if (!$rootScope.selectedPlanet) return;
         $scope.setName = $rootScope.selectedPlanet.name;
         $scope.setInfo = $rootScope.selectedPlanet.info;
-        $scope.planet = $rootScope.selectedPlanet;
     }, true);
-
+    $scope.planet = function(){
+        return $rootScope.selectedPlanet;
+    }
     $scope.updatePlanetInfo = function () {
         syncService.send("updatePlanetInfo", {
             planetID: $rootScope.selectedPlanet.id,
             setName: $scope.setName == "" ? $rootScope.selectedPlanet.name : $scope.setName,
             setInfo: $scope.setInfo == "" ? $rootScope.selectedPlanet.info : $scope.setInfo
         });
+    }
+    $scope.increasePopulation = function () {
+        syncService.send("increasePopulation", {
+            planetID: $rootScope.selectedPlanet.id
+        });
+    }
+    $scope.totalIncome = function(){
+        var income = 0;
+        for( var population in $rootScope.player.income){
+            income += $rootScope.player.income[population];
+        }
+        return income;
     }
 });

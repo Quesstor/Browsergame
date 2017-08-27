@@ -112,6 +112,7 @@
     <Compile Include="Game\Entities\Settings\ItemSettings.cs" />
     <Compile Include="Game\Entities\Settings\UnitSettings.cs" />
     <Compile Include="Game\Entities\Unit.cs" />
+    <Compile Include="Game\Event\Instant\IncreasePopulation.cs" />
     <Compile Include="Game\Event\Instant\UpdatePlanetInfo.cs" />
     <Compile Include="Game\Event\Timed\AddUnit.cs" />
     <Compile Include="Game\Event\Instant\PlayerOnline.cs" />

@@ -8,6 +8,7 @@ using Browsergame.Game.Event;
 using Fleck;
 using System;
 using Browsergame.Game.Event.Timed;
+using Browsergame.Game.Event.Instant;
 
 namespace Browsergame.Server.SocketServer {
     static class PlayerWebsocketConnections {

@@ -19,13 +19,14 @@ namespace Browsergame.Game.Entities {
         [DataMember] public Player owner;
         [DataMember] public int type;
         [DataMember] public int population;
+        [DataMember] public double populationSurplus = 0;
         [DataMember] public DateTime lastConsumed;
 
         [DataMember] public Dictionary<ItemType, Item> items = Item.newItemDict();
         [DataMember] public Dictionary<ItemType, Offer> offers = Offer.newOfferDict();
         [DataMember] public Dictionary<BuildingType, Building> buildings = Building.newBuildingList();
         [DataMember] public List<Unit> units = new List<Unit>();
-        [DataMember] public Dictionary<ItemType, int> consumes = new Dictionary<ItemType, int>();
+        [DataMember] public Dictionary<int, Dictionary<ItemType, double>> consumesPerPopulation = new Dictionary<int, Dictionary<ItemType, double>>();
 
         public Planet(string name, Player owner, Location location, string info) {
             Random rand = new Random();
@@ -37,9 +38,10 @@ namespace Browsergame.Game.Entities {
             this.lastConsumed = DateTime.Now;
             owner.planets.Add(this);
             type = rand.Next(0, 10);
-            consumes[ItemType.Water] = 5;
-            consumes[ItemType.Deuterium] = 1;
             buildings[BuildingType.ShipYard].lvl = 1;
+            consumesPerPopulation[1] = Browsergame.Settings.getConsumeGoods(1);
+            consumesPerPopulation[2] = Browsergame.Settings.getConsumeGoods(2);
+
             foreach (Entities.Item item in items.Values) item.quant = 500;
             items[ItemType.Deuterium].quant = 0;
         }
@@ -62,7 +64,8 @@ namespace Browsergame.Game.Entities {
                 data["items"] = items;
                 data["offers"] = offers;
                 data["population"] = population;
-                data["consumes"] = consumes;
+                data["populationSurplus"] = populationSurplus;
+                data["consumesPerPopulation"] = consumesPerPopulation;
                 data["consumedSeconds"] = (DateTime.Now - lastConsumed).TotalSeconds;
             }
             return data;
@@ -94,30 +97,33 @@ namespace Browsergame.Game.Entities {
             }
 
             //Consume goods
-            double TotalMillisecondsConsumed = (int)Math.Floor((DateTime.Now - this.lastConsumed).TotalMilliseconds);
-            var consumeTime =  TotalMillisecondsConsumed / 60000 * Browsergame.Settings.consumePerMinute;
+            double TotalMinutesConsumed = (DateTime.Now - this.lastConsumed).TotalMilliseconds / 60000;
+            for (var population = 1; population <= this.population; population++) {
+                double missingGoodsFactor = 1;
 
-            double incomeFactor = 1;
-            foreach (var consume in consumes) {
-                var type = consume.Key;
-                var consumed = consumeTime * consume.Value;
-                var planetQuant = items[type].quant;
+                foreach (var consume in consumesPerPopulation[population]) {
+                    var type = consume.Key;
+                    var consumed = TotalMinutesConsumed * consume.Value * Browsergame.Settings.consumePerMinute;
+                    var planetQuant = items[type].quant;
 
-                if (planetQuant < consumed) {
-                    incomeFactor -= (1 - (planetQuant / consumed)) / consumes.Count;
-                    items[type].quant = 0;
+                    if (planetQuant < consumed) {
+                        missingGoodsFactor -= (1 - (planetQuant / consumed)) / consumesPerPopulation[population].Count;
+                        items[type].quant = 0;
+                    }
+                    else {
+                        items[type].quant -= consumed;
+                    }
                 }
-                else {
-                    items[type].quant -= consumed;
-                    items[type].quant = Math.Max(0, items[type].quant);
+                var income = missingGoodsFactor * TotalMinutesConsumed * Browsergame.Settings.incomePerMinutePerPopulation;
+                this.owner.money += income * population;
+
+                if (population == this.population) {
+                    if (missingGoodsFactor < 1 && populationSurplus > missingGoodsFactor) populationSurplus = missingGoodsFactor;
+                    else populationSurplus += missingGoodsFactor * TotalMinutesConsumed * Browsergame.Settings.populationSurplusPerMinute;
+                    populationSurplus = Math.Min(1, populationSurplus);
                 }
             }
-            var income = population * incomeFactor * TotalMillisecondsConsumed / 60000 * Browsergame.Settings.incomePerMinutePerPopulation;
-
-            this.owner.money += income;
-
             this.lastConsumed = DateTime.Now;
-
         }
     }
 }
