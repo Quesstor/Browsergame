@@ -1,5 +1,5 @@
 ﻿$("#map").height($(window).height());
-var map = L.map('map', { zoomControl: false }).setView([0,0], 15);
+var map = L.map('map', { crs: L.CRS.Simple, zoomControl: false }).setView([0,0], 15);
 //L.tileLayer('map/{z}/{x}/{y}.png', {
 L.tileLayer('map/black.png', {
     attribution: '',

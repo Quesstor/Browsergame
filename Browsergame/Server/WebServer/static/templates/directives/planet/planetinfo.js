@@ -30,6 +30,7 @@
         });
     }
     $scope.totalIncome = function(){
+        if(!$rootScope.player) return;
         var income = 0;
         for( var population in $rootScope.player.income){
             income += $rootScope.player.income[population];

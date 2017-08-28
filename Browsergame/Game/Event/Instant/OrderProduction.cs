@@ -35,7 +35,7 @@ namespace Browsergame.Game.Event.Instant {
         public override bool conditions() {
 
             var Building = Planet.buildings[BuildingType];
-
+            if (Building.BuildingUpgrade != null) return false;
             if (Planet.owner.id != Player.id) return false;
             if (Building.lvl == 0) return false;
             foreach (var e in Building.setting.educts) {

@@ -39,7 +39,7 @@ namespace Browsergame.Game.Event.Instant {
         public override bool conditions() {
             if (planet.owner.id != player.id) return false;
             if (player.money < building.setting.buildPrice) return false;
-            if (building.BuildinUpgrade != null) return false;
+            if (building.BuildingUpgrade != null) return false;
             foreach (var cost in building.setting.buildCosts) {
                 if (planet.items[cost.Key].quant < cost.Value * (building.lvl + 1)) return false;
             }
@@ -65,8 +65,8 @@ namespace Browsergame.Game.Event.Instant {
 
             var executionTime = DateTime.Now.AddSeconds(building.setting.buildTimeInSeconds);
             var newTimedEvents = new List<TimedEvent>();
-            var upgradeEvent = new Timed.BuildinUpgrade(PlanetID, BuildingType, executionTime);
-            building.BuildinUpgrade = upgradeEvent;
+            var upgradeEvent = new Timed.BuildingUpgrade(PlanetID, BuildingType, executionTime);
+            building.BuildingUpgrade = upgradeEvent;
             newTimedEvents.Add(upgradeEvent);
 
             return newTimedEvents;

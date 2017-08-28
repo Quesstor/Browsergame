@@ -4,10 +4,10 @@
         <tr>
             <td class="btn-td" style="position:relative">
                 <div>
-                    <div ng-show="planet().owner==$root.player.id && !editinfo" class="btn btn-xs btn-default pull-right" ng-click="editinfo=true; setinfo=planet().info">
+                    {{planet().info}}
+                    <div ng-show="planet().owner==$root.player.id && !editinfo" class="btn btn-xs btn-default" ng-click="editinfo=true; setinfo=planet().info">
                         <span class="glyphicon glyphicon-pencil"></span>
                     </div>
-                    {{planet().info}}
                 </div>
                 <div ng-show="editinfo" class="hovermenu" style="min-width: 200px">
                     Planeten Name

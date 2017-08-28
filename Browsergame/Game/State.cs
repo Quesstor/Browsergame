@@ -16,7 +16,7 @@ namespace Browsergame.Game {
     [KnownType(typeof(Unit))]
     [KnownType(typeof(TimedEvent))]
     [KnownType(typeof(Fight))]
-    [KnownType(typeof(BuildinUpgrade))]
+    [KnownType(typeof(BuildingUpgrade))]
     [KnownType(typeof(AddUnits))]
     class State {
         [DataMember] public Dictionary<long, Player> players = new Dictionary<long, Player>();

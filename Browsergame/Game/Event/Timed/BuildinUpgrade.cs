@@ -10,11 +10,11 @@ using Browsergame.Game.Utils;
 
 namespace Browsergame.Game.Event.Timed {
     [DataContract]
-    class BuildinUpgrade : TimedEvent {
+    class BuildingUpgrade : TimedEvent {
         [DataMember] private long PlanetID;
         [DataMember] private BuildingType BuildingType;
 
-        public BuildinUpgrade(long planetID, BuildingType buildingType, DateTime executionTime) : base(executionTime) {
+        public BuildingUpgrade(long planetID, BuildingType buildingType, DateTime executionTime) : base(executionTime) {
             PlanetID = planetID;
             BuildingType = buildingType;
         }
@@ -36,7 +36,7 @@ namespace Browsergame.Game.Event.Timed {
             SubscriberUpdates.Add(planet, Utils.SubscriberLevel.Owner);
 
             building.lvl += 1;
-            building.BuildinUpgrade = null;
+            building.BuildingUpgrade = null;
             return null;
         }
 

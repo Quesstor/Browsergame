@@ -13,7 +13,7 @@ namespace Browsergame.Game.Entities {
         [DataMember] public BuildingType type;
         [DataMember] public int lvl;
         [DataMember] public double orderedProductions = 0;
-        [DataMember] public Event.Timed.BuildinUpgrade BuildinUpgrade;
+        [DataMember] public Event.Timed.BuildingUpgrade BuildingUpgrade;
         [DataMember] public DateTime lastProduced;
 
         public Building(BuildingType type) {
@@ -29,7 +29,7 @@ namespace Browsergame.Game.Entities {
             data["productionSeconds"] = (DateTime.Now - lastProduced).TotalSeconds;
 
             if (setting.educts.Count > 0) data["orderedProductions"] = orderedProductions;
-            if (BuildinUpgrade != null) data["upgradeDuration"] = (BuildinUpgrade.executionTime - DateTime.Now).TotalSeconds;
+            if (BuildingUpgrade != null) data["upgradeDuration"] = (BuildingUpgrade.executionTime - DateTime.Now).TotalSeconds;
             return data;
         }
 
