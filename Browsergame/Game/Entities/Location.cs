@@ -13,9 +13,9 @@ namespace Browsergame.Game.Entities {
 
         public void random() {
             Random rand = new Random();
-            double sqrlength = 0.01;
-            x = (rand.Next(0, 1000) / 1000f - 0.5) * 2 * sqrlength; //Bounded to: -85 to +85
-            y = (rand.Next(0, 1000) / 1000f - 0.5) * 2 * sqrlength; //Bounded to: -180 to +180
+            double sqrlength = 0.03;
+            x = 48+(rand.Next(0, 1000) / 1000f - 0.5) * 2 * sqrlength; //Bounded to: -85 to +85
+            y = 5+(rand.Next(0, 1000) / 1000f - 0.5) * 2 * sqrlength; //Bounded to: -180 to +180
         }
 
         public double range(Location loc2) {

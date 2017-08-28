@@ -29,6 +29,7 @@ namespace Browsergame.Game.Engine {
             EventEngine.ProcessEvents(); //Wait for next tick so all events get calculated
             StateEngine.Dispose();
         }
+        private static bool makePersitentSave = false;
         public static void Tick() {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -38,8 +39,13 @@ namespace Browsergame.Game.Engine {
             if (EventsProcessed.Count > 0) {
                 StateEngine.CopyWriteStateToReadState();
                 foreach (var e in EventsProcessed) e.processed.Set();
-                if (tickcount % Settings.persistenSaveEveryXTick == 0) StateEngine.TryPersistentSave();
+                if (makePersitentSave) {
+                    StateEngine.TryPersistentSave();
+                    makePersitentSave = false;
+                }
             }
+
+            if (tickcount % Settings.persistenSaveEveryXTick == 0) makePersitentSave = true;
 
             stopwatch.Stop();
             var ms = stopwatch.ElapsedMilliseconds;
