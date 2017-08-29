@@ -46,7 +46,7 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
-        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             var building = planet.buildings[BuildingType];
             player.money -= building.setting.buildPrice * (building.lvl + 1);
             if (building.setting.educts.Count > 0) { //Remove ordered Productions
@@ -64,7 +64,7 @@ namespace Browsergame.Game.Event.Instant {
             SubscriberUpdates.Add(planet, SubscriberLevel.Owner);
 
             var executionTime = DateTime.Now.AddSeconds(building.setting.buildTimeInSeconds);
-            var newTimedEvents = new List<TimedEvent>();
+            var newTimedEvents = new List<Event>();
             var upgradeEvent = new Timed.BuildingUpgrade(PlanetID, BuildingType, executionTime);
             building.BuildingUpgrade = upgradeEvent;
             newTimedEvents.Add(upgradeEvent);

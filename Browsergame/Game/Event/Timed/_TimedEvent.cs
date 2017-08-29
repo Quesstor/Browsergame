@@ -9,13 +9,5 @@ using System.Threading;
 using System.Runtime.Serialization;
 
 namespace Browsergame.Game.Event.Timed {
-    [DataContract]
-    abstract class TimedEvent : Event, IEvent {
-        public DateTime executionTime;
 
-
-        public TimedEvent(DateTime executionTime) {
-            this.executionTime = executionTime;
-        }
-    }
 }

@@ -9,6 +9,8 @@
                 $cookies.put("token", r.data);
                 $cookies.put("user", $scope.user.name);
                 $location.path('/game');
+            }, function(){
+                $scope.loginstatus = "failed";
             });
     };
     syncService.disconnect();

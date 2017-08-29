@@ -38,6 +38,7 @@ namespace Browsergame.Game.Engine {
             List<IEvent> EventsProcessed = EventEngine.ProcessEvents();
             if (EventsProcessed.Count > 0) {
                 StateEngine.CopyWriteStateToReadState();
+
                 foreach (var e in EventsProcessed) e.processed.Set();
                 if (makePersitentSave) {
                     StateEngine.TryPersistentSave();

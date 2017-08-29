@@ -27,9 +27,9 @@ namespace Browsergame {
 
         public static Dictionary<ItemType, double> getConsumeGoods(int planetPopulation) {
             if (planetPopulation == 1) return new Dictionary<ItemType, double> { { ItemType.Water, 1 } };
-            if (planetPopulation == 2) return new Dictionary<ItemType, double> { { ItemType.Water, 2 }, { ItemType.Deuterium, 1 } };
+            if (planetPopulation == 2) return new Dictionary<ItemType, double> { { ItemType.Water, 2 }, { ItemType.Food, 1 } };
 
-            return new Dictionary<ItemType, double> { { ItemType.Water, 2 }, { ItemType.Deuterium, 1 }, { ItemType.Metal, 1 } };
+            return new Dictionary<ItemType, double> { { ItemType.Water, 2 }, { ItemType.Food, 1 }, { ItemType.Coal, 1 } };
         }
 
         public static double MoveSpeed = 1000;

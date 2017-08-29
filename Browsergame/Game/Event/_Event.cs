@@ -18,14 +18,15 @@ namespace Browsergame.Game.Event {
 
         void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
         bool conditions();
-        List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates);
+        List<Event> execute(out SubscriberUpdates SubscriberUpdates);
     }
     [DataContract]
 
     abstract class Event : IEvent {
         public abstract void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
         public abstract bool conditions();
-        public abstract List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates);
+        public abstract List<Event> execute(out SubscriberUpdates SubscriberUpdates);
+        public DateTime executionTime;
 
         public ManualResetEvent processed = new ManualResetEvent(false);
         ManualResetEvent IEvent.processed { get => processed; }

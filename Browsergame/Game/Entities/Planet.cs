@@ -38,12 +38,14 @@ namespace Browsergame.Game.Entities {
             this.lastConsumed = DateTime.Now;
             owner.planets.Add(this);
             type = rand.Next(0, 10);
-            buildings[BuildingType.ShipYard].lvl = 1;
+            buildings[BuildingType.Wheatfarm].lvl = 1;
+            buildings[BuildingType.Woodcutter].lvl = 1;
+            buildings[BuildingType.Stonecutter].lvl = 1;
             consumesPerPopulation[1] = Browsergame.Settings.getConsumeGoods(1);
             consumesPerPopulation[2] = Browsergame.Settings.getConsumeGoods(2);
 
-            foreach (Entities.Item item in items.Values) item.quant = 500;
-            items[ItemType.Deuterium].quant = 0;
+            foreach (Entities.Item item in items.Values) item.quant = 100;
+            items[ItemType.Coal].quant = 0;
         }
 
         public override UpdateData getUpdateData(SubscriberLevel subscriber) {
@@ -54,6 +56,7 @@ namespace Browsergame.Game.Entities {
             data["type"] = type;
             data["location"] = location;
             data["owner"] = owner.id;
+            data["population"] = population;
 
             if (subscriber == SubscriberLevel.Owner) {
                 var buildings = new Dictionary<BuildingType, object>();
@@ -63,7 +66,6 @@ namespace Browsergame.Game.Entities {
                 data["buildings"] = buildings;
                 data["items"] = items;
                 data["offers"] = offers;
-                data["population"] = population;
                 data["populationSurplus"] = populationSurplus;
                 data["consumesPerPopulation"] = consumesPerPopulation;
                 data["consumedSeconds"] = (DateTime.Now - lastConsumed).TotalSeconds;

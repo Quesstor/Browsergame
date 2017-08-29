@@ -14,7 +14,7 @@ namespace Browsergame.Game {
     [KnownType(typeof(Player))]
     [KnownType(typeof(Planet))]
     [KnownType(typeof(Unit))]
-    [KnownType(typeof(TimedEvent))]
+    [KnownType(typeof(Event.Event))]
     [KnownType(typeof(Fight))]
     [KnownType(typeof(BuildingUpgrade))]
     [KnownType(typeof(AddUnits))]
@@ -23,7 +23,7 @@ namespace Browsergame.Game {
         [DataMember] public Dictionary<long, Unit> units = new Dictionary<long, Unit>();
         [DataMember] public Dictionary<long, Planet> planets = new Dictionary<long, Planet>();
         [DataMember] public Dictionary<long, Item> items = new Dictionary<long, Item>();
-        [DataMember] public SortedList<DateTime, TimedEvent> timedEventList = new SortedList<DateTime, TimedEvent>();
+        [DataMember] public SortedList<DateTime, Event.Event> timedEventList = new SortedList<DateTime, Event.Event>();
 
         public Player getPlayer(string token) {
             return (from p in players.Values where p.token == token select p).FirstOrDefault();

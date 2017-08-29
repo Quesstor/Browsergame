@@ -34,7 +34,7 @@ namespace Browsergame.Game.Event.Instant {
             return player.id == planet.owner.id && planet.populationSurplus == 1;
         }
 
-        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             SubscriberUpdates = new SubscriberUpdates();
             SubscriberUpdates.Add(planet, SubscriberLevel.Owner);
 

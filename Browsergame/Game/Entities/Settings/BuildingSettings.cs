@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Entities.Settings {
     enum BuildingType {
-        WaterPurification, DeuteriumCollector, MetalMine, ShipYard
+        Stonecutter, Brunnen, Mine, Applefarm, Wheatfarm, Woodcutter, Coalmaker
     }
     class BuildingSettings {
         public static Dictionary<BuildingType, Settings.BuildingSettings> settings = new Dictionary<BuildingType, Settings.BuildingSettings>();
@@ -27,26 +27,41 @@ namespace Browsergame.Game.Entities.Settings {
                 var setting = new BuildingSettings();
                 setting.name = type.ToString();
                 switch (type) {
-                    case BuildingType.DeuteriumCollector:
-                        setting.buildCosts.Add(ItemType.Metal, 100);
-                        setting.educts.Add(ItemType.Water, 5);
-                        setting.itemProducts.Add(ItemType.Deuterium, 1); break;
-                    case BuildingType.WaterPurification:
-                        setting.buildCosts.Add(ItemType.Metal, 100);
-                        setting.itemProducts.Add(ItemType.Water, 10); break;
-                    case BuildingType.MetalMine:
-                        setting.buildCosts.Add(ItemType.Deuterium, 50);
-                        setting.buildCosts.Add(ItemType.Water, 200);
-                        setting.buildPrice = 200;
-                        setting.educts.Add(ItemType.Water, 5);
-                        setting.educts.Add(ItemType.Deuterium, 1);
-                        setting.itemProducts.Add(ItemType.Metal, 5); break;
-                    case BuildingType.ShipYard:
-                        setting.buildCosts.Add(ItemType.Metal, 100);
-                        setting.educts.Add(ItemType.Metal, 50);
-                        setting.educts.Add(ItemType.Deuterium, 100);
-                        setting.unitProducts.Add(UnitType.Fighter, 1);
+                    case BuildingType.Stonecutter:
+                        setting.buildCosts.Add(ItemType.Wood, 20);
+                        setting.itemProducts.Add(ItemType.Stone, 1); break;
+                    case BuildingType.Woodcutter:
+                        setting.buildCosts.Add(ItemType.Wood, 10);
+                        setting.buildCosts.Add(ItemType.Stone, 5);
+                        setting.itemProducts.Add(ItemType.Wood, 1);
                         break;
+                    case BuildingType.Brunnen:
+                        setting.buildCosts.Add(ItemType.Wood, 20);
+                        setting.buildCosts.Add(ItemType.Stone, 50);
+                        setting.itemProducts.Add(ItemType.Water, 5); break;
+                    case BuildingType.Mine:
+                        setting.buildCosts.Add(ItemType.Wood, 100);
+                        setting.buildCosts.Add(ItemType.Stone, 50);
+                        setting.buildPrice = 200;
+                        setting.itemProducts.Add(ItemType.Ore, 1); break;
+                    case BuildingType.Wheatfarm:
+                        setting.buildCosts.Add(ItemType.Wood, 50);
+                        setting.buildCosts.Add(ItemType.Stone, 50);
+                        setting.educts.Add(ItemType.Water, 1);
+                        setting.itemProducts.Add(ItemType.Food, 5);
+                        break;
+                    case BuildingType.Applefarm:
+                        setting.buildCosts.Add(ItemType.Wood, 20);
+                        setting.buildCosts.Add(ItemType.Stone, 5);
+                        setting.itemProducts.Add(ItemType.Food, 1);
+                        break;
+                    case BuildingType.Coalmaker:
+                        setting.buildCosts.Add(ItemType.Wood, 50);
+                        setting.buildCosts.Add(ItemType.Stone, 50);
+                        setting.educts.Add(ItemType.Wood, 3);
+                        setting.itemProducts.Add(ItemType.Coal, 1);
+                        break;
+
 
                 }
                 settings.Add(type, setting);

@@ -24,7 +24,7 @@ namespace Browsergame.Game.Engine {
                 InstantEventList.Add(e);
             }
         }
-        public static void AddTimedEvent(TimedEvent e, State currentWriteState) {
+        public static void AddTimedEvent(Event.Event e, State currentWriteState) {
             gettingEventsFromQueue.WaitOne();
             lock (eventListLock) {
                 while (currentWriteState.timedEventList.ContainsKey(e.executionTime)) {
@@ -72,12 +72,13 @@ namespace Browsergame.Game.Engine {
 
             var AllSubscriberUpdates = new SubscriberUpdates();
             var OnDemandCalculations = new HashSet<Subscribable>();
-            var newTimedEvents = new List<TimedEvent>();
+            var newTimedEvents = new List<Event.Event>();
 
             HashSet<Subscribable> needsOnDemandCalculation = null;
             SubscriberUpdates newSubscriberUpdates = null;
             var sentCount = 0;
             foreach (IEvent e in processingEvents) {
+
                 e.getEntities(state, out needsOnDemandCalculation);
                 OnDemandCalculations.Union(needsOnDemandCalculation);
             }
@@ -85,7 +86,13 @@ namespace Browsergame.Game.Engine {
                 foreach (var s in needsOnDemandCalculation) s.onDemandCalculation();
                 foreach (var e in processingEvents) {
                     if (e.conditions()) {
-                        var timedEvents = e.execute(out newSubscriberUpdates);
+                        List<Event.Event> timedEvents = new List<Event.Event>();
+                        try {
+                            timedEvents = e.execute(out newSubscriberUpdates);
+                        }catch(Exception ex) {
+                            Logger.log(40, Category.Event, Severity.Warn, "Event failed to execute: " + ex.GetType().ToString()+": "+ ex.ToString());
+                        }
+                        
                         AllSubscriberUpdates.Union(newSubscriberUpdates);
 
                         if (timedEvents != null) newTimedEvents.AddRange(timedEvents);
@@ -94,7 +101,7 @@ namespace Browsergame.Game.Engine {
                         Logger.log(40, Category.Event, Severity.Warn, "Event rejected: " + e.GetType().ToString());
                     }
                 }
-                foreach (TimedEvent newTimedEvent in newTimedEvents) AddTimedEvent(newTimedEvent, state);
+                foreach (Event.Event newTimedEvent in newTimedEvents) AddTimedEvent(newTimedEvent, state);
                 state.makeSubscriptions();
                 sentCount = AllSubscriberUpdates.updateSubscribers();
             }

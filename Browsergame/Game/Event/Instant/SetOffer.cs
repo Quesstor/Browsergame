@@ -50,7 +50,7 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
-        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             if (planet.offers[itemType].quant > 0) planet.items[itemType].quant += planet.offers[itemType].quant; //Return items to planet from old sell orders
             if (newQuant > 0) planet.items[itemType].quant -= newQuant; //Take items from planet for sell orders
             planet.offers[itemType].quant = newQuant;

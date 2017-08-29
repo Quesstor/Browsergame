@@ -10,17 +10,18 @@ using Browsergame.Game.Utils;
 
 namespace Browsergame.Game.Event.Timed {
     [DataContract]
-    class Fight : TimedEvent {
+    class Fight : Event {
         [DataMember] private long playerID;
         [DataMember] private long targetPlanetID;
         [DataMember] private long fromPlanetID;
         [DataMember] private List<long> unitIDs;
         [DataMember] private Dictionary<UnitType, int> unitCounts;
 
-        public Fight(long playerID, long targetPlanetID, long fromPlanetID, Dictionary<UnitType, int> unitCounts, List<long> unitIDs, DateTime fightTime) : base(fightTime){
+        public Fight(long playerID, long targetPlanetID, long fromPlanetID, Dictionary<UnitType, int> unitCounts, List<long> unitIDs, DateTime fightTime){
             this.playerID = playerID;
             this.targetPlanetID = targetPlanetID;
             this.unitIDs = unitIDs;
+            this.executionTime = fightTime;
         }
 
         private Player player;
@@ -46,7 +47,7 @@ namespace Browsergame.Game.Event.Timed {
             return true;
         }
 
-        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             SubscriberUpdates = new SubscriberUpdates();
             SubscriberUpdates.Add(player, SubscriberLevel.Owner);
             SubscriberUpdates.Add(targetPlanet.owner, SubscriberLevel.Owner);

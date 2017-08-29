@@ -1,26 +1,33 @@
 ﻿angular.module('app').service('mapService', function ($rootScope, $http, $compile, $interval, $timeout) {
-    var marker = { planets: {}, order: {} };
+    var layers = {};
     var lines = {};
     var mapService = this;
-    this.zoomlevel = 18;
+    this.zoomlevel = 12;
     this.drawPlanetMarker = function () {
-        //Delete Marker not in Data
-        angular.forEach(marker.planets, function (m, id) {
-            map.removeLayer(marker.planets[id]);
-            marker.planets[id] = false;
-        });
-        //Draw missing Marker
+        //Delete Marker
+        for (var type in layers) map.removeLayer(layers[type]);
+        //Add Marker
+        var images = [];
+        var markers = [];
         angular.forEach($rootScope.planets, function (planet, id) {
-            if (!marker.planets[id]) {
-                marker.planets[id] = L.marker([planet.location.x, planet.location.y], {
-                    icon: L.divIcon({
-                        html: '<planetmarker planet="$root.planets[' + id + ']"></planetmarker>',
-                        className: 'mapmarker planetMarker angularCompile',
-                        iconSize: null
-                    })
-                }).addTo(map);
-            }
+            //var size = 0.05;
+            //var imageBounds = [[planet.location.x - size / 2, planet.location.y - size / 2], [planet.location.x + size / 2, planet.location.y + size / 2]];
+            //images.push(L.imageOverlay("/img/icon/cities/city" + (planet.population - 1) + ".png", imageBounds));
+
+
+            markers.push(L.marker([planet.location.x, planet.location.y], {
+                icon: L.divIcon({
+                    html: '<planetmarker planet="$root.planets[' + id + ']"></planetmarker>',
+                    className: 'mapmarker planetMarker angularCompile',
+                    iconSize: null
+                })
+            }));
+
         });
+        //Draw Maker
+        //layers.images = L.layerGroup(images).addTo(map);
+        layers.markers = L.layerGroup(markers).addTo(map);
+        
         $(".angularCompile").each(function () {
             $compile($(this))($rootScope);
             $(this).removeClass("angularCompile");
@@ -28,8 +35,8 @@
     }
     this.drawAllOrders = function () {
         //Player
-        angular.forEach(marker.order, function (order, id) {
-            if (marker.order[id] && !$rootScope.orders[id])
+        angular.forEach(layers.order, function (order, id) {
+            if (layers.order[id] && !$rootScope.orders[id])
                 deleteOrderMarker(id);
         });
         angular.forEach($rootScope.orders, function (order, id) {
@@ -37,11 +44,11 @@
         });
     }
     this.setPlanetMarkerZindex = function (planetid, zindex) {
-        marker.planets[planetid].setZIndexOffset(zindex);
+        layers.planets[planetid].setZIndexOffset(zindex);
     }
     function drawOrder(order) {
         var FPS = 25;
-        if (marker.order[order.id]) return;
+        if (layers.order[order.id]) return;
 
         var targetlocation = $rootScope.planets[order.targetplanet].location;
         var startlocation = $rootScope.planets[order.fromplanet].location;
@@ -53,7 +60,7 @@
         var backVectorLength = Math.sqrt(Math.pow(backVector.x, 2) + Math.pow(backVector.y, 2));
         var normedBackVector = { lat: backVector.x / backVectorLength, lng: backVector.y / backVectorLength };
         var distanceLeft = order.duration * order.movespeed;
-        marker.order[order.id] = L.marker([targetlocation.x + normedBackVector.x * distanceLeft, targetlocation.y + normedBackVector.y * distanceLeft], {
+        layers.order[order.id] = L.marker([targetlocation.x + normedBackVector.x * distanceLeft, targetlocation.y + normedBackVector.y * distanceLeft], {
             icon: L.divIcon({
                 html: "<ordermarker order='$root.orders[" + order.id + "]' style='display:block; margin: -11px 0 0 -12px;'></ordermarker>",
                 className: 'mapmarker angularCompile ',
@@ -65,9 +72,9 @@
             $(this).removeClass("angularCompile");
         });
 
-        marker.order[order.id].normedBackVector = normedBackVector;
-        marker.order[order.id].targetlocation = angular.copy(targetlocation);
-        marker.order[order.id].interval = $interval(function () {
+        layers.order[order.id].normedBackVector = normedBackVector;
+        layers.order[order.id].targetlocation = angular.copy(targetlocation);
+        layers.order[order.id].interval = $interval(function () {
             order.duration -= 1 / FPS;
             if (order.duration <= 0) { //Delete marker
                 deleteOrderMarker(order.id);
@@ -76,10 +83,10 @@
             } else { //Update marker
                 var distanceLeft = order.duration * order.movespeed;
                 var newLocation = {
-                    lat: marker.order[order.id].targetlocation.x + marker.order[order.id].normedBackVector.x * distanceLeft,
-                    lng: marker.order[order.id].targetlocation.y + marker.order[order.id].normedBackVector.y * distanceLeft
+                    lat: layers.order[order.id].targetlocation.x + layers.order[order.id].normedBackVector.x * distanceLeft,
+                    lng: layers.order[order.id].targetlocation.y + layers.order[order.id].normedBackVector.y * distanceLeft
                 }
-                marker.order[order.id].setLatLng(new L.LatLng(newLocation.x, newLocation.y));
+                layers.order[order.id].setLatLng(new L.LatLng(newLocation.x, newLocation.y));
             }
         }, 1000 / FPS);
 
@@ -87,10 +94,10 @@
     var syncTimeout;
     function deleteOrderMarker(orderid) {
         mapService.deletePolyLine("order" + orderid);
-        if (marker.order[orderid]) {
-            $interval.cancel(marker.order[orderid].interval);
-            map.removeLayer(marker.order[orderid]);
-            delete marker.order[orderid];
+        if (layers.order[orderid]) {
+            $interval.cancel(layers.order[orderid].interval);
+            map.removeLayer(layers.order[orderid]);
+            delete layers.order[orderid];
         }
     }
     this.panHome = function () {

@@ -45,12 +45,12 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
-        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             SubscriberUpdates = new SubscriberUpdates();
             SubscriberUpdates.Add(Planet, SubscriberLevel.Owner);
 
             var Building = Planet.buildings[BuildingType];
-            var list = new List<TimedEvent>();
+            var list = new List<Event>();
             foreach (var e in Building.setting.educts) {
                 var amountNeeded = amount * e.Value * Building.lvl;
                 Planet.items[e.Key].quant -= amountNeeded;

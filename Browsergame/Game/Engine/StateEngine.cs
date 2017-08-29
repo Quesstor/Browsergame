@@ -101,7 +101,8 @@ namespace Browsergame.Game.Engine {
         }
         public static void resetState() {
             writeState = new State();
-            EventEngine.AddEvent(new Event.Instant.NewPlayer(0, "Bot", "BotToken"));
+            CopyWriteStateToReadState();
+            //for(var i=0; i<100; i++) EventEngine.AddEvent(new Event.Instant.NewPlayer(0, "Bot"+i, "BotToken"+i));
         }
     }
 }

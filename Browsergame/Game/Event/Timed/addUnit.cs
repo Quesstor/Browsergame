@@ -9,16 +9,17 @@ using System.Runtime.Serialization;
 
 namespace Browsergame.Game.Event.Timed {
     [DataContract]
-    class AddUnits : TimedEvent {
+    class AddUnits : Event {
 
         [DataMember] private long planetID;
         [DataMember] private UnitType unittype;
         [DataMember] private int count;
 
-        public AddUnits(long planetID, UnitType unittype, int count, DateTime executionTime) : base(executionTime) {
+        public AddUnits(long planetID, UnitType unittype, int count, DateTime executionTime) {
             this.planetID = planetID;
             this.unittype = unittype;
             this.count = count;
+            this.executionTime = executionTime;
         }
 
         private List<Entities.Unit> units = new List<Entities.Unit>();
@@ -36,7 +37,7 @@ namespace Browsergame.Game.Event.Timed {
             return true;
         }
 
-        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             SubscriberUpdates = new SubscriberUpdates();
             foreach (Entities.Unit unit in units) SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
             return null;

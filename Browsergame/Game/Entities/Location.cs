@@ -11,11 +11,23 @@ namespace Browsergame.Game.Entities {
         [DataMember] public double x=0;
         [DataMember] public double y =0;
 
-        public void random() {
+        public void random(State state) {
             Random rand = new Random();
-            double sqrlength = 0.03;
-            x = 48+(rand.Next(0, 1000) / 1000f - 0.5) * 2 * sqrlength; //Bounded to: -85 to +85
-            y = 5+(rand.Next(0, 1000) / 1000f - 0.5) * 2 * sqrlength; //Bounded to: -180 to +180
+            double minRange = 0.1;
+            int count = 0;
+            double radius = minRange;
+            while (true) {
+
+                var degree = count / (2 * Math.PI);
+                if(count > (2 * Math.PI * radius) / minRange) radius += minRange;
+
+                var randomOffset = rand.Next(-100, 100) / 100f * minRange * 2;
+                x = 48 + radius * Math.Cos(degree) * randomOffset;//Bounded to: -85 to +85
+                y = 5 + radius * Math.Sin(degree) * randomOffset; //Bounded to: -180 to +180
+                var qy = from planet in state.planets.Values where planet.location.range(this)<minRange select planet;
+                if (qy.Count() == 0) return;
+                count += 1;
+            }
         }
 
         public double range(Location loc2) {

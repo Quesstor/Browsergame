@@ -26,7 +26,7 @@ namespace Browsergame.Game.Event.Instant {
         public override bool conditions() {
             return true;
         }
-        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             SubscriberUpdates = new SubscriberUpdates();
             SubscriberUpdates.Add(player, SubscriberLevel.Other);
 

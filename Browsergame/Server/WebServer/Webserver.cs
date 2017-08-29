@@ -21,13 +21,13 @@ namespace Browsergame.Server.WebServer
     {
         public void Configuration(IAppBuilder app)
         {
-
-            app.Use<ExceptionMiddleware>();
-
             HttpConfiguration config = new HttpConfiguration();
+
+            //app.Use<ExceptionMiddleware>();
+            //config.Services.Replace(typeof(IExceptionHandler), new WebApiExceptionPassthroughHandler());
+
             //config.Routes.MapHttpRoute(name: "Default", routeTemplate: "", defaults: new { controller = "Index" });
             config.Routes.MapHttpRoute(name: "Login", routeTemplate: "login", defaults: new { controller = "Login" });
-            config.Services.Replace(typeof(IExceptionHandler), new WebApiExceptionPassthroughHandler());
             app.UseWebApi(config);
 
             System.IO.DirectoryInfo dir = new System.IO.DirectoryInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);

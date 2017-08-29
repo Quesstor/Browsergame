@@ -53,7 +53,7 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
-        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             var unitIDs = new List<long>();
             SubscriberUpdates = new SubscriberUpdates();
 
@@ -68,7 +68,7 @@ namespace Browsergame.Game.Event.Instant {
 
             var range = targetPlanet.location.range(startPlanet.location);
             var travelTimeInSeconds = range * Settings.MoveSpeed;          
-            var newTimedEvents = new List<TimedEvent>();
+            var newTimedEvents = new List<Event>();
             newTimedEvents.Add(new Timed.Fight(playerID, targetPlanetID, startPlanet.id, unitCounts, unitIDs, DateTime.Now.AddSeconds(travelTimeInSeconds)));
 
             return newTimedEvents;

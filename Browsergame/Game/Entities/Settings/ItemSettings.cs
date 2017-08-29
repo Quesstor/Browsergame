@@ -9,7 +9,7 @@ namespace Browsergame.Game.Entities.Settings {
         poor, common, uncommon, rare, epic
     }
     enum ItemType {
-        Water, Deuterium, Metal
+        Water, Food, Wood, Stone, Clay, Brick, Ore, Metal, Coal
     }
     class ItemSettings {
         public string name;
@@ -30,9 +30,9 @@ namespace Browsergame.Game.Entities.Settings {
                         setting.rarity = ItemRarity.common;
                         setting.name = "Metall";
                         break;
-                    case ItemType.Deuterium:
+                    case ItemType.Coal:
                         setting.rarity = ItemRarity.uncommon;
-                        setting.name = "Deuterium";
+                        setting.name = "Kohle";
                         break;
                 }
                 settings.Add(type, setting);

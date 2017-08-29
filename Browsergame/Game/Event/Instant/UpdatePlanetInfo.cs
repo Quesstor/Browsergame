@@ -36,7 +36,7 @@ namespace Browsergame.Game.Event.Instant {
             if (setInfo.Length > 500) return false;
             return true;
         }
-        public override List<TimedEvent> execute(out SubscriberUpdates SubscriberUpdates) {
+        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             SubscriberUpdates = new SubscriberUpdates();
             planet.info = setInfo;
             planet.name = setName;
