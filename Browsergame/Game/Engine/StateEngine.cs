@@ -82,18 +82,18 @@ namespace Browsergame.Game.Engine {
                     DataContractSerializer serializer = new DataContractSerializer(typeof(State));
                     state = (State)serializer.ReadObject(fs);
                 }
-                foreach (var e in state.timedEventList) {
+                foreach (var e in state.futureEvents) {
                     if (e.Value.processed == null) e.Value.processed = new ManualResetEvent(false);
                 }
                 Logger.log(7, Category.StateEngine, Severity.Info, string.Format("State {0} loaded", path));
                 return state;
             }
             catch (Exception e) {
-                Logger.log(8, Category.StateEngine, Severity.Error, "Failed to load state: " + e.ToString());
+                Logger.log(8, Category.StateEngine, Severity.Error, "Failed to load state: " + e.Message);
                 return new State();
             }
         }
-        public static async void Dispose() {
+        public static void Dispose() {
             Logger.log(4, Category.StateEngine, Severity.Info, "Making persistent save before shutting down.");
             makingPersistentSave.WaitOne();
             peristentSave();

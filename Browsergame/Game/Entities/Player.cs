@@ -29,6 +29,12 @@ namespace Browsergame.Game.Entities {
             this.money = money;
         }
 
+        public bool isInVisibilityRange(Location location) {
+            foreach(var planet in planets) {
+                if (planet.location.range(location) < Browsergame.Settings.visibilityRange) return true;
+            }
+            return false;
+        }
         public override UpdateData getUpdateData(SubscriberLevel subscriber) {
             string key;
             if (subscriber == SubscriberLevel.Other) { key = "Players"; }

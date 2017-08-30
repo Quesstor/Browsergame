@@ -97,17 +97,6 @@ planetmarker {
     animation: bluepulse 3s infinite alternate;
 }
 
-.homePlanet {
-    border-radius: 50%;
-    animation: greenpulse 3s infinite alternate;
-}
-
-.selectedPlanet {
-    border-radius: 50%;
-    animation: whitepulse 1s infinite alternate;
-    z-index: 1501;
-}
-
 .nav-blackbg {
     background: rgba(0,0,0,0.6);
     border: none;

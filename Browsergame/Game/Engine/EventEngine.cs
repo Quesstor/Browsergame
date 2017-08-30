@@ -10,13 +10,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Browsergame.Game.Event.Timed;
-using Browsergame.Game.Event.Timed;
 
 namespace Browsergame.Game.Engine {
     static class EventEngine {
         private static object eventListLock = new object();
         private static List<Event.Event> InstantEventList = new List<Event.Event>();
         private static ManualResetEvent gettingEventsFromQueue = new ManualResetEvent(false);
+        private static Random rnd = new Random();
 
         public static void AddEvent(Event.Event e) {
             gettingEventsFromQueue.WaitOne();
@@ -24,14 +24,15 @@ namespace Browsergame.Game.Engine {
                 InstantEventList.Add(e);
             }
         }
-        public static void AddTimedEvent(Event.Event e, State currentWriteState) {
+        private static void AddTimedEvent(Event.Event e, State currentWriteState) {
             gettingEventsFromQueue.WaitOne();
+            if (e.executionTime == DateTime.MinValue) e.executionTime = DateTime.Now.AddMilliseconds(-rnd.Next(0,100));
             lock (eventListLock) {
-                while (currentWriteState.timedEventList.ContainsKey(e.executionTime)) {
+                while (currentWriteState.futureEvents.ContainsKey(e.executionTime)) {
                     Logger.log(44, Category.EventEngine, Severity.Warn, string.Format("Event for {0} already exists, increasing exec time by 1ms", e.executionTime.ToLongTimeString()));
                     e.executionTime = e.executionTime.AddMilliseconds(1);
                 }
-                currentWriteState.timedEventList.Add(e.executionTime, e);
+                currentWriteState.futureEvents.Add(e.executionTime, e);
             }
         }
         private static List<IEvent> GetEventList(State state) {
@@ -45,14 +46,14 @@ namespace Browsergame.Game.Engine {
 
                     //add timed Events
                     List<DateTime> eventsToRemove = new List<DateTime>();
-                    foreach (var e in state.timedEventList) {
+                    foreach (var e in state.futureEvents) {
                         if (e.Key < DateTime.Now) {
                             eventsToRemove.Add(e.Key);
                             events.Add(e.Value);
                         }
                         else break;
                     }
-                    eventsToRemove.ForEach(k => state.timedEventList.Remove(k));
+                    eventsToRemove.ForEach(k => state.futureEvents.Remove(k));
                 }
                 return events;
             }
@@ -82,6 +83,7 @@ namespace Browsergame.Game.Engine {
                 e.getEntities(state, out needsOnDemandCalculation);
                 OnDemandCalculations.Union(needsOnDemandCalculation);
             }
+            var processedEvents = new List<Event.IEvent>();
             if (processingEvents.Count > 0) {
                 foreach (var s in needsOnDemandCalculation) s.onDemandCalculation();
                 foreach (var e in processingEvents) {
@@ -89,32 +91,33 @@ namespace Browsergame.Game.Engine {
                         List<Event.Event> timedEvents = new List<Event.Event>();
                         try {
                             timedEvents = e.execute(out newSubscriberUpdates);
-                        }catch(Exception ex) {
+                            AllSubscriberUpdates.Union(newSubscriberUpdates);
+                            if (timedEvents != null) newTimedEvents.AddRange(timedEvents);
+                            processedEvents.Add(e);
+                        }
+                        catch(Exception ex) {
                             Logger.log(40, Category.Event, Severity.Warn, "Event failed to execute: " + ex.GetType().ToString()+": "+ ex.ToString());
                         }
                         
-                        AllSubscriberUpdates.Union(newSubscriberUpdates);
 
-                        if (timedEvents != null) newTimedEvents.AddRange(timedEvents);
                     }
                     else {
                         Logger.log(40, Category.Event, Severity.Warn, "Event rejected: " + e.GetType().ToString());
                     }
                 }
                 foreach (Event.Event newTimedEvent in newTimedEvents) AddTimedEvent(newTimedEvent, state);
-                state.makeSubscriptions();
                 sentCount = AllSubscriberUpdates.updateSubscribers();
             }
 
             //Log
             stopwatch.Stop();
-            if (processingEvents.Count >0) {
+            if (processedEvents.Count >0) {
                 string eventNames = "Events: ";
-                foreach (IEvent e in processingEvents) eventNames += e.GetType().Name + " ";
-                string msg = String.Format("{0} events processed. {3} new timed Events. {1} subscribables sent in {2}ms. ", processingEvents.Count, sentCount, stopwatch.ElapsedMilliseconds, newTimedEvents.Count);
+                foreach (IEvent e in processedEvents) eventNames += e.GetType().Name + " ";
+                string msg = String.Format("{0} events processed. {3} new timed Events. {1} subscribables sent in {2}ms. ", processedEvents.Count, sentCount, stopwatch.ElapsedMilliseconds, newTimedEvents.Count);
                 Logger.log(1, Category.EventEngine, Severity.Debug, msg + eventNames);
             }
-            return processingEvents;
+            return processedEvents;
         }
     }
 }

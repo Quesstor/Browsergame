@@ -17,6 +17,7 @@ namespace Browsergame.Game.Event.Timed {
         public BuildingUpgrade(long planetID, BuildingType buildingType, DateTime executionTime) {
             PlanetID = planetID;
             BuildingType = buildingType;
+            this.executionTime = executionTime;
         }
 
         private Building building;

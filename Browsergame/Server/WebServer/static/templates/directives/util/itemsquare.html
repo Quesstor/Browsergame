@@ -9,7 +9,7 @@
             </td>
             <td style="line-height: 1; width: 80px;">
                 <span ng-class="{'text-danger':quant<0}">
-                    {{utilService.shortNumber(quant)}}
+                    {{quant?utilService.shortNumber(quant):item.type}}
                 </span>
                 <div title="Auf dem Planeten" ng-show="!hideplanetquant && $root.selectedPlanet" ng-class="{'text-danger': planetMissingQuant()}">
                     <span class="glyphicon glyphicon-globe"></span>

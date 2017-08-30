@@ -1,25 +1,44 @@
 ﻿<!-- Panet modal-->
-<div id="planetModal" class="modal fade" role="dialog" ng-init="show='info'">
-    <div class="modal-dialog" style="min-width:800px; margin-top:0;">
+<div id="planetModal"
+    class="modal fade"
+    role="dialog"
+    ng-init="show='info'">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header coverbg" ng-class="{'coverbgbig':coverbgbig}" style="background:#000 center center;" ng-style="{'background-image':'url(/img/planet/'+show.replace('modal','')+'/'+ $root.selectedPlanet.type +'.jpg)'}">
-                <div class="btn-group pull-right" style="margin-top: 3px;">
-                    <div class="btn" ng-click="coverbgbig=!coverbgbig" style="color:white"><span class="glyphicon glyphicon-resize-{{coverbgbig?'small':'full'}}"></span></div>
-                    <div class="btn" data-dismiss="modal" style="color:white"><span class="glyphicon glyphicon-remove"></span></div>
+            <div class="modal-header coverbg"
+                ng-class="{'coverbgbig':coverbgbig}"
+                style="background:#000 cover; background-position: center;"
+                ng-style="{'background-image':'url(/img/city/'+show.replace('modal','')+'/'+ $root.selectedPlanet.type +'.jpg)'}">
+                <div class="btn-group pull-right"
+                    style="margin-top: 3px;">
+                    <div class="btn"
+                        ng-click="coverbgbig=!coverbgbig"
+                        style="color:white"><span class="glyphicon glyphicon-resize-{{coverbgbig?'small':'full'}}"></span></div>
+                    <div class="btn"
+                        data-dismiss="modal"
+                        style="color:white"><span class="glyphicon glyphicon-remove"></span></div>
                 </div>
 
-                <ul class="nav nav-tabs nav-blackbg" ng-click="$event.stopPropagation();">
-                    <li ng-class="{'active':show=='info'}" ng-click="show='info'" ng-show="$root.selectedPlanet.owner == $root.player.id">
+                <ul class="nav nav-tabs nav-blackbg"
+                    style="color:white">
+                    <li ng-class="{'active':show=='info'}"
+                        ng-click="show='info'"
+                        ng-show="$root.selectedPlanet.owner == $root.player.id">
                         <a><span class="glyphicon glyphicon-globe"></span> {{$root.selectedPlanet.name}}</a>
                     </li>
-                    <li ng-class="{'active':show=='manager'}" ng-click="show='manager'">
+                    <li ng-class="{'active':show=='manager'}"
+                        ng-click="show='manager'">
                         <a><span class="glyphicon glyphicon-oil"></span> Waren</a>
                     </li>
-                    <li ng-class="{'active':$parent.show=='units'}" ng-click="show='units'" ng-show="uiService.playerHasUnitOnPlanet($root.selectedPlanet, 'Fighter') || $root.selectedPlanet.owner == $root.player.id">
-                        <a><span class="glyphicon glyphicon-align-justify"></span> Flotte</a>
+                    <li ng-class="{'active':show=='units'}"
+                        ng-click="show='units'"
+                        ng-show="$root.selectedPlanet.owner == $root.player.id">
+                        <a><span class="glyphicon glyphicon-align-justify"></span> Einheiten</a>
                     </li>
-                    <li ng-class="{'active':$parent.show=='buildings'}" ng-click="show='buildings'" ng-show="$root.selectedPlanet.owner == $root.player.id">
-                        <a><span class="glyphicon glyphicon-oil"></span> Industrie </a>
+                    <li ng-class="{'active':show=='buildings'}"
+                        ng-click="show='buildings'"
+                        ng-show="$root.selectedPlanet.owner == $root.player.id">
+                        <a><span class="glyphicon glyphicon-oil"></span> Gebäude</a>
                     </li>
                 </ul>
             </div>

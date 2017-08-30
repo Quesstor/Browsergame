@@ -9,7 +9,7 @@ namespace Browsergame.Game.Entities.Settings {
         poor, common, uncommon, rare, epic
     }
     enum ItemType {
-        Water, Food, Wood, Stone, Clay, Brick, Ore, Metal, Coal
+        Water, Food, Wood, Stone, Ore, Metal, Coal
     }
     class ItemSettings {
         public string name;

@@ -60,7 +60,7 @@
                 </div>
             </td>
             <td style="opacity: 0.3">
-                <itemsquare item="{type: type}" ng-repeat="(type,quant) in planet().consumesPerPopulation[planet().population+1]" quant="-planet().population * quant * $root.settings.consumePerMinute"></itemsquare>
+                <itemsquare item="{type: type}" ng-repeat="(type,quant) in planet().consumesPerPopulation[planet().population+1]" quant="- quant * $root.settings.consumePerMinute"></itemsquare>
             </td>
             <td>
             </td>

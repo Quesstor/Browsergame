@@ -1,5 +1,6 @@
 ﻿using Browsergame.Game.Entities;
 using Browsergame.Game.Event;
+using Browsergame.Game.Event.Instant;
 using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Utils;
 using System;
@@ -18,12 +19,13 @@ namespace Browsergame.Game {
     [KnownType(typeof(Fight))]
     [KnownType(typeof(BuildingUpgrade))]
     [KnownType(typeof(AddUnits))]
+    [KnownType(typeof(NewPlayer))]
     class State {
         [DataMember] public Dictionary<long, Player> players = new Dictionary<long, Player>();
         [DataMember] public Dictionary<long, Unit> units = new Dictionary<long, Unit>();
         [DataMember] public Dictionary<long, Planet> planets = new Dictionary<long, Planet>();
         [DataMember] public Dictionary<long, Item> items = new Dictionary<long, Item>();
-        [DataMember] public SortedList<DateTime, Event.Event> timedEventList = new SortedList<DateTime, Event.Event>();
+        [DataMember] public SortedList<DateTime, Event.Event> futureEvents = new SortedList<DateTime, Event.Event>();
 
         public Player getPlayer(string token) {
             return (from p in players.Values where p.token == token select p).FirstOrDefault();
@@ -60,29 +62,6 @@ namespace Browsergame.Game {
             element.id = id;
             dict.Add(id, element);
             return id;
-        }
-
-        public void makeSubscriptions() {
-            foreach (Player player1 in players.Values) {
-                foreach (Planet planet in player1.planets) {
-                    planet.addSubscription(player1, SubscriberLevel.Owner);
-                }
-                foreach (Unit unit in player1.units) {
-                    unit.addSubscription(player1, SubscriberLevel.Owner);
-                }
-                foreach (Player player2 in players.Values) {
-                    if (player1 == player2) {
-                        player1.addSubscription(player2, SubscriberLevel.Owner);
-                    }
-                    else {
-                        player1.addSubscription(player2, SubscriberLevel.Other);
-                        player2.addSubscription(player1, SubscriberLevel.Other);
-                        foreach (Planet planet in player1.planets) {
-                            planet.addSubscription(player2, SubscriberLevel.Other);
-                        }
-                    }
-                }
-            }
         }
     }
 }

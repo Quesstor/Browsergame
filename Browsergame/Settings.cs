@@ -22,8 +22,9 @@ namespace Browsergame {
         public static double productionsPerMinute = 1;
         public static double consumePerMinute = 1;
 
-        public static double incomePerMinutePerPopulation = 5;
+        public static double incomePerMinutePerPopulation = 5; 
         public static double populationSurplusPerMinute = 5;
+        public static double visibilityRange = 0.5;
 
         public static Dictionary<ItemType, double> getConsumeGoods(int planetPopulation) {
             if (planetPopulation == 1) return new Dictionary<ItemType, double> { { ItemType.Water, 1 } };

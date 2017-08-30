@@ -13,7 +13,7 @@
     }
     
     $scope.itemColor = function () {
-        var trans = 0.6;
+        var trans = 1;
         switch ($scope.settings().rarity) {
             case 0: return "rgba(0,0,0,0.2)";
             case 1: return "rgba(0,0,0,0.4)";

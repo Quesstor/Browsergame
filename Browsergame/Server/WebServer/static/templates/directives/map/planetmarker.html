@@ -1,20 +1,28 @@
 ﻿<div style="position: relative">
-    <div 
-        style="position: absolute; left: {{-markerSize()/2 + 25}}px; top: {{-markerSize()/2+ 25}}px"
-        ng-click="$root.selectedPlanet = planet;" 
-        ng-right-click="rightclickPlanet(planet)" 
+    <div ng-style="{'left': (-markerSize()/2 + 25)+'px' , 'top': (-markerSize()/2 + 25)+'px'}"
+        style="position: absolute;"
+        ng-click="$root.selectedPlanet = planet;"
         data-toggle="modal" data-target="#planetModal"
-        ng-dblclick="$event.stopPropagation();" 
-        ng-mouseover="hoverPlanet(planet,true);hover=true;" 
+        ng-right-click="rightclickPlanet(planet)"
+        ng-dblclick="$event.stopPropagation();"
+        ng-mouseover="hoverPlanet(planet,true);hover=true;"
         ng-mouseleave="hoverPlanet(planet,false);hover=false;">
-        
-        <div style='
-    width: {{markerSize()}}px; 
-    height:{{markerSize()}}px; 
-    background: url("/img/icon/cities/city{{planet.population-1}}.png") no-repeat; 
-    background-size: {{markerSize()}}px {{markerSize()}}px; background-position: center center;'
-            ng-class="{'planetWithUnit':uiService.playerHasUnitOnPlanet(planet),'homePlanet':planet.owner==$root.player.id}"
-            ng-click="$root.planetSync(planet.id);$root.playerSync();" class="hoverpointer">
+
+        <div style='color:black; font-size:12px; position:relative; background-position: center center;'
+            ng-style="{ 'background':'url(/img/icon/cities/city'+(planet.population-1)+'.png) no-repeat', 
+                    'background-size': markerSize() + 'px ' + markerSize() + 'px',
+                    'width':markerSize()+'px',
+                    'height':markerSize()+'px'}"
+            ng-class="{'planetWithUnit':uiService.playerHasUnitOnPlanet(planet)}"
+            class="hoverpointer">
+            <div ng-show="mapService.zoomlevel==12">
+                <div style="padding-top: 150px;text-align: center;">
+                    <div ng-style="{'background': 'url(img/icon/' + (planet.owner==$root.player.id?'owner':'') + 'banner.png) no-repeat', 'background-size': '200px auto'}"  
+                        style="background-position: bottom; height: 36px; padding-top: 2px;">
+                        {{planet.name}}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

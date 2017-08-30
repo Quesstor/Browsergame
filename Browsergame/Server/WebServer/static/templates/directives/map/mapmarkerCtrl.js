@@ -1,15 +1,15 @@
 ﻿angular.module('app').controller('mapmarkerCtrl', function ($scope, $rootScope, $timeout, $http, utilService, mapService, syncService) {
     $scope.utilService = utilService;
     $scope.mapService = mapService;
-    $scope.markerSize = function(){
-        return (Math.pow(2, ((mapService.zoomlevel||12)-9)) * 25);
+    $scope.markerSize = function () {
+        return (Math.pow(2, ((mapService.zoomlevel || 12) - 9)) * 25);
     }
     $scope.moveUnit = function (targetPlanetId) {
         if (!$rootScope.selectedUnit) return false;
         $http.post("action/action/moveunit", { token: $rootScope.token, unitid: $rootScope.selectedUnit.id, targetPlanetId: targetPlanetId })
-        .success(function (data) {
-            $rootScope.updateData(data);
-        });
+            .success(function (data) {
+                $rootScope.updateData(data);
+            });
     }
     $scope.atack = function (targetPlanetId) {
         if (!$rootScope.selectedUnits) return false;

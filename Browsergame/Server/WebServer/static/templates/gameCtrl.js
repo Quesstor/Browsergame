@@ -1,4 +1,4 @@
-﻿angular.module('app').controller('gameCtrl', function ($scope, $routeParams, $rootScope, $timeout, syncService, mapService, $cookies, $websocket) {
+﻿angular.module('app').controller('gameCtrl', function ($scope, $routeParams, $rootScope, $interval, $timeout, syncService, mapService, $cookies, $websocket) {
     $scope.Math = window.Math;
     $rootScope.token = $cookies.get("token");
     $scope.mapService = mapService;
@@ -18,18 +18,6 @@
         else document.getElementById("BGmusic").pause();
     });
 
-    $scope.synclock = false;
-    $scope.saveSyncPlanet = function () {
-        if ($scope.synclock) return;
-        else {
-            $scope.synclock = true;
-            $rootScope.planetSync();
-            $timeout(function () {
-                $scope.synclock = false;
-            }, 1000);
-            return false;
-        }
-    }
     syncService.connect();
 });
 

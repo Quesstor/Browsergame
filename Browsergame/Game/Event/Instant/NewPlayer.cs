@@ -5,13 +5,15 @@ using Browsergame.Game.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Browsergame.Game.Event.Instant {
+    [DataContract]
     class NewPlayer : Event {
-        private string name;
-        private string token;
+        [DataMember] private string name;
+        [DataMember] private string token;
         public NewPlayer(long initiator, string name, string token) {
             this.name = name;
             this.token = token;
@@ -29,7 +31,6 @@ namespace Browsergame.Game.Event.Instant {
 
         public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             var player = state.addPlayer(name, token);
-            Console.WriteLine("AddPlayer" + name);
             Location startLoc = new Location();
             startLoc.random(state);
 
@@ -43,10 +44,31 @@ namespace Browsergame.Game.Event.Instant {
 
             SubscriberUpdates = new SubscriberUpdates();
             SubscriberUpdates.Add(player, SubscriberLevel.Other);
-            var events = new List<Event>();
-            //for(var i=0; i<100; i++) events.Add(new NewPlayer(0, "Bot"+i, "BotToken"+i));
+            SubscriberUpdates.Add(planet, SubscriberLevel.Other);
 
-            return null;
+            foreach (var otherPlayer in state.players.Values) {
+                if (otherPlayer.id == player.id) {
+                    player.addSubscription(player, SubscriberLevel.Owner);
+                    foreach (var pl in player.planets) pl.addSubscription(player, SubscriberLevel.Owner);
+                    foreach (Unit unit in player.units) unit.addSubscription(player, SubscriberLevel.Owner);
+
+                }else {
+                    otherPlayer.addSubscription(player, SubscriberLevel.Other);
+                    player.addSubscription(otherPlayer, SubscriberLevel.Other);
+                    foreach (var playerPlanet in player.planets)
+                        if (otherPlayer.isInVisibilityRange(playerPlanet.location))
+                            playerPlanet.addSubscription(otherPlayer, SubscriberLevel.Other);
+                    foreach (var otherPlayerPlanet in otherPlayer.planets)
+                        if (player.isInVisibilityRange(otherPlayerPlanet.location))
+                            otherPlayerPlanet.addSubscription(player, SubscriberLevel.Other);
+                }
+            }
+
+
+            var events = new List<Event>();
+            if (name == "Test") for (var i = 0; i < 100; i++) events.Add(new NewPlayer(0, "Bot" + i, "BotToken" + i));
+
+            return events;
         }
     }
 }

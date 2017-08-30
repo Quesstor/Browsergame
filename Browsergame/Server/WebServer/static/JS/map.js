@@ -34,10 +34,13 @@ map
         mapService.zoomlevel = e.target._animateToZoom;
     })
     .on('click', function (e) {
-        console.log(e);
+
     })
     .on('moveend', function () {
-
+        var injector = angular.element(document.querySelector('#map')).injector();
+        var mapService = injector.get('mapService');
+        mapService.viewbox = map.getBounds();
+        mapService.drawPlanetMarker();
     });
 //marker.setZIndexOffset(100);
 L.Marker.prototype.__setPos = L.Marker.prototype._setPos;

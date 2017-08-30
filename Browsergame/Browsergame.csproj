@@ -122,7 +122,6 @@
     <Compile Include="Game\Event\Timed\BuildinUpgrade.cs" />
     <Compile Include="Game\Event\Instant\StartBuildingUpgrade.cs" />
     <Compile Include="Game\Event\Timed\Fight.cs" />
-    <Compile Include="Game\Event\Timed\_TimedEvent.cs" />
     <Compile Include="Game\Utils\SubscriberUpdates.cs" />
     <Compile Include="Game\State.cs" />
     <Compile Include="Game\Event\Instant\Trade.cs" />

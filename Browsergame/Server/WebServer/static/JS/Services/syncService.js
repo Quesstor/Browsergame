@@ -1,17 +1,22 @@
 ﻿angular.module('app').service('syncService', function ($http, $interval, $rootScope, $compile, $location, $timeout, mapService, $websocket) {
     var syncService = this;
+    syncService.resetData = function(){
+        $rootScope.settings = {};
+        $rootScope.players = {};
+        $rootScope.player = {};
+        $rootScope.planets = {};
+        $rootScope.planet = {};
+        $rootScope.units = {};
+        $rootScope.orders = {};
+    }
     syncService.updateData = function (data) {
         if (!data) { console.log("NO SYNC DATA"); return; }
         if (data.setup) {
-            $rootScope.settings = {};
-            $rootScope.players = {};
-            $rootScope.player = {};
-            $rootScope.planets = {};
-            $rootScope.planet = {};
-            $rootScope.units = {};
-            $rootScope.orders = {};
+            syncService.resetData();
             for (k in data.setup) { syncService.updateData(data.setup[k]); }
             syncService.startSyncLoop();
+            mapService.drawPlanetMarker();
+            
         }
         if (data.settings) {
             angular.merge($rootScope.settings, data.settings);
@@ -124,11 +129,13 @@
         console.error("Socket error:");
         console.error(data);
         syncService.connected = false;
+        syncService.resetData();        
         $location.path('/login');
     }
     syncService.socketClosed = function (data) {
         console.log("Socket closed:");
         syncService.connected = false;
+        syncService.resetData();        
         $location.path('/login');
     }
     syncService.send = function (action, data) {

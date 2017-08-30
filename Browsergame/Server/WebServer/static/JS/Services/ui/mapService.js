@@ -1,32 +1,38 @@
 ﻿angular.module('app').service('mapService', function ($rootScope, $http, $compile, $interval, $timeout) {
-    var layers = {};
+    var layers = { cities: {} };
     var lines = {};
     var mapService = this;
     this.zoomlevel = 12;
+    this.viewbox = {};
+    this.isInViewbox = function(latlng){
+        var NE = this.viewbox._northEast;
+        var SW = this.viewbox._southWest;        
+        var offsetLat = (NE.lat - SW.lat);
+        var offsetLng = (NE.lng - SW.lng);
+        return (latlng.lat > SW.lat-offsetLat && latlng.lat < NE.lat+offsetLat && latlng.lng > SW.lng-offsetLng && latlng.lng < NE.lng+offsetLng)
+    }
     this.drawPlanetMarker = function () {
-        //Delete Marker
-        for (var type in layers) map.removeLayer(layers[type]);
+        //Delete Marker not in viewbox
+        for (var id in layers.cities) {
+            if(!$rootScope.planets[id] || !this.isInViewbox(layers.cities[id]._latlng)){
+                map.removeLayer(layers.cities[id]);
+                delete layers.cities[id];
+            }
+        }
         //Add Marker
         var images = [];
         var markers = [];
         angular.forEach($rootScope.planets, function (planet, id) {
-            //var size = 0.05;
-            //var imageBounds = [[planet.location.x - size / 2, planet.location.y - size / 2], [planet.location.x + size / 2, planet.location.y + size / 2]];
-            //images.push(L.imageOverlay("/img/icon/cities/city" + (planet.population - 1) + ".png", imageBounds));
-
-
-            markers.push(L.marker([planet.location.x, planet.location.y], {
-                icon: L.divIcon({
-                    html: '<planetmarker planet="$root.planets[' + id + ']"></planetmarker>',
-                    className: 'mapmarker planetMarker angularCompile',
-                    iconSize: null
-                })
-            }));
-
+            if (!layers.cities[id] && mapService.isInViewbox({lat:planet.location.x, lng:planet.location.y}))
+                layers.cities[id] = L.marker([planet.location.x, planet.location.y], {
+                    icon: L.divIcon({
+                        html: '<planetmarker planet="$root.planets[' + id + ']"></planetmarker>',
+                        className: 'mapmarker planetMarker angularCompile',
+                        iconSize: null
+                    })
+                }).addTo(map);
         });
-        //Draw Maker
-        //layers.images = L.layerGroup(images).addTo(map);
-        layers.markers = L.layerGroup(markers).addTo(map);
+
         
         $(".angularCompile").each(function () {
             $compile($(this))($rootScope);
@@ -43,8 +49,9 @@
             drawOrder(order);
         });
     }
-    this.setPlanetMarkerZindex = function (planetid, zindex) {
-        layers.planets[planetid].setZIndexOffset(zindex);
+    this.setPlanetMarkerZindex = function (planetid, zindex) {       
+        if(planetid === undefined) return;
+        layers.cities[planetid].setZIndexOffset(zindex);
     }
     function drawOrder(order) {
         var FPS = 25;
@@ -103,11 +110,16 @@
     this.panHome = function () {
         map.panTo(new L.LatLng($rootScope.settings.location.x, $rootScope.settings.location.y));
     }
+    this.panToSelectedPlanet = function () {
+        var NE = this.viewbox._northEast;
+        var SW = this.viewbox._southWest;        
+        var offsetLat = (NE.lat - SW.lat);
+        map.panTo(new L.LatLng($rootScope.selectedPlanet.location.x-offsetLat/2.2, $rootScope.selectedPlanet.location.y),{animate: true, duration: 0.5});
+    }
     this.drawUnitLine = function (unit) {
         this.drawPolyLine(unit.id, unit.location, $rootScope.planets[unit.targetplanet].location);
     }
     this.drawPolyLine = function (lineId, locX, locY, color) {
-        console.log("Line");
         if (!locX || !locY) { return; }
         if (lines[lineId]) mapService.deletePolyLine(lineId);
         lines[lineId] = L.polyline([
@@ -124,5 +136,4 @@
         if (lines[lineId]) map.removeLayer(lines[lineId]);
         lines[lineId] = false;
     }
-
 });
