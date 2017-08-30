@@ -68,6 +68,13 @@ namespace Browsergame.Game.Event.Instant {
             state.addUnit(city, UnitType.Spears);
             state.addUnit(city, UnitType.Spears);
 
+            state.addUnit(city, UnitType.Swords);
+            state.addUnit(city, UnitType.Swords);
+            state.addUnit(city, UnitType.Swords);
+
+            state.addUnit(city, UnitType.Horses);
+            state.addUnit(city, UnitType.Horses);
+
             SubscriberUpdates = new SubscriberUpdates();
             SubscriberUpdates.Add(player, SubscriberLevel.Other);
             SubscriberUpdates.Add(city, SubscriberLevel.Other);

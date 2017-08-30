@@ -17,7 +17,7 @@
         city=$rootScope.selectedCity;
         if(!city) return;
         for(var k in city.offers){
-            if(city.offers[k].offer!=0) offers.push(city.offers[k]);
+            if(city.offers[k].quant!=0) offers.push(city.offers[k]);
         }
         return offers;
     }

@@ -1,9 +1,12 @@
-﻿<table>
+﻿<div ng-hide="cityOffers().length>0">Dieser Planet bietet keine Waren zum Handel an</div>
+<table class="table table-condensed"
+    ng-show="cityOffers().length>0">
     <tr>
         <td>Ware</td>
         <td>Preis</td>
     </tr>
-    <tr ng-repeat="offer in cityOffers()">
+    <tr ng-repeat="offer in cityOffers()"
+        ng-show="offer.quant!=0">
         <td>
             <itemsquare item="{type: offer.type}"
                 quant="offer.quant" />

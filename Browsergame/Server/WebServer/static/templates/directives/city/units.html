@@ -5,7 +5,7 @@
         <td></td>
         <td>Ausgewählt</td>
     </tr>
-    <tr ng-repeat="(type,count) in unitCounts()">
+    <tr ng-repeat="(type,count) in unitCounts()" ng-hide="$root.settings.units[type].civil">
         <td class="square-td">
             <unitsquare unit="{type:type}"
                 count="count"
