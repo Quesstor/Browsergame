@@ -1,69 +1,155 @@
-﻿
-<table ng-hide="$root.selectedUnit.city == $root.selectedCity.id" class="table table-condensed">
+﻿<table class="table table-condensed">
     <tr class="notopborder">
-        <td>Planet</td>
+        <td>Stadt</td>
         <td></td>
         <td>Angebote</td>
         <td style="text-align: right;">Anpassen</td>
     </tr>
-    <tr ng-repeat="(key,item) in $root.selectedCity.items">
+    <tr ng-repeat="(type,item) in $root.selectedCity.items">
         <!--City-->
         <td class="square-td">
-            <itemsquare cityquant="item.quant" item="item" quant="" />
+            <itemsquare cityquant="item.quant"
+                item="item"
+                quant="" />
         </td>
         <!--Angebote Pfeile-->
         <td style="padding: 4px 0 0 0; width: 30px;">
-            <span title="Zum Kauf angeboten" ng-if="offer(key).quant<0" class="glyphicon glyphicon-chevron-left" style="font-size: 25px;"></span>
-            <span title="Zum Verkauf angeboten" ng-if="offer(key).quant>0" class="glyphicon glyphicon-chevron-right" style="font-size: 25px;"></span>
+            <span title="Zum Kauf angeboten"
+                ng-if="offer(type).quant<0"
+                class="glyphicon glyphicon-chevron-left"
+                style="font-size: 25px;"></span>
+            <span title="Zum Verkauf angeboten"
+                ng-if="offer(type).quant>0"
+                class="glyphicon glyphicon-chevron-right"
+                style="font-size: 25px;"></span>
         </td>
         <!--Angebote-->
         <td class="square-td">
-            <itemsquare item="item" quant="Math.abs(offer(key).quant)" itemprice="(offer(key).quant<0?-1:1)*offer(key).price" hidecityquant="true"></itemsquare>
+            <itemsquare ng-show="Math.abs(offer(type).quant)>0"
+                item="item"
+                quant="Math.abs(offer(type).quant)"
+                itemprice="(offer(type).quant<0?-1:1)*offer(type).price"
+                hidecityquant="true"></itemsquare>
         </td>
-        <!--Verkauf-->
-        <td class="btn-td">
-            <div ng-show="editPrice" style="float: right;">
-                <button type="button" class="close" aria-label="Close" ng-click="editPrice=false;">
+        <!--Preise Anpassen-->
+        <td class="btn-td"
+            ng-hide="$root.selectedUnit.city == $root.selectedCity.id">
+            <div ng-show="editPrice"
+                style="float: right;">
+                <button type="button"
+                    class="close"
+                    aria-label="Close"
+                    ng-click="editPrice=false;">
                     <span aria-hidden="true">&times;</span>
-                </button>   
+                </button>
             </div>
-            <div ng-show="editPrice" style="float: right;">
-                <div class="input-group input-group-sm" style="width: 220px;">
-                    <input class="form-control" type="number" min="1" ng-model="offer(key).setQuant"/>
-                    <span class="input-group-addon">Kiste{{offer(key).setQuant>1?'n':''}}</span>
+            <div ng-show="editPrice"
+                style="float: right;">
+                <div class="input-group input-group-sm"
+                    style="width: 220px;">
+                    <input class="form-control"
+                        type="number"
+                        min="1"
+                        ng-model="offer(type).setQuant" />
+                    <span class="input-group-addon">Kiste{{offer(type).setQuant>1?'n':''}}</span>
                 </div>
-                <div class="input-group input-group-sm" style="width: 220px;">
-                    <input class="form-control" type="number" min="1"  placeholder="Preis" ng-model="offer(key).setPrice" />
+                <div class="input-group input-group-sm"
+                    style="width: 220px;">
+                    <input class="form-control"
+                        type="number"
+                        min="1"
+                        placeholder="Preis"
+                        ng-model="offer(type).setPrice" />
                     <span class="input-group-addon"><span class="glyphicon glyphicon-xbt" />pro Kiste</span>
                 </div>
                 <div class="btn-group">
-                    <div ng-disabled="!offer(key).setQuant || !offer(key).setPrice"
-                         ng-click="setOffer(offer(key),false); editPrice=false;"
-                         class="btn btn-sm btn-success">
-                        <span class="glyphicon glyphicon-chevron-left" />
-                        Kaufen
+                    <div ng-disabled="!offer(type).setQuant || !offer(type).setPrice"
+                        ng-click="setOffer(offer(type),false); editPrice=false;"
+                        class="btn btn-sm btn-success">
+                        <span class="glyphicon glyphicon-chevron-left" /> Kaufen
                     </div>
-                    <div ng-disabled="offer(key).quant==0"
-                         class="btn btn-sm btn-default"
-                         ng-click="offer(key).setQuant=0;  setOffer(offer(key));"
-                         style="padding: 5px;">
-                        <span class="glyphicon glyphicon-ban-circle" />
-                        Stop
+                    <div ng-disabled="offer(type).quant==0"
+                        class="btn btn-sm btn-default"
+                        ng-click="offer(type).setQuant=0;  setOffer(offer(type));"
+                        style="padding: 5px;">
+                        <span class="glyphicon glyphicon-ban-circle" /> Stop
                     </div>
-                    <div ng-disabled="!offer(key).setQuant || !offer(key).setPrice || (offer(key).setQuant>0 && offer(key).setQuant+1>item.quant+offer(key).quant)"
-                         ng-click="setOffer(offer(key),true); editPrice=false;"
-                         class="btn btn-sm btn-danger">
+                    <div ng-disabled="!offer(type).setQuant || !offer(type).setPrice || (offer(type).setQuant>0 && offer(type).setQuant+1>item.quant+offer(type).quant)"
+                
+                        ng-click="setOffer(offer(type),true); editPrice=false;"
+                        class="btn btn-sm btn-danger">
                         Verkaufen
                         <span class="glyphicon glyphicon-chevron-right" />
                     </div>
                 </div>
             </div>
-
-            <div ng-hide="editPrice" class="btn btn-sm btn-primary" ng-click="editPrice=true" style="display: inline-block; float: right;">
-                <span class="glyphicon glyphicon-tag" />
-                Angebote anpassen
+            <div ng-hide="editPrice"
+                class="btn btn-sm btn-default"
+                ng-click="editPrice=true"
+                style="display: inline-block; float: right;">
+                <span class="glyphicon glyphicon-tag" /> Angebote anpassen
+            </div>
+        </td>
+        <!-- Händler be/entladen -->
+        <td class="btn-td" ng-show="$root.selectedUnit.city == $root.selectedCity.id">
+            <div class="btn-group pull-right">
+                <div ng-click="LoadItemOnUnit(type, -loadQuant)" ng-disabled="!unitCanLoad(type, -loadQuant)"
+                    class="btn btn-sm btn-success">
+                    <span class="glyphicon glyphicon-chevron-left" /> Entladen
+                </div>
+                <div class="btn btn-sm btn-default"
+                    ng-click="changeLoadQuant=!changeLoadQuant "
+                    style="padding: 5px; position: relative; min-width: 30px">
+                    {{loadQuant}}
+                    <div style=" position: absolute; background: white; bottom: -75px;right: 0; z-index: 1; border: 1px solid #ccc; padding:5px;"
+                        ng-show="changeLoadQuant">
+                        {{loadQuant}}<br>
+                        <input type="range"
+                            style="-webkit-appearance: slider-vertical;height: 150px; "
+                            orient="vertical"
+                            min="1"
+                            max="50"
+                            ng-model="$parent.loadQuant">
+                    </div>
+                </div>
+                <div class="btn btn-sm btn-danger" ng-click="LoadItemOnUnit(type, loadQuant)" ng-disabled="!unitCanLoad(type,loadQuant)">
+                    Beladen
+                    <span class="glyphicon glyphicon-chevron-right" />
+                </div>
+            </div>
+        </td>
+        <td  class="square-td" ng-show="$root.selectedUnit.city == $root.selectedCity.id">
+            <itemsquare item="item"
+                ng-show="$root.selectedUnit.items[type].quant>0"
+                quant="$root.selectedUnit.items[type].quant"
+                hidecityquant="true"></itemsquare>
+        </td>
+    </tr>
+</table>
+<table class="table table-condensed">
+    <tr>
+        <td>Zivile Einheiten</td>
+        <td></td>
+    </tr>
+    <tr ng-repeat="unit in civilUnits()">
+        <td class="square-td">
+            <unitsquare unit="unit"
+                hover="true" />
+        </td>
+        <td>
+            <div class="pull-right">
+                <div ng-hide="$root.selectedUnit.id == unit.id"
+                    class="btn btn-sm btn-default"
+                    ng-click="$root.selectedUnit = unit">
+                    <span class="glyphicon glyphicon-transfer"></span> Waren austauschen</div>
+                <div ng-show="$root.selectedUnit.id == unit.id">
+                    <div class="btn btn-sm btn-default"
+                        ng-click="$root.selectedUnit = null"><span class="glyphicon glyphicon-remove"></span></div>
+                </div>
+                <div class="btn btn-sm btn-default" data-dismiss="modal" ng-click="$root.selectedUnit = unit"> 
+                    Ziel wählen
+                </div>
             </div>
         </td>
     </tr>
 </table>
-

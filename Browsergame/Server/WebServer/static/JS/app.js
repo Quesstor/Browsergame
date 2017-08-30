@@ -13,9 +13,8 @@ app.directive("messagesmodal", function () { return { templateUrl: '/templates/d
 app.directive("citymodal", function () { return { templateUrl: '/templates/directives/modals/city.html', controller: 'utilCtrl' } });
 //city
 app.directive("cityinfo", function () { return { templateUrl: '/templates/directives/city/cityinfo.html', controller: 'cityinfo' } });
-app.directive("unitmanager", function () { return { templateUrl: '/templates/directives/city/unitmanager.html', controller: 'utilCtrl' } });
 app.directive("pricemanager", function () { return { templateUrl: '/templates/directives/city/pricemanager.html', controller: 'pricemanager' } });
-app.directive("trademanager", function () { return { templateUrl: '/templates/directives/city/trademanager.html', controller: 'utilCtrl' } });
+app.directive("trademanager", function () { return { templateUrl: '/templates/directives/city/trademanager.html', controller: 'trademanager' } });
 app.directive("buildings", function () { return { templateUrl: '/templates/directives/city/buildings.html', controller: 'buildings' } });
 app.directive("units", function () { return { templateUrl: '/templates/directives/city/units.html', controller: 'units' } });
 //Utils
@@ -23,7 +22,7 @@ app.directive("itemsquare", function () { return { templateUrl: '/templates/dire
                 scope: { item: "=", quant: "=", hidecityquant: "=", itemprice: "=" }, controller: 'itemsquare' } });
 app.directive("unitsquare", function () { return { templateUrl: '/templates/directives/util/unitsquare.html', 
                 scope: { unit: "=", count: "=", hideinfos: "="}, controller: 'unitsquare' } });
-app.directive("price", function () { return { templateUrl: '/templates/directives/util/price.html', scope: { value: '=' }, controller: 'utilCtrl' } });
+app.directive("price", function () { return { templateUrl: '/templates/directives/util/price.html', scope: { value: '=', hideplayermoney: "=" }, controller: 'utilCtrl' } });
 //Map
 app.directive("citymarker", function () { return { templateUrl: '/templates/directives/map/citymarker.html', scope: { city: '=' }, controller: 'mapmarkerCtrl' } });
 app.directive("ordermarker", function () { return { templateUrl: '/templates/directives/map/ordermarker.html', scope: { order: '=' }, controller: 'mapmarkerCtrl' } });

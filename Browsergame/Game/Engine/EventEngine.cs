@@ -26,7 +26,7 @@ namespace Browsergame.Game.Engine {
         }
         private static void AddTimedEvent(Event.Event e, State currentWriteState) {
             gettingEventsFromQueue.WaitOne();
-            if (e.executionTime == DateTime.MinValue) e.executionTime = DateTime.Now.AddMilliseconds(-rnd.Next(0,100));
+            if (e.executionTime == DateTime.MinValue) e.executionTime = DateTime.Now.AddMilliseconds(-rnd.Next(0,10000));
             lock (eventListLock) {
                 while (currentWriteState.futureEvents.ContainsKey(e.executionTime)) {
                     Logger.log(44, Category.EventEngine, Severity.Warn, string.Format("Event for {0} already exists, increasing exec time by 1ms", e.executionTime.ToLongTimeString()));

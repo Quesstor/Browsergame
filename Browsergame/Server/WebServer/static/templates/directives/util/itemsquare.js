@@ -6,9 +6,12 @@
     $scope.uiService = uiService;
 
     $scope.settings = function(){
+        if(!$rootScope.settings) return;
         return $rootScope.settings.items[$scope.item.type];
     }
     $scope.cityitem = function(){
+        if(!$rootScope.selectedCity.items) return;
+        if(!$rootScope.selectedCity.items[$scope.item.type]) return;
         return $rootScope.selectedCity.items[$scope.item.type];
     }
     

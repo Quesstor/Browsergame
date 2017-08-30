@@ -12,7 +12,7 @@ using Browsergame.Game.Event;
 
 namespace Browsergame.Server.SocketServer {
     class socketMessage {
-        private static string[] routableEvents = { "SetOffer", "OrderProduction", "StartBuildingUpgrade", "StartAtack", "UpdateCityInfo", "IncreasePopulation" };
+        private static string[] routableEvents = { "SetOffer", "OrderProduction", "StartBuildingUpgrade", "StartAtack", "UpdateCityInfo", "IncreasePopulation" , "LoadItemOnUnit" , "MoveUnit"};
         public dynamic jsonPayload;
         public string action;
         public Type controllerType;

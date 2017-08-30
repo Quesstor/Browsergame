@@ -1,50 +1,45 @@
-﻿<div ng-hide="uiService.cityHasOffers()">
-    Dieser Planet hat keine Handelsangebote
-</div>
-<table ng-show="uiService.cityHasOffers()"
-       class="table table-condensed"
-       ng-init="menge=1"
-       style="width: 100%">
-    <tr class="notopborder">
-        <td>Angebote</td>
-        <td><!--Pfeile--></td>
+﻿<table>
+    <tr>
+        <td>Ware</td>
         <td>Preis</td>
-        <td style="width:200px;"><!--Button--></td>
-        <td>Ladung</td>
     </tr>
-    <tr ng-repeat="(id,item) in $root.cities[$root.selectedCity.id].items"
-        ng-show="item.offer!=0">
-        <!--Angebote-->
-        <td style="padding: 0 4px;">
-            <itemsquare item="item" quant="Math.abs(item.offer)"></itemsquare>
-        </td>
-        <!--Pfeile-->
+    <tr ng-repeat="offer in cityOffers()">
         <td>
-            <span title="Wird gekauft" ng-if="item.offer<0" class="glyphicon glyphicon-chevron-left text-success" style="font-size:25px;"></span>
-            <span title="Wird verkauft" ng-if="item.offer>0" class="glyphicon glyphicon-chevron-right text-danger" style="font-size:25px;"></span>
+            <itemsquare item="{type: offer.type}"
+                quant="offer.quant" />
         </td>
-        <!--Handel-->
         <td>
-            <price value="(item.offer<0?'':'-')+item.price*menge"></price>
+            <price value="offer.price" />
         </td>
-        <!--Button-->
-        <td style="width:200px;">
-            <div class="btn-group pull-right"
-                 ng-show="$root.selectedUnit.city==$root.selectedCity.id">
-                <button class="btn btn-sm btn-default" 
-                        ng-click="menge=Math.abs(item.offer)" 
-                        ng-disabled="!tradeService.tradeOk(item, menge)">max</button>
-                <button class="btn btn-sm btn-default" style="width: 130px; text-align:left;"
-                        ng-disabled="!tradeService.tradeOk(item, menge)"
-                        ng-click="tradeService.saveTrade(item, menge); menge=1;">
-                    <input ng-click="$event.stopPropagation();" type="number" ng-model="menge" class="input-sm" min="1" />
-                    {{item.offer>0?'Kaufen':'Verkaufen'}}
-                </button>
+    </tr>
+</table>
+
+<table class="table table-condensed">
+    <tr>
+        <td>Zivile Einheiten</td>
+        <td></td>
+    </tr>
+    <tr ng-repeat="unit in civilUnits()">
+        <td class="square-td">
+            <unitsquare unit="unit"
+                hover="true" />
+        </td>
+        <td>
+            <div class="pull-right">
+                <div ng-hide="$root.selectedUnit.id == unit.id"
+                    class="btn btn-sm btn-default"
+                    ng-click="$root.selectedUnit = unit">
+                    <span class="glyphicon glyphicon-transfer"></span> Waren austauschen</div>
+                <div ng-show="$root.selectedUnit.id == unit.id">
+                    <div class="btn btn-sm btn-default"
+                        ng-click="$root.selectedUnit = null"><span class="glyphicon glyphicon-remove"></span></div>
+                </div>
+                <div class="btn btn-sm btn-default"
+                    data-dismiss="modal"
+                    ng-click="$root.selectedUnit = unit">
+                    Ziel wählen
+                </div>
             </div>
-        </td>
-        <!--Ladung-->
-        <td class="square-td" style="width: 75px">
-            <itemsquare item="$root.selectedUnit.items[id]" quant="$root.selectedUnit.items[id].quant" />
         </td>
     </tr>
 </table>

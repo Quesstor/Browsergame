@@ -35,16 +35,6 @@ namespace Browsergame.Game.Entities {
 
         public Settings.BuildingSettings setting { get => Settings.BuildingSettings.settings[this.type]; }
 
-        public static Dictionary<BuildingType, Building> newBuildingList() {
-            var dict = new Dictionary<BuildingType, Building>();
-            foreach (BuildingType t in Enum.GetValues(typeof(BuildingType))) {
-                dict[t] = new Building(t);
-            }
-            return dict;
-        }
-
-
-
         public override void onDemandCalculation() {
             return;
         }

@@ -1,42 +1,44 @@
-﻿<table class="table table-condensed">
-    <tr class="notopborder">
+﻿
+<table class="table table-condensed">
+    <tr>
         <td>Einheiten</td>
-        <td><!--btn--></td>
+        <td></td>
         <td>Ausgewählt</td>
     </tr>
     <tr ng-repeat="(type,count) in unitCounts()">
         <td class="square-td">
-            <unitsquare unit="{type:type}" count="count" hover="true" />
+            <unitsquare unit="{type:type}"
+                count="count"
+                hover="true" />
         </td>
         <td class="btn-td">
             <div class="btn-group">
                 <button class="btn btn-sm btn-default"
-                        ng-click="selectedUnits[type]=0">
+                    ng-click="selectedUnits[type]=0">
                     Keiner 
                 </button>
                 <button class="btn btn-sm btn-default">
                     <input type="number" class="input-sm" ng-model="selectedUnits[type]" min="1" max="{{count}}" />
                 </button>
                 <button class="btn btn-sm btn-default"
-                        ng-click="selectedUnits[type]=count">
+                    ng-click="selectedUnits[type]=count">
                     Alle
                 </button>
             </div>
         </td>
         <td>
-            <unitsquare unit="{type:type}" count="selectedUnits[type]" hideinfos="true" />
+            <unitsquare unit="{type:type}"
+                count="selectedUnits[type]"
+                hideinfos="true" />
         </td>
     </tr>
 </table>
 <div style="display:table; width:100%;">
     <div class="btn-group pull-right">
         <button class="btn btn-sm btn-danger"
-                data-dismiss="modal"
-                ng-click="utilService.selectUnits(selectedUnits,$root.selectedCity)">
+            data-dismiss="modal"
+            ng-click="utilService.selectUnits(selectedUnits,$root.selectedCity)">
             Angriffsziel auswählen
         </button>
     </div>
 </div>
-
-
-

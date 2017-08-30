@@ -8,4 +8,10 @@
     $scope.setting = function(){
         return $rootScope.settings.units[$scope.unit.type];
     }
+    $scope.loaded = function(){
+        if(!$scope.unit.items) return;
+        var loaded = 0;
+        for (var type in $scope.unit.items) loaded += $scope.unit.items[type].quant;
+        return loaded;
+    }
 });

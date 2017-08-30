@@ -13,15 +13,4 @@
         }
         return false;
     }
-    this.cityHasOffers = function(city){
-        if(!city) city=$rootScope.selectedCity;
-        if(!city) return false;
-        for(var k in city.items){
-            if(city.items[k].offer!=0) return true;
-        }
-        return false;
-    }
-
-
-
 });

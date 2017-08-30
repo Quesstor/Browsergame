@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Entities.Settings {
     enum UnitType {
-        Fighter, Trader
+        Spears, Trader
     }
 
     class UnitSettings {
@@ -26,12 +26,14 @@ namespace Browsergame.Game.Entities.Settings {
                 var settings = new UnitSettings();
                 settings.name = t.ToString();
                 switch (t) {
-                    case UnitType.Fighter:
+                    case UnitType.Spears:
+                        settings.name = "Speerträger";
                         settings.movespeed = 2;
                         settings.atack = 5;
                         settings.shieldpower = 2;
                         break;
                     case UnitType.Trader:
+                        settings.name = "Händler";
                         settings.hp = 150;
                         settings.storage = 100;
                         settings.civil = true;

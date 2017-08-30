@@ -6,9 +6,9 @@
                     <div class="glyphicon glyphicon glyphicon-xbt" style="width: 25px; font-size: 21px; padding: 1px 0 0 3px;" />
                 </div>
             </td>
-            <td style="line-height: 1;">
+            <td style="line-height: 1;" >
                 <span ng-class="{'text-danger':$root.player.money+value<0,'text-success':value>0, 'text-danger':value<0}">{{value>0?'+':''}}{{value}}</span>
-                <div>
+                <div ng-hide="hideplayermoney"> 
                     {{utilService.shortNumber($root.player.money.toFixed(0))}}
                 </div>
             </td>

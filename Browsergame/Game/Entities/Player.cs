@@ -3,6 +3,7 @@ using Browsergame.Game.Utils;
 using Owin.WebSocket;
 using System;
 using System.Collections.Generic;
+using System.Device.Location;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -29,9 +30,9 @@ namespace Browsergame.Game.Entities {
             this.money = money;
         }
 
-        public bool isInVisibilityRange(Location location) {
+        public bool isInVisibilityRange(GeoCoordinate location) {
             foreach(var city in cities) {
-                if (city.location.range(location) < Browsergame.Settings.visibilityRange) return true;
+                if (city.location.GetDistanceTo(location) < Browsergame.Settings.visibilityRange) return true;
             }
             return false;
         }

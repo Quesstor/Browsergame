@@ -4,6 +4,7 @@ using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Utils;
 using System;
 using System.Collections.Generic;
+using System.Device.Location;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -29,18 +30,43 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
+        private static GeoCoordinate newStartLocation(State state) {
+            Random rand = new Random();
+
+            //Earth’s radius, sphere
+            var R = 6378137;
+            var newLocation = new GeoCoordinate(48, 5);
+            var count = 0;
+            while (true) {
+                if ((from city in state.cities.Values where city.location.GetDistanceTo(newLocation) < Settings.minRangeBetweenCitiesInMeters select city).Count() == 0)
+                    return newLocation;
+
+                //offsets in meters
+                var dn = Settings.minRangeBetweenCitiesInMeters * Math.Sin(Math.Sqrt(count) * 3) + (rand.NextDouble() - 0.5) * Settings.minRangeBetweenCitiesInMeters / 3;
+                var de = Settings.minRangeBetweenCitiesInMeters * Math.Cos(Math.Sqrt(count) * 3) + (rand.NextDouble() - 0.5) * Settings.minRangeBetweenCitiesInMeters / 3;
+
+                //Coordinate offsets in radians
+                var dLat = dn / R;
+                var dLon = de / (R * Math.Cos(Math.PI * newLocation.Latitude / 180));
+
+                //OffsetPosition, decimal degrees
+                newLocation.Latitude += dLat * 180 / Math.PI;
+                newLocation.Longitude += dLon * 180 / Math.PI;
+                count += 1;
+            }
+        }
         public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             var player = state.addPlayer(name, token);
-            Location startLoc = new Location();
-            startLoc.random(state);
+            GeoCoordinate startLoc = newStartLocation(state);
+            //startLoc.random(state);
 
             string cityName = string.Format("{0} Heimatstadt", name);
             string info = string.Format("{0} Heimatstadt", name);
             City city = state.addCity(cityName, player, startLoc, info);
 
             state.addUnit(city, UnitType.Trader);
-            state.addUnit(city, UnitType.Fighter);
-            state.addUnit(city, UnitType.Fighter);
+            state.addUnit(city, UnitType.Spears);
+            state.addUnit(city, UnitType.Spears);
 
             SubscriberUpdates = new SubscriberUpdates();
             SubscriberUpdates.Add(player, SubscriberLevel.Other);
@@ -52,7 +78,8 @@ namespace Browsergame.Game.Event.Instant {
                     foreach (var pl in player.cities) pl.addSubscription(player, SubscriberLevel.Owner);
                     foreach (Unit unit in player.units) unit.addSubscription(player, SubscriberLevel.Owner);
 
-                }else {
+                }
+                else {
                     otherPlayer.addSubscription(player, SubscriberLevel.Other);
                     player.addSubscription(otherPlayer, SubscriberLevel.Other);
                     foreach (var playerCity in player.cities)

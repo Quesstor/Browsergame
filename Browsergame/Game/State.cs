@@ -5,6 +5,7 @@ using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Utils;
 using System;
 using System.Collections.Generic;
+using System.Device.Location;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -20,6 +21,7 @@ namespace Browsergame.Game {
     [KnownType(typeof(BuildingUpgrade))]
     [KnownType(typeof(AddUnits))]
     [KnownType(typeof(NewPlayer))]
+    [KnownType(typeof(UnitArrives))]
     class State {
         [DataMember] public Dictionary<long, Player> players = new Dictionary<long, Player>();
         [DataMember] public Dictionary<long, Unit> units = new Dictionary<long, Unit>();
@@ -46,7 +48,7 @@ namespace Browsergame.Game {
             addAndSetID<Player>(players, newPlayer);
             return newPlayer;
         }
-        public City addCity(string name, Player owner, Location location, string info) {
+        public City addCity(string name, Player owner, GeoCoordinate location, string info) {
             City city = new City(name, owner, location, info);
             addAndSetID<City>(cities, city);
             return city;

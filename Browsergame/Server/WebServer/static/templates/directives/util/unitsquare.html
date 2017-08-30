@@ -1,24 +1,39 @@
 ﻿<div ng-if="unit"
-     style="display:inline-block;"
-     title="{{setting().name}}">
+    style="display:inline-block;"
+    title="{{setting().name}}">
     <table>
         <tr>
             <td>
-                <div style="background: #353f40;  border-radius:3px; padding: 5px;margin:0px 3px" title="unit.type">
-                    <img ng-src="{{'img/icon/units/'+unit.type+'.png'}}" style="height:25px;" />
+                <div style="border: 1px solid #ccc; border-radius:3px; padding: 2px;margin:0px 3px"
+                    title="unit.type">
+                    <img ng-src="{{'img/icon/units/'+unit.type+'.png'}}"
+                        style="height:31px;" />
                 </div>
             </td>
             <td style="line-height:1; font-size: 13px;">
-                <table >
+                <table>
                     <tr>
                         <td>{{count}} {{setting().name}}</td>
                     </tr>
                     <tr>
-                        <td style="width: 200px;" ng-hide="hideinfos">
-                            <span class="glyphicon glyphicon-screenshot" title="Angriff"></span> {{setting().atack}}
-                            <span class="glyphicon glyphicon-heart" title="Leben" /> {{setting().hp}}
-                            <span class="glyphicon glyphicon-certificate" title="Schild"></span> {{setting().shieldpower}}
-                            <span class="glyphicon glyphicon-oil" title="Lagerraum" style="height:16px;"></span> {{setting().storage}}
+                        <td style="width: 200px;"
+                            ng-hide="hideinfos">
+                            <div ng-show="setting().civil">
+                                <span class="glyphicon glyphicon-oil"
+                                    title="Lagerraum"
+                                    style="height:16px;"></span> {{loaded()}}/{{setting().storage}}
+                            </div>
+                            <div ng-hide="setting().civil">
+                                <span class="glyphicon glyphicon-screenshot"
+                                    title="Angriff"></span> {{setting().atack}}
+                                <span class="glyphicon glyphicon-heart"
+                                    title="Leben" /> {{setting().hp}}
+                                <span class="glyphicon glyphicon-certificate"
+                                    title="Schild"></span> {{setting().shieldpower}}
+                                <span class="glyphicon glyphicon-oil"
+                                    title="Lagerraum"
+                                    style="height:16px;"></span> {{setting().storage}}
+                            </div>
                         </td>
                     </tr>
                 </table>

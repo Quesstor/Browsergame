@@ -6,10 +6,7 @@
     }
     $scope.moveUnit = function (targetCityId) {
         if (!$rootScope.selectedUnit) return false;
-        $http.post("action/action/moveunit", { token: $rootScope.token, unitid: $rootScope.selectedUnit.id, targetCityId: targetCityId })
-            .success(function (data) {
-                $rootScope.updateData(data);
-            });
+        syncService.send("moveUnit", { unitID: $rootScope.selectedUnit.id, targetCityID: targetCityId });
     }
     $scope.atack = function (targetCityId) {
         if (!$rootScope.selectedUnits) return false;
@@ -36,7 +33,7 @@
             if (s) { mapService.drawPolyLine("atackline", $rootScope.selectedUnitsCity.location, city.location, "red"); }
             else { mapService.deletePolyLine("atackline"); }
         }
-        if ($rootScope.selectedUnit && $rootScope.selectedUnit.city) {
+        if ($rootScope.selectedUnit && $rootScope.selectedUnit.city!=undefined) {
             var citylocationOfUnit = $rootScope.cities[$rootScope.selectedUnit.city].location;
             if (s) { mapService.drawPolyLine("selectedUnitLine", citylocationOfUnit, city.location); }
             else { mapService.deletePolyLine("selectedUnitLine"); }

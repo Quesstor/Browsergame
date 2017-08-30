@@ -14,6 +14,7 @@ namespace Browsergame {
         //public static string webserverUrl = "http://*:21212/";
         //public static string socketServerUrl = "ws://0.0.0.0:2121";
 
+        public static int CityTypeCount = 10;
         public static int tickIntervallInMillisec = 500;
 
         public static string persistenSavePath = "../../Game/state.xml";
@@ -22,17 +23,20 @@ namespace Browsergame {
         public static double productionsPerMinute = 1;
         public static double consumePerMinute = 1;
 
-        public static double incomePerMinutePerPopulation = 5; 
+        public static double incomePerMinutePerPopulation = 5;
         public static double populationSurplusPerMinute = 5;
-        public static double visibilityRange = 0.5;
 
-        public static Dictionary<ItemType, double> getConsumeGoods(int planetPopulation) {
-            if (planetPopulation == 1) return new Dictionary<ItemType, double> { { ItemType.Water, 1 } };
-            if (planetPopulation == 2) return new Dictionary<ItemType, double> { { ItemType.Water, 2 }, { ItemType.Food, 1 } };
+        public static Dictionary<ItemType, double> getConsumeGoods(int cityPopulation) {
+            if (cityPopulation == 1) return new Dictionary<ItemType, double> { { ItemType.Water, 1 } };
+            if (cityPopulation == 2) return new Dictionary<ItemType, double> { { ItemType.Water, 2 }, { ItemType.Food, 1 } };
+            if (cityPopulation == 3) return new Dictionary<ItemType, double> { { ItemType.Water, 2 }, { ItemType.Food, 2 } };
 
-            return new Dictionary<ItemType, double> { { ItemType.Water, 2 }, { ItemType.Food, 1 }, { ItemType.Coal, 1 } };
+            return new Dictionary<ItemType, double> { { ItemType.Water, 2 }, { ItemType.Food, 2 } };
         }
 
-        public static double MoveSpeed = 1000;
+        public static double visibilityRange = 100000;
+        public static double minRangeBetweenCitiesInMeters = 8000;
+
+        public static double MoveSpeedInMetersPerSecond = 1000;
     }
 }

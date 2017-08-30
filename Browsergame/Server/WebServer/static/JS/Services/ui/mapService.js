@@ -127,8 +127,8 @@
             [locY.x, locY.y]],
             {
                 color: color || 'white',
-                weight: 1,
-                opacity: 0.5
+                weight: 5,
+                opacity: 1
             }
         ).addTo(map);
     }

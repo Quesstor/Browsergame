@@ -15,7 +15,8 @@ namespace Browsergame.Server.SocketServer.Controller {
             var data = new List<Dictionary<string,object>>();
 
             var settings = new UpdateData("settings");
-            settings.Add("location", player.cities.First().location);
+            var location = player.cities.First().location;
+            settings.Add("location", new Dictionary<String, double> { { "x", location.Latitude }, { "y", location.Longitude } });
             settings.Add("buildings", Game.Entities.Settings.BuildingSettings.settings);
             settings.Add("units", Game.Entities.Settings.UnitSettings.settings);
             settings.Add("items", Game.Entities.Settings.ItemSettings.settings);

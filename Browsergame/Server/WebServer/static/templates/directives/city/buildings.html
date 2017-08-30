@@ -7,7 +7,7 @@
         <td>Produkte</td>
         <td></td>
     </tr>
-    <tr ng-repeat="(type,building) in buildings()" ng-show="showBuilding(building)">
+    <tr ng-repeat="building in buildings() | orderBy: ['lvl','name'] : [true,false]" ng-show="showBuilding(building)">
         <!--Level-->
         <td class="text-td" style="opacity: {{building.lvl==0?0.3:1}}">{{building.lvl}}</td>
         <!--Name-->

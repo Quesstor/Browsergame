@@ -43,7 +43,7 @@ namespace Browsergame.Game.Entities.Settings {
                         setting.buildCosts.Add(ItemType.Wood, 100);
                         setting.buildCosts.Add(ItemType.Stone, 50);
                         setting.buildPrice = 200;
-                        setting.itemProducts.Add(ItemType.Ore, 1); break;
+                        setting.itemProducts.Add(ItemType.IronOre, 1); break;
                     case BuildingType.Wheatfarm:
                         setting.buildCosts.Add(ItemType.Wood, 50);
                         setting.buildCosts.Add(ItemType.Stone, 50);

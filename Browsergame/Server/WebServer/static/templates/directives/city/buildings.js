@@ -7,11 +7,13 @@
 
     $scope.buildings = function () {
         if (!$rootScope.selectedCity) return;
-        utilService.merge($rootScope.selectedCity.buildings, $rootScope.settings.buildings);
-        angular.forEach($rootScope.selectedCity.buildings, function (value, key) {
-            if(value.setProduction == undefined) value.setProduction = 1;
+        var buildings = [];
+        angular.forEach($rootScope.selectedCity.buildings, function (building, type) {
+            utilService.merge(building, $rootScope.settings.buildings[type]);            
+            if(building.setProduction == undefined) building.setProduction = 1;
+            buildings.push(building);
         });
-        return $rootScope.selectedCity.buildings;
+        return buildings;
     };
     $scope.showBuilding = function (building) {
         if (building.lvl > 0) return true;

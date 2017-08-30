@@ -190,12 +190,12 @@ itemsquare, unitsquare {
 
 .coverbg {
     transition: all 0.5s ease 0s;
-    padding: 200px 0 0 0;
+    padding: 300px 0 0 0;
     background-size: cover;
 }
 
 .coverbgbig {
-    padding: 400px 0 0 0;
+    padding: 500px 0 0 0;
 }
 
 .hoverpointer:hover {

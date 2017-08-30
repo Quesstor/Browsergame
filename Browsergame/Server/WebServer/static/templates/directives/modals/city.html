@@ -3,12 +3,17 @@
     class="modal fade"
     role="dialog"
     ng-init="show='info'">
-    <div class="modal-dialog">
+    <div class="modal-dialog"
+        style="width: fit-content; min-width: 500px">
         <div class="modal-content">
             <div class="modal-header coverbg"
                 ng-class="{'coverbgbig':coverbgbig}"
-                style="background:#000 cover; background-position: center;"
+                style="background:#000 cover; background-position: center; position:relative"
                 ng-style="{'background-image':'url(/img/city/'+show.replace('modal','')+'/'+ $root.selectedCity.type +'.jpg)'}">
+                <div style="position: absolute; top:0; left:0; width: 100%; text-align: center; height: 50px; padding-top: 6px; font-weight:bold; "
+                    ng-style="{'background': 'url(img/icon/' + ($root.selectedCity.owner==$root.player.id?'owner':'') + 'banner.png) no-repeat center', 'background-size': 'contain'}">
+                    {{$root.selectedCity.name}}
+                </div>
                 <div class="btn-group pull-right"
                     style="margin-top: 3px;">
                     <div class="btn"
@@ -20,24 +25,22 @@
                 </div>
 
                 <ul class="nav nav-tabs nav-blackbg"
+                    ng-show="$root.selectedCity.owner == $root.player.id"
                     style="color:white">
                     <li ng-class="{'active':show=='info'}"
-                        ng-click="show='info'"
-                        ng-show="$root.selectedCity.owner == $root.player.id">
-                        <a><span class="glyphicon glyphicon-globe"></span> {{$root.selectedCity.name}}</a>
+                        ng-click="show='info'">
+                        <a><span class="glyphicon glyphicon-home"></span> Stadt</a>
                     </li>
                     <li ng-class="{'active':show=='manager'}"
                         ng-click="show='manager'">
                         <a><span class="glyphicon glyphicon-oil"></span> Waren</a>
                     </li>
                     <li ng-class="{'active':show=='units'}"
-                        ng-click="show='units'"
-                        ng-show="$root.selectedCity.owner == $root.player.id">
+                        ng-click="show='units'">
                         <a><span class="glyphicon glyphicon-align-justify"></span> Einheiten</a>
                     </li>
                     <li ng-class="{'active':show=='buildings'}"
-                        ng-click="show='buildings'"
-                        ng-show="$root.selectedCity.owner == $root.player.id">
+                        ng-click="show='buildings'">
                         <a><span class="glyphicon glyphicon-oil"></span> Gebäude</a>
                     </li>
                 </ul>
