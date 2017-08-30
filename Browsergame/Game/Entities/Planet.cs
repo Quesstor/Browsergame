@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Entities {
     [DataContract(IsReference = true)]
-    class Planet : Subscribable, HasItems, IID {
+    class City : Subscribable, HasItems, IID {
         [DataMember] public long id { get; set; }
         [DataMember] public string name;
         [DataMember] public string info;
@@ -28,7 +28,7 @@ namespace Browsergame.Game.Entities {
         [DataMember] public List<Unit> units = new List<Unit>();
         [DataMember] public Dictionary<int, Dictionary<ItemType, double>> consumesPerPopulation = new Dictionary<int, Dictionary<ItemType, double>>();
 
-        public Planet(string name, Player owner, Location location, string info) {
+        public City(string name, Player owner, Location location, string info) {
             Random rand = new Random();
             this.name = name;
             this.info = info;
@@ -36,7 +36,7 @@ namespace Browsergame.Game.Entities {
             this.location = location;
             this.population = 1;
             this.lastConsumed = DateTime.Now;
-            owner.planets.Add(this);
+            owner.cities.Add(this);
             type = rand.Next(0, 10);
             buildings[BuildingType.Well].lvl = 1;
             buildings[BuildingType.Woodcutter].lvl = 1;
@@ -50,7 +50,7 @@ namespace Browsergame.Game.Entities {
         }
 
         public override UpdateData getUpdateData(SubscriberLevel subscriber) {
-            var data = new UpdateData("Planet");
+            var data = new UpdateData("City");
             data["id"] = id;
             data["name"] = name;
             data["info"] = info;
@@ -107,10 +107,10 @@ namespace Browsergame.Game.Entities {
                 foreach (var consume in consumesPerPopulation[population]) {
                     var type = consume.Key;
                     var consumed = TotalMinutesConsumed * consume.Value * Browsergame.Settings.consumePerMinute;
-                    var planetQuant = items[type].quant;
+                    var cityQuant = items[type].quant;
 
-                    if (planetQuant < consumed) {
-                        missingGoodsFactor -= (1 - (planetQuant / consumed)) / consumesPerPopulation[population].Count;
+                    if (cityQuant < consumed) {
+                        missingGoodsFactor -= (1 - (cityQuant / consumed)) / consumesPerPopulation[population].Count;
                         items[type].quant = 0;
                     }
                     else {

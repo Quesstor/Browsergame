@@ -39,7 +39,7 @@
         </td>
         <!--Produkte-->
         <td class="square-td" style="opacity: {{building.lvl==0?0.3:1}}">
-            <itemsquare ng-repeat="(type,quant) in building.itemProducts" item="{type:type}" quant="'+'+(quant * building.lvl * building.setProduction)" hideplanetquant="true"></itemsquare>
+            <itemsquare ng-repeat="(type,quant) in building.itemProducts" item="{type:type}" quant="'+'+(quant * building.lvl * building.setProduction)" hidecityquant="true"></itemsquare>
             <unitsquare ng-repeat="(type,quant) in building.unitProducts" unit="{type:type}" count="quant*building.setProduction"></unitsquare>
         </td>
         <td class="btn-td">
@@ -70,9 +70,9 @@
                     </div>
                         <price value="-building.buildPrice * (building.lvl+1)" ng-show="showUpgrade"></price>
                         <br />
-                        <itemsquare ng-repeat="(type,quant) in building.buildCosts" item="{type:type}" quant="-quant*(building.lvl+1)" ng-class="{'text-danger':$root.selectedPlanet.items[itemcost.type].quant<itemcost.quant*(building.lvl+1)}"></itemsquare>
+                        <itemsquare ng-repeat="(type,quant) in building.buildCosts" item="{type:type}" quant="-quant*(building.lvl+1)" ng-class="{'text-danger':$root.selectedCity.items[itemcost.type].quant<itemcost.quant*(building.lvl+1)}"></itemsquare>
                         <table class="table table-condensed text-danger" style="margin:0">
-                            <tr ng-repeat="(type,level) in building.buildRequirements" ng-show="$root.selectedPlanet.buildings[type].lvl < level">
+                            <tr ng-repeat="(type,level) in building.buildRequirements" ng-show="$root.selectedCity.buildings[type].lvl < level">
                                 <td>{{$root.settings.buildings[type].name}}</td>
                                 <td>Level {{level}}</td>
                             </tr>

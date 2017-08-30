@@ -12,35 +12,35 @@ using Browsergame.Game.Entities.Settings;
 namespace Browsergame.Game.Event.Instant {
     class IncreasePopulation : Event {
         private long playerID;
-        private long planetID;
+        private long cityID;
 
 
-        public IncreasePopulation(long playerID, long planetID) {
+        public IncreasePopulation(long playerID, long cityID) {
             this.playerID = playerID;
-            this.planetID = planetID;
+            this.cityID = cityID;
         }
 
         private Player player;
-        private Planet planet;
+        private City city;
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
             
             player = state.getPlayer(playerID);
-            planet = state.getPlanet(planetID);
+            city = state.getCity(cityID);
 
-            needsOnDemandCalculation.Add(planet);
+            needsOnDemandCalculation.Add(city);
         }
         public override bool conditions() {
-            return player.id == planet.owner.id && planet.populationSurplus == 1;
+            return player.id == city.owner.id && city.populationSurplus == 1;
         }
 
         public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             SubscriberUpdates = new SubscriberUpdates();
-            SubscriberUpdates.Add(planet, SubscriberLevel.Owner);
+            SubscriberUpdates.Add(city, SubscriberLevel.Owner);
 
-            planet.population += 1;
-            planet.populationSurplus = 0;
-            planet.consumesPerPopulation[planet.population+1] = Browsergame.Settings.getConsumeGoods(planet.population+1);
+            city.population += 1;
+            city.populationSurplus = 0;
+            city.consumesPerPopulation[city.population+1] = Browsergame.Settings.getConsumeGoods(city.population+1);
             return null;
         }
     }

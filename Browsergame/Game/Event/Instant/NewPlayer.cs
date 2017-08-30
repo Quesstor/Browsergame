@@ -34,33 +34,33 @@ namespace Browsergame.Game.Event.Instant {
             Location startLoc = new Location();
             startLoc.random(state);
 
-            string planetName = string.Format("{0} Heimatplanet", name);
-            string info = string.Format("{0} Heimatplanet", name);
-            Planet planet = state.addPlanet(planetName, player, startLoc, info);
+            string cityName = string.Format("{0} Heimatstadt", name);
+            string info = string.Format("{0} Heimatstadt", name);
+            City city = state.addCity(cityName, player, startLoc, info);
 
-            state.addUnit(planet, UnitType.Trader);
-            state.addUnit(planet, UnitType.Fighter);
-            state.addUnit(planet, UnitType.Fighter);
+            state.addUnit(city, UnitType.Trader);
+            state.addUnit(city, UnitType.Fighter);
+            state.addUnit(city, UnitType.Fighter);
 
             SubscriberUpdates = new SubscriberUpdates();
             SubscriberUpdates.Add(player, SubscriberLevel.Other);
-            SubscriberUpdates.Add(planet, SubscriberLevel.Other);
+            SubscriberUpdates.Add(city, SubscriberLevel.Other);
 
             foreach (var otherPlayer in state.players.Values) {
                 if (otherPlayer.id == player.id) {
                     player.addSubscription(player, SubscriberLevel.Owner);
-                    foreach (var pl in player.planets) pl.addSubscription(player, SubscriberLevel.Owner);
+                    foreach (var pl in player.cities) pl.addSubscription(player, SubscriberLevel.Owner);
                     foreach (Unit unit in player.units) unit.addSubscription(player, SubscriberLevel.Owner);
 
                 }else {
                     otherPlayer.addSubscription(player, SubscriberLevel.Other);
                     player.addSubscription(otherPlayer, SubscriberLevel.Other);
-                    foreach (var playerPlanet in player.planets)
-                        if (otherPlayer.isInVisibilityRange(playerPlanet.location))
-                            playerPlanet.addSubscription(otherPlayer, SubscriberLevel.Other);
-                    foreach (var otherPlayerPlanet in otherPlayer.planets)
-                        if (player.isInVisibilityRange(otherPlayerPlanet.location))
-                            otherPlayerPlanet.addSubscription(player, SubscriberLevel.Other);
+                    foreach (var playerCity in player.cities)
+                        if (otherPlayer.isInVisibilityRange(playerCity.location))
+                            playerCity.addSubscription(otherPlayer, SubscriberLevel.Other);
+                    foreach (var otherPlayerCity in otherPlayer.cities)
+                        if (player.isInVisibilityRange(otherPlayerCity.location))
+                            otherPlayerCity.addSubscription(player, SubscriberLevel.Other);
                 }
             }
 

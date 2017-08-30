@@ -1,15 +1,15 @@
-﻿angular.module('app').controller('itemsquare', function ($scope, $rootScope, tradeService, utilService, planetService, uiService, syncService) {
+﻿angular.module('app').controller('itemsquare', function ($scope, $rootScope, tradeService, utilService, cityService, uiService, syncService) {
     $scope.Math = window.Math;
     $scope.tradeService = tradeService;
     $scope.utilService = utilService;
-    $scope.planetService = planetService;
+    $scope.cityService = cityService;
     $scope.uiService = uiService;
 
     $scope.settings = function(){
         return $rootScope.settings.items[$scope.item.type];
     }
-    $scope.planetitem = function(){
-        return $rootScope.selectedPlanet.items[$scope.item.type];
+    $scope.cityitem = function(){
+        return $rootScope.selectedCity.items[$scope.item.type];
     }
     
     $scope.itemColor = function () {
@@ -23,7 +23,7 @@
             case 5: return "rgba(170, 145, 57, " + trans + ")";
         }
     }
-    $scope.planetMissingQuant = function(){
-        return $scope.quant<0 && $scope.planetitem().quant<-$scope.quant;
+    $scope.cityMissingQuant = function(){
+        return $scope.quant<0 && $scope.cityitem().quant<-$scope.quant;
     }
 });

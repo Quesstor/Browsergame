@@ -9,15 +9,15 @@
 //namespace Browsergame.Game.Event {
 //    class Trade : Event {
 //        private long unit;
-//        private long planet;
+//        private long city;
 //        private int quant;
 //        private int price;
 //        private ItemType itemType;
 
-//        public Trade(long initiatior, long unit, long planet, int quant, int price, ItemType itemType) : base(initiatior) {
+//        public Trade(long initiatior, long unit, long city, int quant, int price, ItemType itemType) : base(initiatior) {
 //            this.initiatorID = initiatior;
 //            this.unit = unit;
-//            this.planet = planet;
+//            this.city = city;
 //            this.quant = quant;
 //            this.price = price;
 //            this.itemType = itemType;
@@ -26,26 +26,26 @@
 
 //        public override void update(State state, SubscriberUpdates updates) {
 //            var unit = state.getUnit(this.unit);
-//            var planet = state.getPlanet(this.planet);
+//            var city = state.getcity(this.city);
 //            unit.owner.money -= quant * price;
-//            planet.owner.money += quant * price;
-//            planet.getItem(itemType).quant += quant;
+//            city.owner.money += quant * price;
+//            city.getItem(itemType).quant += quant;
 //            unit.getItem(itemType).quant -= quant;
 
 //            updates.Add(unit);
-//            updates.Add(planet);
-//            updates.Add(planet.owner);
+//            updates.Add(city);
+//            updates.Add(city.owner);
 //            updates.Add(unit.owner);
 //        }
 
 //        public override bool conditions(State state) {
 //            var unit = state.getUnit(this.unit);
-//            var planet = state.getPlanet(this.planet);
+//            var city = state.getcity(this.city);
 //            var initiatior = state.getPlayer(this.initiatorID);
 //            if (!initiatior.units.Contains(unit)) return false;
-//            if (planet.owner.money < quant * price) return false;
+//            if (city.owner.money < quant * price) return false;
 //            if (unit.owner.money < -quant * price) return false;
-//            if (planet.getItem(itemType).quant < -quant) return false;
+//            if (city.getItem(itemType).quant < -quant) return false;
 //            if (unit.getItem(itemType).quant < quant) return false;
 //            return true;
 //        }

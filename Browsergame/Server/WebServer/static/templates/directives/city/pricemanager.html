@@ -1,15 +1,15 @@
 ﻿
-<table ng-hide="$root.selectedUnit.planet == $root.selectedPlanet.id" class="table table-condensed">
+<table ng-hide="$root.selectedUnit.city == $root.selectedCity.id" class="table table-condensed">
     <tr class="notopborder">
         <td>Planet</td>
         <td></td>
         <td>Angebote</td>
         <td style="text-align: right;">Anpassen</td>
     </tr>
-    <tr ng-repeat="(key,item) in $root.selectedPlanet.items">
-        <!--Planet-->
+    <tr ng-repeat="(key,item) in $root.selectedCity.items">
+        <!--City-->
         <td class="square-td">
-            <itemsquare planetquant="item.quant" item="item" quant="" />
+            <itemsquare cityquant="item.quant" item="item" quant="" />
         </td>
         <!--Angebote Pfeile-->
         <td style="padding: 4px 0 0 0; width: 30px;">
@@ -18,7 +18,7 @@
         </td>
         <!--Angebote-->
         <td class="square-td">
-            <itemsquare item="item" quant="Math.abs(offer(key).quant)" itemprice="(offer(key).quant<0?-1:1)*offer(key).price" hideplanetquant="true"></itemsquare>
+            <itemsquare item="item" quant="Math.abs(offer(key).quant)" itemprice="(offer(key).quant<0?-1:1)*offer(key).price" hidecityquant="true"></itemsquare>
         </td>
         <!--Verkauf-->
         <td class="btn-td">

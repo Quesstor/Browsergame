@@ -17,7 +17,7 @@ namespace Browsergame.Game.Entities {
         [DataMember] public double money;
         [DataMember] public bool online = false;
 
-        [DataMember] public List<Planet> planets = new List<Planet>();
+        [DataMember] public List<City> cities = new List<City>();
         [DataMember] public List<Unit> units = new List<Unit>();
         [DataMember] public List<Message> messages = new List<Message>();
         [DataMember] public Dictionary<SubscriberLevel, HashSet<Subscribable>> subscriptions = new Dictionary<SubscriberLevel, HashSet<Subscribable>>();
@@ -30,8 +30,8 @@ namespace Browsergame.Game.Entities {
         }
 
         public bool isInVisibilityRange(Location location) {
-            foreach(var planet in planets) {
-                if (planet.location.range(location) < Browsergame.Settings.visibilityRange) return true;
+            foreach(var city in cities) {
+                if (city.location.range(location) < Browsergame.Settings.visibilityRange) return true;
             }
             return false;
         }

@@ -24,7 +24,7 @@ namespace Browsergame.Game.Entities {
                 var randomOffset = rand.Next(-100, 100) / 100f * minRange * 2;
                 x = 48 + radius * Math.Cos(degree) * randomOffset;//Bounded to: -85 to +85
                 y = 5 + radius * Math.Sin(degree) * randomOffset; //Bounded to: -180 to +180
-                var qy = from planet in state.planets.Values where planet.location.range(this)<minRange select planet;
+                var qy = from city in state.cities.Values where city.location.range(this)<minRange select city;
                 if (qy.Count() == 0) return;
                 count += 1;
             }

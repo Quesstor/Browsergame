@@ -1,25 +1,25 @@
 ﻿<div style="position: relative">
     <div ng-style="{'left': (-markerSize()/2 + 25)+'px' , 'top': (-markerSize()/2 + 25)+'px'}"
         style="position: absolute;"
-        ng-click="$root.selectedPlanet = planet;"
-        data-toggle="modal" data-target="#planetModal"
-        ng-right-click="rightclickPlanet(planet)"
+        ng-click="$root.selectedCity = city;"
+        data-toggle="modal" data-target="#cityModal"
+        ng-right-click="rightclickCity(city)"
         ng-dblclick="$event.stopPropagation();"
-        ng-mouseover="hoverPlanet(planet,true);hover=true;"
-        ng-mouseleave="hoverPlanet(planet,false);hover=false;">
+        ng-mouseover="hoverCity(city,true);hover=true;"
+        ng-mouseleave="hoverCity(city,false);hover=false;">
 
         <div style='color:black; font-size:12px; position:relative; background-position: center center;'
-            ng-style="{ 'background':'url(/img/icon/cities/city'+(planet.population-1)+'.png) no-repeat', 
+            ng-style="{ 'background':'url(/img/icon/cities/city'+(city.population-1)+'.png) no-repeat', 
                     'background-size': markerSize() + 'px ' + markerSize() + 'px',
                     'width':markerSize()+'px',
                     'height':markerSize()+'px'}"
-            ng-class="{'planetWithUnit':uiService.playerHasUnitOnPlanet(planet)}"
+            ng-class="{'cityWithUnit':uiService.playerHasUnitOnCity(city)}"
             class="hoverpointer">
             <div ng-show="mapService.zoomlevel==12">
                 <div style="padding-top: 150px;text-align: center;">
-                    <div ng-style="{'background': 'url(img/icon/' + (planet.owner==$root.player.id?'owner':'') + 'banner.png) no-repeat', 'background-size': '200px auto'}"  
+                    <div ng-style="{'background': 'url(img/icon/' + (city.owner==$root.player.id?'owner':'') + 'banner.png) no-repeat', 'background-size': '200px auto'}"  
                         style="background-position: bottom; height: 36px; padding-top: 2px;">
-                        {{planet.name}}
+                        {{city.name}}
                     </div>
                 </div>
             </div>

@@ -1,7 +1,7 @@
-﻿<div ng-hide="uiService.planetHasOffers()">
+﻿<div ng-hide="uiService.cityHasOffers()">
     Dieser Planet hat keine Handelsangebote
 </div>
-<table ng-show="uiService.planetHasOffers()"
+<table ng-show="uiService.cityHasOffers()"
        class="table table-condensed"
        ng-init="menge=1"
        style="width: 100%">
@@ -12,7 +12,7 @@
         <td style="width:200px;"><!--Button--></td>
         <td>Ladung</td>
     </tr>
-    <tr ng-repeat="(id,item) in $root.planets[$root.selectedPlanet.id].items"
+    <tr ng-repeat="(id,item) in $root.cities[$root.selectedCity.id].items"
         ng-show="item.offer!=0">
         <!--Angebote-->
         <td style="padding: 0 4px;">
@@ -30,7 +30,7 @@
         <!--Button-->
         <td style="width:200px;">
             <div class="btn-group pull-right"
-                 ng-show="$root.selectedUnit.planet==$root.selectedPlanet.id">
+                 ng-show="$root.selectedUnit.city==$root.selectedCity.id">
                 <button class="btn btn-sm btn-default" 
                         ng-click="menge=Math.abs(item.offer)" 
                         ng-disabled="!tradeService.tradeOk(item, menge)">max</button>

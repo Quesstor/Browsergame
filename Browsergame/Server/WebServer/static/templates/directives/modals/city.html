@@ -1,5 +1,5 @@
 ﻿<!-- Panet modal-->
-<div id="planetModal"
+<div id="cityModal"
     class="modal fade"
     role="dialog"
     ng-init="show='info'">
@@ -8,7 +8,7 @@
             <div class="modal-header coverbg"
                 ng-class="{'coverbgbig':coverbgbig}"
                 style="background:#000 cover; background-position: center;"
-                ng-style="{'background-image':'url(/img/city/'+show.replace('modal','')+'/'+ $root.selectedPlanet.type +'.jpg)'}">
+                ng-style="{'background-image':'url(/img/city/'+show.replace('modal','')+'/'+ $root.selectedCity.type +'.jpg)'}">
                 <div class="btn-group pull-right"
                     style="margin-top: 3px;">
                     <div class="btn"
@@ -23,8 +23,8 @@
                     style="color:white">
                     <li ng-class="{'active':show=='info'}"
                         ng-click="show='info'"
-                        ng-show="$root.selectedPlanet.owner == $root.player.id">
-                        <a><span class="glyphicon glyphicon-globe"></span> {{$root.selectedPlanet.name}}</a>
+                        ng-show="$root.selectedCity.owner == $root.player.id">
+                        <a><span class="glyphicon glyphicon-globe"></span> {{$root.selectedCity.name}}</a>
                     </li>
                     <li ng-class="{'active':show=='manager'}"
                         ng-click="show='manager'">
@@ -32,27 +32,27 @@
                     </li>
                     <li ng-class="{'active':show=='units'}"
                         ng-click="show='units'"
-                        ng-show="$root.selectedPlanet.owner == $root.player.id">
+                        ng-show="$root.selectedCity.owner == $root.player.id">
                         <a><span class="glyphicon glyphicon-align-justify"></span> Einheiten</a>
                     </li>
                     <li ng-class="{'active':show=='buildings'}"
                         ng-click="show='buildings'"
-                        ng-show="$root.selectedPlanet.owner == $root.player.id">
+                        ng-show="$root.selectedCity.owner == $root.player.id">
                         <a><span class="glyphicon glyphicon-oil"></span> Gebäude</a>
                     </li>
                 </ul>
             </div>
             <div class="modal-body">
-                <div ng-if="$root.selectedPlanet.owner == $root.player.id">
+                <div ng-if="$root.selectedCity.owner == $root.player.id">
                     <units ng-show="$parent.show=='units'" />
-                    <planetinfo ng-show="$parent.show=='info'" />
+                    <cityinfo ng-show="$parent.show=='info'" />
                     <div ng-show="$parent.show=='manager'">
                         <unitmanger />
                         <pricemanager />
                     </div>
                     <buildings ng-show="$parent.show=='buildings'" />
                 </div>
-                <trademanager ng-if="$root.selectedPlanet.owner != $root.player.id" />
+                <trademanager ng-if="$root.selectedCity.owner != $root.player.id" />
             </div>
         </div>
     </div>

@@ -12,48 +12,48 @@ using Browsergame.Game.Engine;
 namespace Browsergame.Game.Event.Instant {
     class OrderProduction : Event {
         private long playerID;
-        private long planetID;
+        private long cityID;
         private int amount;
         private BuildingType BuildingType;
 
-        public OrderProduction(long playerID, long planetID, int amount, BuildingType buildingType) {
+        public OrderProduction(long playerID, long cityID, int amount, BuildingType buildingType) {
             this.playerID = playerID;
-            this.planetID = planetID;
+            this.cityID = cityID;
             this.amount = amount;
             BuildingType = buildingType;
         }
 
-        private Planet Planet;
+        private City City;
         private Player Player;
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
 
-            Planet = state.getPlanet(planetID);//getPlanet(planetID, Utils.SubscriberLevel.Owner);
+            City = state.getCity(cityID);
             Player = state.getPlayer(playerID);
-            needsOnDemandCalculation.Add(Planet);
+            needsOnDemandCalculation.Add(City);
         }
         public override bool conditions() {
 
-            var Building = Planet.buildings[BuildingType];
+            var Building = City.buildings[BuildingType];
             if (Building.BuildingUpgrade != null) return false;
-            if (Planet.owner.id != Player.id) return false;
+            if (City.owner.id != Player.id) return false;
             if (Building.lvl == 0) return false;
             foreach (var e in Building.setting.educts) {
                 var amountNeeded = amount * e.Value * Building.lvl;
-                if (Planet.items[e.Key].quant < amountNeeded) return false;
+                if (City.items[e.Key].quant < amountNeeded) return false;
             }
             return true;
         }
 
         public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             SubscriberUpdates = new SubscriberUpdates();
-            SubscriberUpdates.Add(Planet, SubscriberLevel.Owner);
+            SubscriberUpdates.Add(City, SubscriberLevel.Owner);
 
-            var Building = Planet.buildings[BuildingType];
+            var Building = City.buildings[BuildingType];
             var list = new List<Event>();
             foreach (var e in Building.setting.educts) {
                 var amountNeeded = amount * e.Value * Building.lvl;
-                Planet.items[e.Key].quant -= amountNeeded;
+                City.items[e.Key].quant -= amountNeeded;
             }
             if (Building.setting.unitProducts.Count > 0) {
                 double productionTimePerUnit = 1f / Browsergame.Settings.productionsPerMinute;
@@ -62,7 +62,7 @@ namespace Browsergame.Game.Event.Instant {
                 foreach (var production in Building.setting.unitProducts) {
                     for (var i = 1; i <=amount; i++) {
                         var finishedTime = startProductionTime.AddMinutes(i*productionTimePerUnit);
-                        list.Add(new AddUnits(Planet.id, production.Key, production.Value, finishedTime));
+                        list.Add(new AddUnits(City.id, production.Key, production.Value, finishedTime));
                     }
                 }
             }

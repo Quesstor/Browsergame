@@ -13,19 +13,19 @@ namespace Browsergame.Game.Entities {
     class Unit : Subscribable, HasItems ,IID {
         [DataMember] public Dictionary<ItemType, Item> items = new Dictionary<ItemType, Item>();
         [DataMember] public Player owner;
-        [DataMember] public Planet planet;
+        [DataMember] public City city;
         [DataMember] public UnitType type;
         [DataMember] public long id { get; set; }
         [DataMember] public Event.Timed.Fight fighting;
 
         public Settings.UnitSettings setting { get => Settings.UnitSettings.settings[type]; }
 
-        public Unit(Player owner, Planet planet, UnitType unitType) {
+        public Unit(Player owner, City city, UnitType unitType) {
             this.owner = owner;
-            this.planet = planet;
+            this.city = city;
             this.type = unitType;
             owner.units.Add(this);
-            planet.units.Add(this);
+            city.units.Add(this);
         }
 
         public Item getItem(ItemType ItemType) {
@@ -37,7 +37,7 @@ namespace Browsergame.Game.Entities {
             data.Add("id", id);
             if (subscriber == SubscriberLevel.Owner) {
                 data.Add("type", type.ToString());
-                if(planet!=null) data.Add("planet", planet.id);
+                if(city!=null) data.Add("city", city.id);
                 data.Add("items", items);
             }
             return data;

@@ -75,15 +75,15 @@ table td {
     padding: 5px;
 }
 
-planetmarker {
+citymarker {
     width: 0;
 }
 
-.planetMarker {
+.cityMarker {
     margin: -23px 0 0 -23px;
 }
 
-    .planetMarker:hover {
+    .cityMarker:hover {
         cursor: default;
     }
 
@@ -92,7 +92,7 @@ planetmarker {
     display: inline-block;
 }
 
-.planetWithUnit {
+.cityWithUnit {
     border-radius: 50%;
     animation: bluepulse 3s infinite alternate;
 }

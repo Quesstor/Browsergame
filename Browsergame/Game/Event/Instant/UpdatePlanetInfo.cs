@@ -9,26 +9,26 @@ using Browsergame.Game.Entities;
 using Browsergame.Game.Event.Timed;
 
 namespace Browsergame.Game.Event.Instant {
-    class UpdatePlanetInfo : Event {
+    class UpdateCityInfo : Event {
         private long playerID;
-        private long planetID;
+        private long cityID;
         private string setName;
         private string setInfo;
 
 
-        public UpdatePlanetInfo(long playerID, long planetID, string setName, string setInfo) {
+        public UpdateCityInfo(long playerID, long cityID, string setName, string setInfo) {
             this.playerID = playerID;
-            this.planetID = planetID;
+            this.cityID = cityID;
             this.setName = setName;
             this.setInfo = setInfo;
         }
 
         private Player player;
-        private Planet planet;
+        private City city;
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
             player = state.getPlayer(playerID);
-            planet = state.getPlanet(planetID);
+            city = state.getCity(cityID);
 
         }
         public override bool conditions() {
@@ -38,10 +38,10 @@ namespace Browsergame.Game.Event.Instant {
         }
         public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             SubscriberUpdates = new SubscriberUpdates();
-            planet.info = setInfo;
-            planet.name = setName;
-            SubscriberUpdates.Add(planet, SubscriberLevel.Owner);
-            SubscriberUpdates.Add(planet, SubscriberLevel.Other);
+            city.info = setInfo;
+            city.name = setName;
+            SubscriberUpdates.Add(city, SubscriberLevel.Owner);
+            SubscriberUpdates.Add(city, SubscriberLevel.Other);
             return null;
         }
     }

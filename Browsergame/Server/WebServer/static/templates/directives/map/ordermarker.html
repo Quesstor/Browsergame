@@ -11,10 +11,10 @@
                 {{order.duration.toFixed(0)}}s
                 <span>
                     <span ng-show="order.type==0">
-                        Unterwegs nach {{$root.planets[order.targetplanet].name}}
+                        Unterwegs nach {{$root.cities[order.targetcity].name}}
                     </span>
                     <span ng-show="order.type==1">
-                        Angriff auf {{$root.planets[order.targetplanet].name}}
+                        Angriff auf {{$root.cities[order.targetcity].name}}
                     </span>
                 </span>
             </td>

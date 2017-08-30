@@ -11,21 +11,21 @@ using Browsergame.Game.Utils;
 namespace Browsergame.Game.Event.Timed {
     [DataContract]
     class BuildingUpgrade : Event {
-        [DataMember] private long PlanetID;
+        [DataMember] private long cityID;
         [DataMember] private BuildingType BuildingType;
 
-        public BuildingUpgrade(long planetID, BuildingType buildingType, DateTime executionTime) {
-            PlanetID = planetID;
+        public BuildingUpgrade(long cityID, BuildingType buildingType, DateTime executionTime) {
+            cityID = cityID;
             BuildingType = buildingType;
             this.executionTime = executionTime;
         }
 
         private Building building;
-        private Planet planet;
+        private City city;
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            planet = state.getPlanet(PlanetID);
-            building = planet.buildings[BuildingType];
+            city = state.getCity(cityID);
+            building = city.buildings[BuildingType];
         }
 
         public override bool conditions() {
@@ -34,7 +34,7 @@ namespace Browsergame.Game.Event.Timed {
 
         public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             SubscriberUpdates = new SubscriberUpdates();
-            SubscriberUpdates.Add(planet, Utils.SubscriberLevel.Owner);
+            SubscriberUpdates.Add(city, Utils.SubscriberLevel.Owner);
 
             building.lvl += 1;
             building.BuildingUpgrade = null;

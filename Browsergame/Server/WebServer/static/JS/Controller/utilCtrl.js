@@ -1,8 +1,8 @@
-﻿angular.module('app').controller('utilCtrl', function ($scope, $rootScope, tradeService, utilService, planetService, uiService, playerService) {
+﻿angular.module('app').controller('utilCtrl', function ($scope, $rootScope, tradeService, utilService, cityService, uiService, playerService) {
     $scope.Math = window.Math;
     $scope.tradeService = tradeService;
     $scope.utilService = utilService;
-    $scope.planetService = planetService;
+    $scope.cityService = cityService;
     $scope.playerService = playerService;
     $scope.uiService = uiService;
 });

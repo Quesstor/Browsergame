@@ -4,8 +4,8 @@
         $rootScope.settings = {};
         $rootScope.players = {};
         $rootScope.player = {};
-        $rootScope.planets = {};
-        $rootScope.planet = {};
+        $rootScope.cities = {};
+        $rootScope.city = {};
         $rootScope.units = {};
         $rootScope.orders = {};
     }
@@ -15,7 +15,7 @@
             syncService.resetData();
             for (k in data.setup) { syncService.updateData(data.setup[k]); }
             syncService.startSyncLoop();
-            mapService.drawPlanetMarker();
+            mapService.drawCityMarker();
             
         }
         if (data.settings) {
@@ -32,9 +32,9 @@
             }
             mapService.drawAllOrders();
         }
-        if (data.planet) {
-            $rootScope.planets[data.planet.id] = data.planet;
-            mapService.drawPlanetMarker();
+        if (data.city) {
+            $rootScope.cities[data.city.id] = data.city;
+            mapService.drawCityMarker();
         }
         if (data.players) {
             $rootScope.players[data.players.id] = data.players;
@@ -44,15 +44,15 @@
         }
         if (data.units) {
             angular.merge($rootScope.units, data.units);
-            for (var k in $rootScope.planets) $rootScope.planets[k].unitcounts = {};
+            for (var k in $rootScope.cities) $rootScope.cities[k].unitcounts = {};
             for (var k in data.units) {
                 var unit = data.units[k];
-                if ((unit.planet || unit.planet === 0) && $rootScope.planets[unit.planet]) {
-                    $rootScope.planets[unit.planet].unitcounts[unit.type] = ($rootScope.planets[unit.planet].unitcounts[unit.type] + 1) || 1;
+                if ((unit.city || unit.city === 0) && $rootScope.cities[unit.city]) {
+                    $rootScope.cities[unit.city].unitcounts[unit.type] = ($rootScope.cities[unit.city].unitcounts[unit.type] + 1) || 1;
                 }
             }
         }
-        if ($rootScope.selectedPlanet) $rootScope.selectedPlanet = $rootScope.planets[$rootScope.selectedPlanet.id];
+        if ($rootScope.selectedCity) $rootScope.selectedCity = $rootScope.cities[$rootScope.selectedCity.id];
         if ($rootScope.selectedUnit) $rootScope.selectedUnit = $rootScope.units[$rootScope.selectedUnit.id];
     };
 
@@ -65,12 +65,12 @@
     syncService.syncLoop = function () {
         var perSecond = syncService.syncLoopIntervall / 1000;
         var perMinute = perSecond / 60;
-        angular.forEach($rootScope.planets, function (planet, key) {
-            if (planet.owner != $rootScope.player.id) return;
-            if (!planet.products) planet.products = {};
-            for (var type in $rootScope.settings.items) planet.products[type] = 0;
-            if (planet.buildings) {
-                angular.forEach(planet.buildings, function (building, key) {
+        angular.forEach($rootScope.cities, function (city, key) {
+            if (city.owner != $rootScope.player.id) return;
+            if (!city.products) city.products = {};
+            for (var type in $rootScope.settings.items) city.products[type] = 0;
+            if (city.buildings) {
+                angular.forEach(city.buildings, function (building, key) {
                     //Produce
                     var products = $rootScope.settings.buildings[key].itemProducts;
                     var educts = $rootScope.settings.buildings[key].educts;
@@ -80,8 +80,8 @@
                         building.orderedProductions -= productions;
                     }
                     angular.forEach(products, function (productionAmount, product) {
-                        planet.items[product].quant += productionAmount * productions;
-                        planet.products[product] += productionAmount * building.lvl;
+                        city.items[product].quant += productionAmount * productions;
+                        city.products[product] += productionAmount * building.lvl;
                     });
 
                     if (building.upgradeDuration) building.upgradeDuration -= 1 * perSecond;
@@ -91,37 +91,37 @@
             //Consume goods & Get Money incomePerMinute
             $rootScope.player.totalIncome = 0;
             $rootScope.player.income = {};
-            planet.consumes = {};
-            var TotalMinutesConsumed = planet.consumedSeconds / 60;
-            for (var population = 1; population <= planet.population; population++) {
+            city.consumes = {};
+            var TotalMinutesConsumed = city.consumedSeconds / 60;
+            for (var population = 1; population <= city.population; population++) {
                 var missingGoodsFactor = 1;
-                for (type in planet.consumesPerPopulation[population]) {
-                    var quant = planet.consumesPerPopulation[population][type];
+                for (type in city.consumesPerPopulation[population]) {
+                    var quant = city.consumesPerPopulation[population][type];
                     var consumed = TotalMinutesConsumed * quant * $rootScope.settings.consumePerMinute;
-                    var planetQuant = planet.items[type].quant;
+                    var cityQuant = city.items[type].quant;
 
-                    if (planetQuant < consumed) {
-                        missingGoodsFactor -= (1 - (planetQuant / consumed)) / Object.keys(planet.consumesPerPopulation[population]).length;
-                        planet.items[type].quant = 0;
+                    if (cityQuant < consumed) {
+                        missingGoodsFactor -= (1 - (cityQuant / consumed)) / Object.keys(city.consumesPerPopulation[population]).length;
+                        city.items[type].quant = 0;
                     }
                     else {
-                        planet.items[type].quant -= consumed;
+                        city.items[type].quant -= consumed;
                     }
-                    if(!planet.consumes[type]) planet.consumes[type] = 0;
-                    planet.consumes[type] += consumed / TotalMinutesConsumed;
+                    if(!city.consumes[type]) city.consumes[type] = 0;
+                    city.consumes[type] += consumed / TotalMinutesConsumed;
                 }
                 var income = missingGoodsFactor * population * TotalMinutesConsumed * $rootScope.settings.incomePerMinutePerPopulation;
                 $rootScope.player.income[population] = income / TotalMinutesConsumed;
                 $rootScope.player.money += income;
 
-                if (population == planet.population) {
-                    planet.populationSurplus += missingGoodsFactor * TotalMinutesConsumed * $rootScope.settings.populationSurplusPerMinute;
-                    if (missingGoodsFactor < 1 && planet.populationSurplus >= missingGoodsFactor) planet.populationSurplus = missingGoodsFactor;
+                if (population == city.population) {
+                    city.populationSurplus += missingGoodsFactor * TotalMinutesConsumed * $rootScope.settings.populationSurplusPerMinute;
+                    if (missingGoodsFactor < 1 && city.populationSurplus >= missingGoodsFactor) city.populationSurplus = missingGoodsFactor;
                     
-                    planet.populationSurplus = Math.min(1, planet.populationSurplus);
+                    city.populationSurplus = Math.min(1, city.populationSurplus);
                 }
             }
-            planet.consumedSeconds = perSecond;
+            city.consumedSeconds = perSecond;
         });
     }
 

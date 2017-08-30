@@ -11,10 +11,10 @@
         var offsetLng = (NE.lng - SW.lng);
         return (latlng.lat > SW.lat-offsetLat && latlng.lat < NE.lat+offsetLat && latlng.lng > SW.lng-offsetLng && latlng.lng < NE.lng+offsetLng)
     }
-    this.drawPlanetMarker = function () {
+    this.drawCityMarker = function () {
         //Delete Marker not in viewbox
         for (var id in layers.cities) {
-            if(!$rootScope.planets[id] || !this.isInViewbox(layers.cities[id]._latlng)){
+            if(!$rootScope.cities[id] || !this.isInViewbox(layers.cities[id]._latlng)){
                 map.removeLayer(layers.cities[id]);
                 delete layers.cities[id];
             }
@@ -22,12 +22,12 @@
         //Add Marker
         var images = [];
         var markers = [];
-        angular.forEach($rootScope.planets, function (planet, id) {
-            if (!layers.cities[id] && mapService.isInViewbox({lat:planet.location.x, lng:planet.location.y}))
-                layers.cities[id] = L.marker([planet.location.x, planet.location.y], {
+        angular.forEach($rootScope.cities, function (city, id) {
+            if (!layers.cities[id] && mapService.isInViewbox({lat:city.location.x, lng:city.location.y}))
+                layers.cities[id] = L.marker([city.location.x, city.location.y], {
                     icon: L.divIcon({
-                        html: '<planetmarker planet="$root.planets[' + id + ']"></planetmarker>',
-                        className: 'mapmarker planetMarker angularCompile',
+                        html: '<citymarker city="$root.cities[' + id + ']"></citymarker>',
+                        className: 'mapmarker cityMarker angularCompile',
                         iconSize: null
                     })
                 }).addTo(map);
@@ -49,16 +49,16 @@
             drawOrder(order);
         });
     }
-    this.setPlanetMarkerZindex = function (planetid, zindex) {       
-        if(planetid === undefined) return;
-        layers.cities[planetid].setZIndexOffset(zindex);
+    this.setCityMarkerZindex = function (cityid, zindex) {       
+        if(cityid === undefined) return;
+        layers.cities[cityid].setZIndexOffset(zindex);
     }
     function drawOrder(order) {
         var FPS = 25;
         if (layers.order[order.id]) return;
 
-        var targetlocation = $rootScope.planets[order.targetplanet].location;
-        var startlocation = $rootScope.planets[order.fromplanet].location;
+        var targetlocation = $rootScope.cities[order.targetcity].location;
+        var startlocation = $rootScope.cities[order.fromcity].location;
 
         var ordercorlor = { 0: "white", 1: "red" }
         mapService.drawPolyLine("order" + order.id, startlocation, targetlocation, ordercorlor[order.type]);
@@ -110,14 +110,14 @@
     this.panHome = function () {
         map.panTo(new L.LatLng($rootScope.settings.location.x, $rootScope.settings.location.y));
     }
-    this.panToSelectedPlanet = function () {
+    this.panToSelectedCity = function () {
         var NE = this.viewbox._northEast;
         var SW = this.viewbox._southWest;        
         var offsetLat = (NE.lat - SW.lat);
-        map.panTo(new L.LatLng($rootScope.selectedPlanet.location.x-offsetLat/2.2, $rootScope.selectedPlanet.location.y),{animate: true, duration: 0.5});
+        map.panTo(new L.LatLng($rootScope.selectedCity.location.x-offsetLat/2.2, $rootScope.selectedCity.location.y),{animate: true, duration: 0.5});
     }
     this.drawUnitLine = function (unit) {
-        this.drawPolyLine(unit.id, unit.location, $rootScope.planets[unit.targetplanet].location);
+        this.drawPolyLine(unit.id, unit.location, $rootScope.cities[unit.targetcity].location);
     }
     this.drawPolyLine = function (lineId, locX, locY, color) {
         if (!locX || !locY) { return; }

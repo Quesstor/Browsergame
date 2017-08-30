@@ -1,7 +1,7 @@
 ﻿angular.module('app').service('tradeService', function ($http, $rootScope, $compile, syncService) {
     var tradeService = this;
     this.moveitems = function (item, quant) {
-        var tradeData = { token: $rootScope.token, planetid: $rootScope.selectedPlanet.id, unitid: $rootScope.selectedUnit.id, itemtype: item.type, quant: quant, price: 0 };
+        var tradeData = { token: $rootScope.token, cityid: $rootScope.selectedCity.id, unitid: $rootScope.selectedUnit.id, itemtype: item.type, quant: quant, price: 0 };
         $http.post("action/action/trade", tradeData)
         .success(successFunction)
         .error(function (data) { alert("Der Händler konnte seine Waren nicht handeln."); });
@@ -9,7 +9,7 @@
     this.trade = function (item, quant) {
         var price = item.price * quant;
         quant = Math.sign(item.offer) * quant;
-        var tradeData = { token: $rootScope.token, planetid: $rootScope.selectedPlanet.id, unitid: $rootScope.selectedUnit.id, itemtype: item.type, quant: quant, price: price };
+        var tradeData = { token: $rootScope.token, cityid: $rootScope.selectedCity.id, unitid: $rootScope.selectedUnit.id, itemtype: item.type, quant: quant, price: price };
         $http.post("action/action/trade", tradeData)
         .success(successFunction)
         .error(function (data) { alert("Der Händler konnte seine Waren nicht handeln."); });

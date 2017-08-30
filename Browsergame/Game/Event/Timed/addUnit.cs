@@ -11,12 +11,12 @@ namespace Browsergame.Game.Event.Timed {
     [DataContract]
     class AddUnits : Event {
 
-        [DataMember] private long planetID;
+        [DataMember] private long cityID;
         [DataMember] private UnitType unittype;
         [DataMember] private int count;
 
-        public AddUnits(long planetID, UnitType unittype, int count, DateTime executionTime) {
-            this.planetID = planetID;
+        public AddUnits(long cityID, UnitType unittype, int count, DateTime executionTime) {
+            this.cityID = cityID;
             this.unittype = unittype;
             this.count = count;
             this.executionTime = executionTime;
@@ -26,9 +26,9 @@ namespace Browsergame.Game.Event.Timed {
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
 
-            var planet = state.getPlanet(planetID);
+            var city = state.getCity(cityID);
             for (var i = 0; i < count; i++) {
-                var unit = state.addUnit(planet, unittype);
+                var unit = state.addUnit(city, unittype);
                 units.Add(unit);
             }
         }

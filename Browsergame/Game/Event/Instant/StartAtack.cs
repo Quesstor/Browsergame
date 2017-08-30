@@ -11,18 +11,18 @@ using Browsergame.Game.Utils;
 namespace Browsergame.Game.Event.Instant {
     class StartAtack : Event {
         private long playerID;
-        private long targetPlanetID;
-        private long startPlanetID;
+        private long targetCityID;
+        private long startCityID;
         private Dictionary<UnitType, int> unitCounts;
 
-        public StartAtack(long playerID, long targetPlanetID, long startPlanetID, Dictionary<UnitType, int> units) {
+        public StartAtack(long playerID, long targetCityID, long startCityID, Dictionary<UnitType, int> units) {
             this.playerID = playerID;
-            this.targetPlanetID = targetPlanetID;
-            this.startPlanetID = startPlanetID;
+            this.targetCityID = targetCityID;
+            this.startCityID = startCityID;
             this.unitCounts = units;
         }
-        private Planet targetPlanet;
-        private Planet startPlanet;
+        private City targetCity;
+        private City startCity;
         private Player player;
         private List<Unit> units;
 
@@ -30,25 +30,25 @@ namespace Browsergame.Game.Event.Instant {
             needsOnDemandCalculation = new HashSet<Subscribable>();
 
             player = state.getPlayer(playerID);
-            targetPlanet = state.getPlanet(targetPlanetID);
+            targetCity = state.getCity(targetCityID);
 
-            startPlanet = state.getPlanet(startPlanetID);
-            needsOnDemandCalculation.Add(startPlanet);
+            startCity = state.getCity(startCityID);
+            needsOnDemandCalculation.Add(startCity);
 
             units = new List<Unit>();
             foreach (var unitgroup in unitCounts) {
-                var planetUnits = (from u in startPlanet.units where u.type == unitgroup.Key select u).Take(unitgroup.Value).ToList();
-                units.AddRange(planetUnits);
+                var cityUnits = (from u in startCity.units where u.type == unitgroup.Key select u).Take(unitgroup.Value).ToList();
+                units.AddRange(cityUnits);
 
             }
         }
         public override bool conditions() {
 
-            if (player.id != startPlanet.owner.id) return false;
-            if (player.id == targetPlanet.owner.id) return false;
+            if (player.id != startCity.owner.id) return false;
+            if (player.id == targetCity.owner.id) return false;
             foreach (var unitgroup in unitCounts) {
-                var planetUnits = (from u in startPlanet.units where u.type == unitgroup.Key select u).Count();
-                if (planetUnits < unitgroup.Value) return false;
+                var cityUnits = (from u in startCity.units where u.type == unitgroup.Key select u).Count();
+                if (cityUnits < unitgroup.Value) return false;
             }
             return true;
         }
@@ -58,18 +58,18 @@ namespace Browsergame.Game.Event.Instant {
             SubscriberUpdates = new SubscriberUpdates();
 
             foreach (var unit in units) {
-                unit.planet = null;
-                startPlanet.units.Remove(unit);
+                unit.city = null;
+                startCity.units.Remove(unit);
                 unitIDs.Add(unit.id);
                 SubscriberUpdates.Add(unit, Utils.SubscriberLevel.Owner);
             }
 
-            SubscriberUpdates.Add(startPlanet, SubscriberLevel.Owner);
+            SubscriberUpdates.Add(startCity, SubscriberLevel.Owner);
 
-            var range = targetPlanet.location.range(startPlanet.location);
+            var range = targetCity.location.range(startCity.location);
             var travelTimeInSeconds = range * Settings.MoveSpeed;          
             var newTimedEvents = new List<Event>();
-            newTimedEvents.Add(new Timed.Fight(playerID, targetPlanetID, startPlanet.id, unitCounts, unitIDs, DateTime.Now.AddSeconds(travelTimeInSeconds)));
+            newTimedEvents.Add(new Timed.Fight(playerID, targetCityID, startCity.id, unitCounts, unitIDs, DateTime.Now.AddSeconds(travelTimeInSeconds)));
 
             return newTimedEvents;
         }

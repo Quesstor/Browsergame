@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Browsergame.Game {
     [DataContract]
     [KnownType(typeof(Player))]
-    [KnownType(typeof(Planet))]
+    [KnownType(typeof(City))]
     [KnownType(typeof(Unit))]
     [KnownType(typeof(Event.Event))]
     [KnownType(typeof(Fight))]
@@ -23,7 +23,7 @@ namespace Browsergame.Game {
     class State {
         [DataMember] public Dictionary<long, Player> players = new Dictionary<long, Player>();
         [DataMember] public Dictionary<long, Unit> units = new Dictionary<long, Unit>();
-        [DataMember] public Dictionary<long, Planet> planets = new Dictionary<long, Planet>();
+        [DataMember] public Dictionary<long, City> cities = new Dictionary<long, City>();
         [DataMember] public Dictionary<long, Item> items = new Dictionary<long, Item>();
         [DataMember] public SortedList<DateTime, Event.Event> futureEvents = new SortedList<DateTime, Event.Event>();
 
@@ -36,8 +36,8 @@ namespace Browsergame.Game {
         public Unit getUnit(long id) {
             return units[id];
         }
-        public Planet getPlanet(long id) {
-            return planets[id];
+        public City getCity(long id) {
+            return cities[id];
         }
         public Player addPlayer(string name, string token) {
             Player exists = getPlayer(token);
@@ -46,13 +46,13 @@ namespace Browsergame.Game {
             addAndSetID<Player>(players, newPlayer);
             return newPlayer;
         }
-        public Planet addPlanet(string name, Player owner, Location location, string info) {
-            Planet planet = new Planet(name, owner, location, info);
-            addAndSetID<Planet>(planets, planet);
-            return planet;
+        public City addCity(string name, Player owner, Location location, string info) {
+            City city = new City(name, owner, location, info);
+            addAndSetID<City>(cities, city);
+            return city;
         }
-        public Unit addUnit(Planet planet, Entities.Settings.UnitType unitType) {
-            Unit unit = new Unit(planet.owner, planet, unitType);
+        public Unit addUnit(City city, Entities.Settings.UnitType unitType) {
+            Unit unit = new Unit(city.owner, city, unitType);
             addAndSetID<Unit>(units, unit);
             return unit;
         }

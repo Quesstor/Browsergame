@@ -10,22 +10,22 @@ app.directive("audiomodal", function () { return { templateUrl: '/templates/dire
 app.directive("optionsmodal", function () { return { templateUrl: '/templates/directives/modals/options.html' } });
 app.directive("playersmodal", function () { return { templateUrl: '/templates/directives/modals/players.html' } });
 app.directive("messagesmodal", function () { return { templateUrl: '/templates/directives/modals/messages.html' } });
-app.directive("planetmodal", function () { return { templateUrl: '/templates/directives/modals/planet.html', controller: 'utilCtrl' } });
-//Planet
-app.directive("planetinfo", function () { return { templateUrl: '/templates/directives/planet/planetinfo.html', controller: 'planetinfo' } });
-app.directive("unitmanager", function () { return { templateUrl: '/templates/directives/planet/unitmanager.html', controller: 'utilCtrl' } });
-app.directive("pricemanager", function () { return { templateUrl: '/templates/directives/planet/pricemanager.html', controller: 'pricemanager' } });
-app.directive("trademanager", function () { return { templateUrl: '/templates/directives/planet/trademanager.html', controller: 'utilCtrl' } });
-app.directive("buildings", function () { return { templateUrl: '/templates/directives/planet/buildings.html', controller: 'buildings' } });
-app.directive("units", function () { return { templateUrl: '/templates/directives/planet/units.html', controller: 'units' } });
+app.directive("citymodal", function () { return { templateUrl: '/templates/directives/modals/city.html', controller: 'utilCtrl' } });
+//city
+app.directive("cityinfo", function () { return { templateUrl: '/templates/directives/city/cityinfo.html', controller: 'cityinfo' } });
+app.directive("unitmanager", function () { return { templateUrl: '/templates/directives/city/unitmanager.html', controller: 'utilCtrl' } });
+app.directive("pricemanager", function () { return { templateUrl: '/templates/directives/city/pricemanager.html', controller: 'pricemanager' } });
+app.directive("trademanager", function () { return { templateUrl: '/templates/directives/city/trademanager.html', controller: 'utilCtrl' } });
+app.directive("buildings", function () { return { templateUrl: '/templates/directives/city/buildings.html', controller: 'buildings' } });
+app.directive("units", function () { return { templateUrl: '/templates/directives/city/units.html', controller: 'units' } });
 //Utils
 app.directive("itemsquare", function () { return { templateUrl: '/templates/directives/util/itemsquare.html', 
-                scope: { item: "=", quant: "=", hideplanetquant: "=", itemprice: "=" }, controller: 'itemsquare' } });
+                scope: { item: "=", quant: "=", hidecityquant: "=", itemprice: "=" }, controller: 'itemsquare' } });
 app.directive("unitsquare", function () { return { templateUrl: '/templates/directives/util/unitsquare.html', 
                 scope: { unit: "=", count: "=", hideinfos: "="}, controller: 'unitsquare' } });
 app.directive("price", function () { return { templateUrl: '/templates/directives/util/price.html', scope: { value: '=' }, controller: 'utilCtrl' } });
 //Map
-app.directive("planetmarker", function () { return { templateUrl: '/templates/directives/map/planetmarker.html', scope: { planet: '=' }, controller: 'mapmarkerCtrl' } });
+app.directive("citymarker", function () { return { templateUrl: '/templates/directives/map/citymarker.html', scope: { city: '=' }, controller: 'mapmarkerCtrl' } });
 app.directive("ordermarker", function () { return { templateUrl: '/templates/directives/map/ordermarker.html', scope: { order: '=' }, controller: 'mapmarkerCtrl' } });
 
 app.directive("navi", function () { return { templateUrl: '/templates/directives/map/navi.html' } });

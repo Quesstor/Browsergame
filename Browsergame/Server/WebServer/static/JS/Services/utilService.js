@@ -1,14 +1,14 @@
 ﻿angular.module('app').service('utilService', function ($rootScope, mapService) {
     var utilService = this;
     this.merge = angular.merge;
-    this.togglePlanet = function (planet) {
-        if ($rootScope.selectedPlanet && planet.id == $rootScope.selectedPlanet.id) utilService.selectPlanet(null);
-        else utilService.selectPlanet(planet);
+    this.toggleCity = function (city) {
+        if ($rootScope.selectedCity && city.id == $rootScope.selectedCity.id) utilService.selectCity(null);
+        else utilService.selectCity(city);
     }
-    this.selectPlanet = function (planet) {
-        if ($rootScope.selectedPlanet) mapService.setPlanetMarkerZindex($rootScope.selectedPlanet.id, 100);
-        if (planet) mapService.setPlanetMarkerZindex(planet.id, 1500);
-        $rootScope.selectedPlanet = planet;
+    this.selectCity = function (city) {
+        if ($rootScope.selectedCity) mapService.setCityMarkerZindex($rootScope.selectedCity.id, 100);
+        if (city) mapService.setCityMarkerZindex(city.id, 1500);
+        $rootScope.selectedCity = city;
     }
     this.toggleSelectOrder = function (order) {
         if ($rootScope.selectedOrder) {
@@ -27,9 +27,9 @@
         if ($rootScope.selectedUnit && $rootScope.selectedUnit.id == unit.id) utilService.selectUnit(null);
         else utilService.selectUnit(unit);
     }
-    this.selectUnits = function (units, planet) {
+    this.selectUnits = function (units, city) {
         $rootScope.selectedUnits = units;
-        $rootScope.selectedUnitsPlanet = planet;
+        $rootScope.selectedUnitsCity = city;
     }
     this.shortNumber = function (x) {
         if (x >= 1000000) return (x / 1000000).toFixed(0) + "m";
