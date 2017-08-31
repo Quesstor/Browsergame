@@ -24,7 +24,6 @@
         for (k in $rootScope.units) {
             var unit = $rootScope.units[k];
             if (unit.city == $rootScope.selectedCity.id) {
-                angular.merge(unit, $rootScope.settings.units[unit.type]);
                 if (unit.civil === true) units.push(unit);
             }
         }
@@ -36,13 +35,13 @@
     }
     $scope.unitCanLoad = function (type, quant) {
         if (!$rootScope.selectedUnit) return;
-        if (quant < 0) { //Items to Planet
+        if (quant < 0) { //Items to City
             if(!$rootScope.selectedUnit.items[type]) return false;
             return $rootScope.selectedUnit.items[type].quant >= -quant;
         } else { //Items to Unit
             var loaded = 0;
             for (var type in $rootScope.selectedUnit.items) loaded += $rootScope.selectedUnit.items[type].quant;
-            return loaded != $rootScope.settings.units[$rootScope.selectedUnit.type].storage;
+            return loaded != $rootScope.selectedUnit.storage;
         }
     }
 });

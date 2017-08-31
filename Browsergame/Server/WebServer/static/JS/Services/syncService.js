@@ -1,22 +1,27 @@
 ﻿angular.module('app').service('syncService', function ($http, $interval, $rootScope, $compile, $location, $timeout, mapService, $websocket) {
     var syncService = this;
-    syncService.resetData = function(){
+    syncService.resetData = function () {
         $rootScope.settings = {};
         $rootScope.players = {};
         $rootScope.player = {};
         $rootScope.cities = {};
         $rootScope.city = {};
         $rootScope.units = {};
-        $rootScope.orders = {};
+        $rootScope.events = {};
     }
     syncService.updateData = function (data) {
         if (!data) { console.log("NO SYNC DATA"); return; }
         if (data.setup) {
             syncService.resetData();
-            for (k in data.setup) { syncService.updateData(data.setup[k]); }
+            var events = [];
+            for (msg of data.setup) {
+                if (msg.event) events.push(msg);
+                else syncService.updateData(msg);
+            }
+            for (msg of events)syncService.updateData(msg);
             syncService.startSyncLoop();
-            mapService.drawCityMarker();
-            
+            mapService.drawAll();
+
         }
         if (data.settings) {
             angular.merge($rootScope.settings, data.settings);
@@ -25,21 +30,31 @@
         if (data.player) {
             angular.merge($rootScope.player, data.player);
         }
-        if (data.orders) {
-            angular.merge($rootScope.orders, data.orders);
-            for (k in $rootScope.orders) {
-                if (!data.orders[k]) delete $rootScope.orders[k];
-            }
-            mapService.drawAllOrders();
+        if (data.event) {
+            if (!$rootScope.events[data.event.type]) $rootScope.events[data.event.type] = [];
+            $rootScope.events[data.event.type].push(data.event);
         }
         if (data.city) {
+            for(var k in data.city.buildings){
+                var building = data.city.buildings[k];
+                angular.merge(building, $rootScope.settings.buildings[building.type]);
+            } 
+            for(var k in data.city.offers){
+                var offer = data.city.offers[k];
+                angular.merge(offer, $rootScope.settings.items[offer.type]);
+            } 
+            for(var k in data.city.items) {
+                var item = data.city.items[k];                
+                angular.merge(item, $rootScope.settings.items[item.type]);
+            }
             $rootScope.cities[data.city.id] = data.city;
-            mapService.drawCityMarker();
+            mapService.drawAll();
         }
         if (data.players) {
             $rootScope.players[data.players.id] = data.players;
         }
         if (data.unit) {
+            angular.merge(data.unit, $rootScope.settings.units[data.unit.type]);            
             $rootScope.units[data.unit.id] = data.unit;
         }
         if (data.units) {
@@ -83,10 +98,18 @@
                         city.items[product].quant += productionAmount * productions;
                         city.products[product] += productionAmount * building.lvl;
                     });
-
-                    if (building.upgradeDuration) building.upgradeDuration -= 1 * perSecond;
                     building.productionSeconds = perSecond;
                 });
+            }
+            for (var type in $rootScope.events) {
+                for (var key in $rootScope.events[type]) {
+                    var event = $rootScope.events[type][key];
+                    event.executesInSec -= perSecond;
+                    if (event.executesInSec < 0) {
+                        mapService.removeEventMarker(event);
+                        $rootScope.events[type].splice(key, 1);
+                    }
+                }
             }
             //Consume goods & Get Money incomePerMinute
             $rootScope.player.totalIncome = 0;
@@ -107,7 +130,7 @@
                     else {
                         city.items[type].quant -= consumed;
                     }
-                    if(!city.consumes[type]) city.consumes[type] = 0;
+                    if (!city.consumes[type]) city.consumes[type] = 0;
                     city.consumes[type] += consumed / TotalMinutesConsumed;
                 }
                 var income = missingGoodsFactor * population * TotalMinutesConsumed * $rootScope.settings.incomePerMinutePerPopulation;
@@ -117,10 +140,11 @@
                 if (population == city.population) {
                     city.populationSurplus += missingGoodsFactor * TotalMinutesConsumed * $rootScope.settings.populationSurplusPerMinute;
                     if (missingGoodsFactor < 1 && city.populationSurplus >= missingGoodsFactor) city.populationSurplus = missingGoodsFactor;
-                    
+
                     city.populationSurplus = Math.min(1, city.populationSurplus);
                 }
             }
+            mapService.drawAll();
             city.consumedSeconds = perSecond;
         });
     }
@@ -129,13 +153,13 @@
         console.error("Socket error:");
         console.error(data);
         syncService.connected = false;
-        syncService.resetData();        
+        syncService.resetData();
         $location.path('/login');
     }
     syncService.socketClosed = function (data) {
         console.log("Socket closed:");
         syncService.connected = false;
-        syncService.resetData();        
+        syncService.resetData();
         $location.path('/login');
     }
     syncService.send = function (action, data) {

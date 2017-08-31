@@ -38,7 +38,7 @@ namespace Browsergame.Game.Event.Instant {
         public override bool conditions() {
             if (city.owner.id != player.id) return false;
             if (player.money < building.setting.buildPrice) return false;
-            if (building.BuildingUpgrade != null) return false;
+            if (building.isUpgrading) return false;
             foreach (var cost in building.setting.buildCosts) {
                 if (city.items[cost.Key].quant < cost.Value * (building.lvl + 1)) return false;
             }
@@ -57,18 +57,19 @@ namespace Browsergame.Game.Event.Instant {
             foreach (var cost in building.setting.buildCosts) {
                 city.items[cost.Key].quant -= cost.Value * (building.lvl + 1);
             }
+            building.isUpgrading = true;
 
             SubscriberUpdates = new SubscriberUpdates();
             SubscriberUpdates.Add(player, SubscriberLevel.Owner);
             SubscriberUpdates.Add(city, SubscriberLevel.Owner);
 
             var executionTime = DateTime.Now.AddSeconds(building.setting.buildTimeInSeconds);
-            var newTimedEvents = new List<Event>();
             var upgradeEvent = new Timed.BuildingUpgrade(CityID, BuildingType, executionTime);
-            building.BuildingUpgrade = upgradeEvent;
-            newTimedEvents.Add(upgradeEvent);
 
-            return newTimedEvents;
+            upgradeEvent.addSubscription(player, SubscriberLevel.Owner);
+            SubscriberUpdates.Add(upgradeEvent, SubscriberLevel.Owner);
+
+            return new List<Event>() { upgradeEvent };
         }
 
     }

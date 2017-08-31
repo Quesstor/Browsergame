@@ -21,24 +21,18 @@ namespace Browsergame.Game.Event {
         List<Event> execute(out SubscriberUpdates SubscriberUpdates);
     }
     [DataContract]
-
-    abstract class Event : IEvent {
+    abstract class Event : Subscribable, IEvent {
         public abstract void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
         public abstract bool conditions();
         public abstract List<Event> execute(out SubscriberUpdates SubscriberUpdates);
-        public DateTime executionTime;
+        [DataMember] public DateTime executionTime;
 
         public ManualResetEvent processed = new ManualResetEvent(false);
         ManualResetEvent IEvent.processed { get => processed; }
 
-        //protected void updateSubscribers(Subscribable s, SubscriberLevel updateSubscribersWithThisLevel) {
-        //    if (!onDemandCalculated.Contains(s) && !updates.contains(updateSubscribersWithThisLevel, s)) {
-        //        Logger.log(41, Category.EventEngine, Severity.Debug, "On Demand calculation " + s.ToString());
-        //        s.onDemandCalculation();
-        //        onDemandCalculated.Add(s);
-        //    }
-        //    updates.Add(updateSubscribersWithThisLevel, s);
-        //}
         private HashSet<Subscribable> onDemandCalculated = new HashSet<Subscribable>();
+
+        public override void onDemandCalculation() { return; }
+        public override UpdateData getUpdateData(SubscriberLevel subscriber) { return null; }
     }
 }

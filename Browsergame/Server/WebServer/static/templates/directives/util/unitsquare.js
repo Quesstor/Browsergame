@@ -5,8 +5,8 @@
     $scope.cityService = cityService;
     $scope.uiService = uiService;
 
-    $scope.setting = function(){
-        return $rootScope.settings.units[$scope.unit.type];
+    $scope.settings = function(){
+        return $rootScope.settings.units[$scope.unit.type];        
     }
     $scope.loaded = function(){
         if(!$scope.unit.items) return;

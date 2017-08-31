@@ -39,8 +39,8 @@ map
     .on('moveend', function () {
         var injector = angular.element(document.querySelector('#map')).injector();
         var mapService = injector.get('mapService');
-        mapService.viewbox = map.getBounds();
-        mapService.drawCityMarker();
+        mapService.viewbox = map.getBounds();       
+        mapService.drawAll();
     });
 //marker.setZIndexOffset(100);
 L.Marker.prototype.__setPos = L.Marker.prototype._setPos;

@@ -26,23 +26,27 @@ namespace Browsergame.Game.Utils {
             player.subscriptions[level].Remove(this);
         }
 
+        private void sendData(Player player, SubscriberLevel lvl) {
+            Task.Run(() => PlayerWebsocketConnections.sendMessage(player, getUpdateData(lvl).toJson()));
+        }
+
         public void updateSubscriber(Player player) {
             foreach (SubscriberLevel lvl in subscribers.Keys) {
                 if (subscribers[lvl].Contains(player)) {
-                    PlayerWebsocketConnections.sendMessage(player, getUpdateData(lvl).toJson());
+                    sendData(player, lvl);
                 }
             }
         }
         public void updateSubscribers() {
             foreach (SubscriberLevel lvl in subscribers.Keys) {
-                Task.Run(() => updateSubscribers(lvl));
+                updateSubscribers(lvl);
             }
         }
         public int updateSubscribers(SubscriberLevel lvl) {
             int count = 0;
             if (!subscribers.ContainsKey(lvl)) return count;
             foreach (Player player in subscribers[lvl]) {
-                PlayerWebsocketConnections.sendMessage(player, getUpdateData(lvl).toJson());
+                sendData(player, lvl);
                 count++;
             }
             return count;

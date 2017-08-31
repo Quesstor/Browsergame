@@ -23,10 +23,12 @@ namespace Browsergame.Game.Event.Instant {
 
         private Player player;
         private Unit unit;
+        private City city;
         private double freeItemSpace;
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             player = state.getPlayer(playerID);
             unit = state.getUnit(unitID);
+            city = unit.city;
             freeItemSpace = unit.setting.storage - (from item in unit.items select item.Value.quant).Sum();
             double dQuant = quant;
             if (dQuant < 0) { //Load to City
@@ -35,7 +37,7 @@ namespace Browsergame.Game.Event.Instant {
                 quant = (int)Math.Ceiling(dQuant);
             }
             else { //Load to Unit
-                dQuant = Math.Min(quant, unit.city.items[itemType].quant);
+                dQuant = Math.Min(quant, city.items[itemType].quant);
                 dQuant = Math.Min(quant, freeItemSpace);
                 quant = (int)Math.Floor(dQuant);
             }
@@ -44,20 +46,20 @@ namespace Browsergame.Game.Event.Instant {
         }
 
         public override bool conditions() {
-            if (unit.city == null) return false;
+            if (city == null) return false;
             if (quant == 0) return false;
             return unit.owner.id == player.id;
         }
 
         public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
-            unit.city.items[itemType].quant -= quant;
+            city.items[itemType].quant -= quant;
             if (!unit.items.ContainsKey(itemType)) unit.items[itemType] = new Item(itemType);
             unit.items[itemType].quant += quant;
             if (unit.items[itemType].quant == 0) unit.items.Remove(itemType);
             SubscriberUpdates = new SubscriberUpdates();
             SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
 
-            SubscriberUpdates.Add(unit.city, SubscriberLevel.Owner);
+            SubscriberUpdates.Add(city, SubscriberLevel.Owner);
             return null;
         }
 

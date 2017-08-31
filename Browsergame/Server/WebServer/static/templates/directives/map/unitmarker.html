@@ -1,0 +1,14 @@
+﻿<div style="color:black"
+    ng-mouseenter="hover=true"
+    ng-mouseleave="hover=false"
+    style="position: relative">
+    <img ng-src="{{'img/icon/units/'+unit.type+'.png'}}"
+        style="height:31px;" />
+    <div ng-show="hover" style="position: absolute">
+        <itemsquare ng-repeat="item in unit.items"
+            item="{type: item.type}"
+            quant="item.quant"
+            hidecityquant="true">
+    </div>
+
+</div>

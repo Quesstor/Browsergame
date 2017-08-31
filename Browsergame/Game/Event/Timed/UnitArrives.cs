@@ -9,15 +9,30 @@ using System.Runtime.Serialization;
 
 namespace Browsergame.Game.Event.Timed {
     [DataContract]
-    class UnitArrives : Event{
+    class UnitArrives : Event {
         [DataMember] private long unitID;
         [DataMember] private long targetCityID;
+        [DataMember] private long fromCityID;
 
-        public UnitArrives(long unitID, long targetCityID, DateTime arrivalTime) {
+        public UnitArrives(long unitID, long fromCityID, long targetCityID, DateTime arrivalTime) {
             this.unitID = unitID;
             this.targetCityID = targetCityID;
+            this.fromCityID = fromCityID;
             this.executionTime = arrivalTime;
         }
+
+        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
+            UpdateData UpdateData = new UpdateData("event");
+            if (subscriber == SubscriberLevel.Owner) {
+                UpdateData["type"] = "UnitArrives";
+                UpdateData["unitID"] = unitID;
+                UpdateData["fromCityID"] = fromCityID;
+                UpdateData["targetCityID"] = targetCityID;
+                UpdateData["executesInSec"] = (executionTime - DateTime.Now).TotalSeconds;
+            }
+            return UpdateData;
+        }
+
 
         private Unit unit;
         private City targetCity;
@@ -36,6 +51,7 @@ namespace Browsergame.Game.Event.Timed {
         public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             unit.city = targetCity;
 
+            this.removeSubscription(unit.owner, SubscriberLevel.Owner);
             SubscriberUpdates = new SubscriberUpdates();
             SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
             return null;

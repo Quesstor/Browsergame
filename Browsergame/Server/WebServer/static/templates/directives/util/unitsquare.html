@@ -1,38 +1,37 @@
 ﻿<div ng-if="unit"
     style="display:inline-block;"
-    title="{{setting().name}}">
+    title="{{settings().name}}">
     <table>
         <tr>
             <td>
                 <div style="border: 1px solid #ccc; border-radius:3px; padding: 2px;margin:0px 3px"
                     title="unit.type">
-                    <img ng-src="{{'img/icon/units/'+unit.type+'.png'}}"
-                        style="height:31px;" />
+                    <img ng-src="{{'img/icon/units/'+unit.type+'.png'}}" style="height:31px;" />
                 </div>
             </td>
             <td style="line-height:1; font-size: 13px;">
                 <table>
                     <tr>
-                        <td>{{count}} {{setting().name}}</td>
+                        <td>{{count}} {{settings().name}}</td>
                     </tr>
                     <tr>
                         <td style="width: 200px;"
                             ng-hide="hideinfos">
-                            <div ng-show="setting().civil">
+                            <div ng-show="settings().civil">
                                 <span class="glyphicon glyphicon-oil"
                                     title="Lagerraum"
-                                    style="height:16px;"></span> {{loaded()}}/{{setting().storage}}
+                                    style="height:16px;"></span> {{loaded()}}/{{settings().storage}}
                             </div>
-                            <div ng-hide="setting().civil">
+                            <div ng-hide="settings().civil">
                                 <span class="glyphicon glyphicon-screenshot"
-                                    title="Angriff"></span> {{setting().atack}}
+                                    title="Angriff"></span> {{settings().atack}}
                                 <span class="glyphicon glyphicon-heart"
-                                    title="Leben" /> {{setting().hp}}
+                                    title="Leben" /> {{settings().hp}}
                                 <span class="glyphicon glyphicon-certificate"
-                                    title="Schild"></span> {{setting().shieldpower}}
+                                    title="Schild"></span> {{settings().shieldpower}}
                                 <span class="glyphicon glyphicon-oil"
                                     title="Lagerraum"
-                                    style="height:16px;"></span> {{setting().storage}}
+                                    style="height:16px;"></span> {{settings().storage}}
                             </div>
                         </td>
                     </tr>

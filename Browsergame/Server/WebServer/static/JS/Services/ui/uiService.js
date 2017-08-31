@@ -1,9 +1,6 @@
 ﻿angular.module('app').service('uiService', function ($rootScope, $http, $compile, $timeout) {
     this.Math = window.Math;
     var uiService = this;
-    this.isFighter = function (unittype) {
-        return $rootScope.settings.units[unittype].atack > 0;
-    }
     this.playerHasUnitOnCity = function (city, select) {
         if (!city) return false;
         for (var unittype in city.unitcounts) {

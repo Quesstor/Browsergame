@@ -1,120 +1,112 @@
 ﻿angular.module('app').service('mapService', function ($rootScope, $http, $compile, $interval, $timeout) {
-    var layers = { cities: {} };
+    this.layers = { cities: {}, events: {} };
     var lines = {};
     var mapService = this;
     this.zoomlevel = 12;
     this.viewbox = {};
-    this.isInViewbox = function(latlng){
+    this.isInViewbox = function (latlng) {
         var NE = this.viewbox._northEast;
-        var SW = this.viewbox._southWest;        
+        var SW = this.viewbox._southWest;
         var offsetLat = (NE.lat - SW.lat);
         var offsetLng = (NE.lng - SW.lng);
-        return (latlng.lat > SW.lat-offsetLat && latlng.lat < NE.lat+offsetLat && latlng.lng > SW.lng-offsetLng && latlng.lng < NE.lng+offsetLng)
+        return (latlng.lat > SW.lat - offsetLat && latlng.lat < NE.lat + offsetLat && latlng.lng > SW.lng - offsetLng && latlng.lng < NE.lng + offsetLng)
     }
-    this.drawCityMarker = function () {
+    this.drawAll = function () {
         //Delete Marker not in viewbox
-        for (var id in layers.cities) {
-            if(!$rootScope.cities[id] || !this.isInViewbox(layers.cities[id]._latlng)){
-                map.removeLayer(layers.cities[id]);
-                delete layers.cities[id];
+        for (var type in this.layers) {
+            for (var id in this.layers[type]) {
+                var marker = this.layers[type][id];
+                if (!this.isInViewbox(marker._latlng)) {
+                    map.removeLayer(marker);
+                    delete this.layers[type][id];
+                    console.log("Out of Viewbox");
+                }
             }
         }
-        //Add Marker
+
+        //Draw CityMarker
         var images = [];
         var markers = [];
-        angular.forEach($rootScope.cities, function (city, id) {
-            if (!layers.cities[id] && mapService.isInViewbox({lat:city.location.x, lng:city.location.y}))
-                layers.cities[id] = L.marker([city.location.x, city.location.y], {
+        for (var id in $rootScope.cities) {
+            var city = $rootScope.cities[id];
+            var latlng = new L.LatLng(city.location.x, city.location.y);
+            if (!this.layers.cities[id] && this.isInViewbox(latlng))
+                this.layers.cities[id] = L.marker(latlng, {
                     icon: L.divIcon({
                         html: '<citymarker city="$root.cities[' + id + ']"></citymarker>',
                         className: 'mapmarker cityMarker angularCompile',
                         iconSize: null
                     })
                 }).addTo(map);
-        });
+        };
 
-        
-        $(".angularCompile").each(function () {
-            $compile($(this))($rootScope);
-            $(this).removeClass("angularCompile");
-        });
-    }
-    this.drawAllOrders = function () {
-        //Player
-        angular.forEach(layers.order, function (order, id) {
-            if (layers.order[id] && !$rootScope.orders[id])
-                deleteOrderMarker(id);
-        });
-        angular.forEach($rootScope.orders, function (order, id) {
-            drawOrder(order);
-        });
-    }
-    this.setCityMarkerZindex = function (cityid, zindex) {       
-        if(cityid === undefined) return;
-        layers.cities[cityid].setZIndexOffset(zindex);
-    }
-    function drawOrder(order) {
-        var FPS = 25;
-        if (layers.order[order.id]) return;
+        //Draw Events
+        var eventtype = "UnitArrives"
+        if ($rootScope.events[eventtype]) {
+            for (var event of $rootScope.events[eventtype]) {
+                var offset = { lat: 0, lng: 0 };
 
-        var targetlocation = $rootScope.cities[order.targetcity].location;
-        var startlocation = $rootScope.cities[order.fromcity].location;
+                var unit = $rootScope.units[event.unitID];
+                var markerid = event.type + event.unitID;
 
-        var ordercorlor = { 0: "white", 1: "red" }
-        mapService.drawPolyLine("order" + order.id, startlocation, targetlocation, ordercorlor[order.type]);
+                var startLocation = $rootScope.cities[event.fromCityID].location;
+                var startLatLng = new L.LatLng(startLocation.x, startLocation.y);
 
-        var backVector = { lat: startlocation.x - targetlocation.x, lng: startlocation.y - targetlocation.y };
-        var backVectorLength = Math.sqrt(Math.pow(backVector.x, 2) + Math.pow(backVector.y, 2));
-        var normedBackVector = { lat: backVector.x / backVectorLength, lng: backVector.y / backVectorLength };
-        var distanceLeft = order.duration * order.movespeed;
-        layers.order[order.id] = L.marker([targetlocation.x + normedBackVector.x * distanceLeft, targetlocation.y + normedBackVector.y * distanceLeft], {
-            icon: L.divIcon({
-                html: "<ordermarker order='$root.orders[" + order.id + "]' style='display:block; margin: -11px 0 0 -12px;'></ordermarker>",
-                className: 'mapmarker angularCompile ',
-                iconSize: null
-            })
-        }).addTo(map);
-        $(".angularCompile").each(function () {
-            $compile($(this))($rootScope);
-            $(this).removeClass("angularCompile");
-        });
+                var targetLocation = $rootScope.cities[event.targetCityID].location;
+                var targetLatLng = new L.LatLng(targetLocation.x, targetLocation.y);
 
-        layers.order[order.id].normedBackVector = normedBackVector;
-        layers.order[order.id].targetlocation = angular.copy(targetlocation);
-        layers.order[order.id].interval = $interval(function () {
-            order.duration -= 1 / FPS;
-            if (order.duration <= 0) { //Delete marker
-                deleteOrderMarker(order.id);
-                $rootScope.unitsSync();
-                if (order.type == 1) $timeout(function () { $rootScope.playerSync() }, 1000);
-            } else { //Update marker
-                var distanceLeft = order.duration * order.movespeed;
-                var newLocation = {
-                    lat: layers.order[order.id].targetlocation.x + layers.order[order.id].normedBackVector.x * distanceLeft,
-                    lng: layers.order[order.id].targetlocation.y + layers.order[order.id].normedBackVector.y * distanceLeft
+                var range = startLatLng.distanceTo(targetLatLng);
+                var totalSecsNeeded = (range / $rootScope.settings.MoveSpeedInMetersPerSecond) * $rootScope.settings.units[unit.type].movespeed + 1;
+                var percentageDone = 1 - event.executesInSec / totalSecsNeeded;
+
+                if (percentageDone <= 1) {
+                    var positionLat = startLocation.x + percentageDone * (targetLocation.x - startLocation.x);
+                    var positionLng = startLocation.y + percentageDone * (targetLocation.y - startLocation.y);
+                    var position = new L.LatLng(positionLat + offset.lat, positionLng + offset.lng);
+                    if (this.isInViewbox(position)) {
+                        if (!this.layers.events[markerid]) {
+                            this.layers.events[markerid] = L.marker(position, {
+                                icon: L.divIcon({
+                                    html: '<unitmarker unit="$root.units[' + unit.id + ']"></unitmarker>',
+                                    className: 'mapmarker angularCompile',
+                                    iconSize: null
+                                })
+                            }).addTo(map);
+                        }
+                        this.layers.events[markerid].setLatLng(position);
+                    }
                 }
-                layers.order[order.id].setLatLng(new L.LatLng(newLocation.x, newLocation.y));
             }
-        }, 1000 / FPS);
+        }
 
+        //Angular
+        $(".angularCompile").each(function () {
+            $compile($(this))($rootScope);
+            $(this).removeClass("angularCompile");
+        });
     }
-    var syncTimeout;
-    function deleteOrderMarker(orderid) {
-        mapService.deletePolyLine("order" + orderid);
-        if (layers.order[orderid]) {
-            $interval.cancel(layers.order[orderid].interval);
-            map.removeLayer(layers.order[orderid]);
-            delete layers.order[orderid];
+
+    this.removeEventMarker = function (event) {
+        var markerid = event.type + event.unitID;
+        if (this.layers["events"][markerid]) {
+            map.removeLayer(this.layers["events"][markerid]);
+            delete this.layers["events"][markerid];
         }
     }
+    this.setCityMarkerZindex = function (cityid, zindex) {
+        if (cityid === undefined) return;
+        this.layers.cities[cityid].setZIndexOffset(zindex);
+    }
+
+
     this.panHome = function () {
         map.panTo(new L.LatLng($rootScope.settings.location.x, $rootScope.settings.location.y));
     }
     this.panToSelectedCity = function () {
         var NE = this.viewbox._northEast;
-        var SW = this.viewbox._southWest;        
+        var SW = this.viewbox._southWest;
         var offsetLat = (NE.lat - SW.lat);
-        map.panTo(new L.LatLng($rootScope.selectedCity.location.x-offsetLat/2.2, $rootScope.selectedCity.location.y),{animate: true, duration: 0.5});
+        map.panTo(new L.LatLng($rootScope.selectedCity.location.x - offsetLat / 2.2, $rootScope.selectedCity.location.y), { animate: true, duration: 0.5 });
     }
     this.drawUnitLine = function (unit) {
         this.drawPolyLine(unit.id, unit.location, $rootScope.cities[unit.targetcity].location);

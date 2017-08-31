@@ -27,7 +27,6 @@
         for(k in $rootScope.units){
             var unit = $rootScope.units[k];
             if(unit.city == $rootScope.selectedCity.id){
-                angular.merge(unit, $rootScope.settings.units[unit.type]);
                 if(unit.civil === true) units.push(unit);
             }
         }

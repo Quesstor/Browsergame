@@ -100,7 +100,7 @@ namespace Browsergame.Game.Event.Instant {
 
 
             var events = new List<Event>();
-            if (name == "Test") for (var i = 0; i < 100; i++) events.Add(new NewPlayer(0, "Bot" + i, "BotToken" + i));
+            if (name == "Test") for (var i = 0; i < 2; i++) events.Add(new NewPlayer(0, "Bot" + i, "BotToken" + i));
 
             return events;
         }

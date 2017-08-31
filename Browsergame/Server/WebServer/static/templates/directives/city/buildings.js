@@ -8,9 +8,13 @@
     $scope.buildings = function () {
         if (!$rootScope.selectedCity) return;
         var buildings = [];
+        var upgradeEvents = $rootScope.events["BuildingUpgrade"];       
         angular.forEach($rootScope.selectedCity.buildings, function (building, type) {
-            utilService.merge(building, $rootScope.settings.buildings[type]);            
             if(building.setProduction == undefined) building.setProduction = 1;
+            building.upgradeDuration = null;
+            for(var k in upgradeEvents)
+                if($rootScope.selectedCity.id ==upgradeEvents[k].cityID && upgradeEvents[k].BuildingType == type) 
+                    building.upgradeDuration = upgradeEvents[k].executesInSec;
             buildings.push(building);
         });
         return buildings;

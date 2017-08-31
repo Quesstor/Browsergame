@@ -57,6 +57,10 @@ namespace Browsergame.Game.Event.Instant {
             var unitIDs = new List<long>();
             SubscriberUpdates = new SubscriberUpdates();
 
+            var range = targetCity.location.GetDistanceTo(startCity.location);
+            var travelTimeInSeconds = range * Settings.MoveSpeedInMetersPerSecond;
+            var newTimedEvents = new List<Event>();
+
             foreach (var unit in units) {
                 unit.city = null;
                 startCity.units.Remove(unit);
@@ -66,9 +70,7 @@ namespace Browsergame.Game.Event.Instant {
 
             SubscriberUpdates.Add(startCity, SubscriberLevel.Owner);
 
-            var range = targetCity.location.GetDistanceTo(startCity.location);
-            var travelTimeInSeconds = range * Settings.MoveSpeedInMetersPerSecond;          
-            var newTimedEvents = new List<Event>();
+
             newTimedEvents.Add(new Timed.Fight(playerID, targetCityID, startCity.id, unitCounts, unitIDs, DateTime.Now.AddSeconds(travelTimeInSeconds)));
 
             return newTimedEvents;

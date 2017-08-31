@@ -73,7 +73,7 @@
                         <itemsquare ng-repeat="(type,quant) in building.buildCosts" item="{type:type}" quant="-quant*(building.lvl+1)" ng-class="{'text-danger':$root.selectedCity.items[itemcost.type].quant<itemcost.quant*(building.lvl+1)}"></itemsquare>
                         <table class="table table-condensed text-danger" style="margin:0">
                             <tr ng-repeat="(type,level) in building.buildRequirements" ng-show="$root.selectedCity.buildings[type].lvl < level">
-                                <td>{{$root.settings.buildings[type].name}}</td>
+                                <td>{{building.name}}</td>
                                 <td>Level {{level}}</td>
                             </tr>
                         </table>

@@ -1,6 +1,5 @@
 ﻿angular.module('app').service('utilService', function ($rootScope, mapService) {
     var utilService = this;
-    this.merge = angular.merge;
     this.toggleCity = function (city) {
         if ($rootScope.selectedCity && city.id == $rootScope.selectedCity.id) utilService.selectCity(null);
         else utilService.selectCity(city);

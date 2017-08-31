@@ -3,25 +3,29 @@
         style="position: absolute;"
         ng-click="$root.selectedCity = city;"
         data-toggle="modal" data-target="#cityModal"
-        ng-right-click="rightclickCity(city)"
+        ng-right-click="rightclickCity()"
         ng-dblclick="$event.stopPropagation();"
-        ng-mouseover="hoverCity(city,true);hover=true;"
-        ng-mouseleave="hoverCity(city,false);hover=false;">
+        ng-mouseover="hoverCity(true);hover=true;"
+        ng-mouseleave="hoverCity(false);hover=false;">
 
         <div style='color:black; font-size:12px; position:relative; background-position: center center;'
             ng-style="{ 'background':'url(/img/icon/cities/city'+(city.population-1)+'.png) no-repeat', 
                     'background-size': markerSize() + 'px ' + markerSize() + 'px',
                     'width':markerSize()+'px',
                     'height':markerSize()+'px'}"
-            ng-class="{'cityWithUnit':uiService.playerHasUnitOnCity(city)}"
+            ng-class="{'cityWithUnit':uiService.playerHasUnitOnCity()}"
             class="hoverpointer">
-            <div ng-show="mapService.zoomlevel==12">
-                <div style="padding-top: 150px;text-align: center;">
+            <div ng-show="mapService.zoomlevel==12" style="text-align: center;">
+                <div style="padding-top: 150px;">
                     <div ng-style="{'background': 'url(img/icon/' + (city.owner==$root.player.id?'owner':'') + 'banner.png) no-repeat', 'background-size': '200px auto'}"  
                         style="background-position: bottom; height: 36px; padding-top: 2px;">
                         {{city.name}}
                     </div>
                 </div>
+                <span ng-show="city.helptext" class="glyphicon glyphicon-info-sign"></span>
+                {{city.helptext}}
+
+                <span class="label label-info">Info Label</span>
             </div>
         </div>
     </div>

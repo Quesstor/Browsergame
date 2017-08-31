@@ -24,12 +24,12 @@ app.directive("unitsquare", function () { return { templateUrl: '/templates/dire
                 scope: { unit: "=", count: "=", hideinfos: "="}, controller: 'unitsquare' } });
 app.directive("price", function () { return { templateUrl: '/templates/directives/util/price.html', scope: { value: '=', hideplayermoney: "=" }, controller: 'utilCtrl' } });
 //Map
-app.directive("citymarker", function () { return { templateUrl: '/templates/directives/map/citymarker.html', scope: { city: '=' }, controller: 'mapmarkerCtrl' } });
-app.directive("ordermarker", function () { return { templateUrl: '/templates/directives/map/ordermarker.html', scope: { order: '=' }, controller: 'mapmarkerCtrl' } });
+app.directive("citymarker", function () { return { templateUrl: '/templates/directives/map/citymarker.html', scope: { city: '=' }, controller: 'citymarker' } });
+app.directive("unitmarker", function () { return { templateUrl: '/templates/directives/map/unitmarker.html', scope: { unit: '=' }, controller: 'citymarker' } });
+app.directive("ordermarker", function () { return { templateUrl: '/templates/directives/map/ordermarker.html', scope: { order: '=' }, controller: 'citymarker' } });
 
-app.directive("navi", function () { return { templateUrl: '/templates/directives/map/navi.html' } });
-app.directive("selectedunitbar", function () { return { templateUrl: '/templates/directives/map/selectedunitbar.html' } });
-app.directive("debugbar", function () { return { templateUrl: '/templates/directives/map/debugbar.html' } });
+app.directive("navi", function () { return { templateUrl: '/templates/directives/navi.html' } });
+app.directive("debugbar", function () { return { templateUrl: '/templates/directives/debugbar.html' } });
 
 app.directive('ngRightClick', function ($parse) {
     return function (scope, element, attrs) {

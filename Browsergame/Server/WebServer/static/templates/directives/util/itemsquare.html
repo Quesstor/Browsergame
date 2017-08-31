@@ -1,5 +1,5 @@
 ﻿<div ng-if="item"
-     title="{{settings().name}}">
+     title="{{item.name}}">
     <table style="width: 120px;">
         <tr>
             <td style="width: 40px;">
@@ -9,7 +9,7 @@
             </td>
             <td style="line-height: 1; width: 80px;">
                 <span ng-class="{'text-danger':quant<0}">
-                    {{quant?utilService.shortNumber(quant):settings().name}}
+                    {{quant?utilService.shortNumber(quant):item.name}}
                 </span>
                 <div title="In der Stadt" ng-show="!hidecityquant && $root.selectedCity" ng-class="{'text-danger': cityMissingQuant()}">
                     <span class="glyphicon glyphicon-home"></span>

@@ -22,8 +22,9 @@ namespace Browsergame.Server.SocketServer.Controller {
             settings.Add("items", Game.Entities.Settings.ItemSettings.settings);
             settings.Add("productionsPerMinute", Settings.productionsPerMinute);
             settings.Add("consumePerMinute", Settings.consumePerMinute);
-            settings.Add("incomePerMinutePerPopulation", Settings.incomePerMinutePerPopulation);
+            settings.Add("incomePerMinutePerPopulation", Settings.incomePerMinutePerPopulation); 
             settings.Add("populationSurplusPerMinute", Settings.populationSurplusPerMinute);
+            settings.Add("MoveSpeedInMetersPerSecond", Settings.MoveSpeedInMetersPerSecond);
             data.Add(settings.toDictWithKey());
 
 

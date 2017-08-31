@@ -5,10 +5,6 @@
     $scope.cityService = cityService;
     $scope.uiService = uiService;
 
-    $scope.settings = function(){
-        if(!$rootScope.settings) return;
-        return $rootScope.settings.items[$scope.item.type];
-    }
     $scope.cityitem = function(){
         if(!$rootScope.selectedCity.items) return;
         if(!$rootScope.selectedCity.items[$scope.item.type]) return;
@@ -17,7 +13,7 @@
     
     $scope.itemColor = function () {
         var trans = 1;
-        switch ($scope.settings().rarity) {
+        switch ($scope.item.rarity) {
             case 0: return "rgba(0,0,0,0.2)";
             case 1: return "rgba(0,0,0,0.4)";
             case 2: return "rgba(134, 161, 54, " + trans + ")";

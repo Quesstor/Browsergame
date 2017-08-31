@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Browsergame.Game.Utils;
 using Browsergame.Game.Entities.Settings;
 using System.Runtime.Serialization;
+using Browsergame.Game.Entities;
 
 namespace Browsergame.Game.Event.Timed {
     [DataContract]
@@ -22,15 +23,12 @@ namespace Browsergame.Game.Event.Timed {
             this.executionTime = executionTime;
         }
 
-        private List<Entities.Unit> units = new List<Entities.Unit>();
+        private City city;
+        private State  state;
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-
-            var city = state.getCity(cityID);
-            for (var i = 0; i < count; i++) {
-                var unit = state.addUnit(city, unittype);
-                units.Add(unit);
-            }
+            city = state.getCity(cityID);
+            this.state = state;
         }
 
         public override bool conditions() {
@@ -39,7 +37,12 @@ namespace Browsergame.Game.Event.Timed {
 
         public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
             SubscriberUpdates = new SubscriberUpdates();
-            foreach (Entities.Unit unit in units) SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
+
+            for (var i = 0; i < count; i++) {
+                var unit = state.addUnit(city, unittype);
+                SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
+            }
+
             return null;
         }
 

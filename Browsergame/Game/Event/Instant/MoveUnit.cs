@@ -44,14 +44,16 @@ namespace Browsergame.Game.Event.Instant {
             SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
             var startCity = unit.city;
 
-            startCity.units.Remove(unit);
+            var range = targetCity.location.GetDistanceTo(startCity.location);
+            var travelTimeInSeconds = (range / Settings.MoveSpeedInMetersPerSecond) * unit.setting.movespeed;
+            var arrivalTime = DateTime.Now.AddSeconds(travelTimeInSeconds);
+
+            var arrivalEvent = new Timed.UnitArrives(unitID, startCity.id, targetCityID, arrivalTime);
+            arrivalEvent.addSubscription(player, SubscriberLevel.Owner);
             unit.city = null;
 
-
-            var range = targetCity.location.GetDistanceTo(startCity.location);
-            var travelTimeInSeconds = range / Settings.MoveSpeedInMetersPerSecond;          
-
-            return new List<Event> { new Timed.UnitArrives(unitID, targetCityID, DateTime.Now.AddSeconds(travelTimeInSeconds)) };
+            SubscriberUpdates.Add(arrivalEvent, SubscriberLevel.Owner);
+            return new List<Event> { arrivalEvent };
         }
 
     }

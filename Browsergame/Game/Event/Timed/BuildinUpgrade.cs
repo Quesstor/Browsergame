@@ -15,9 +15,20 @@ namespace Browsergame.Game.Event.Timed {
         [DataMember] private BuildingType BuildingType;
 
         public BuildingUpgrade(long cityID, BuildingType buildingType, DateTime executionTime) {
-            cityID = cityID;
+            this.cityID = cityID;
             BuildingType = buildingType;
             this.executionTime = executionTime;
+        }
+
+        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
+            UpdateData UpdateData = new UpdateData("event");
+            if (subscriber == SubscriberLevel.Owner) {
+                UpdateData["type"] = "BuildingUpgrade";
+                UpdateData["cityID"] = cityID;
+                UpdateData["BuildingType"] = BuildingType.ToString();
+                UpdateData["executesInSec"] = (executionTime - DateTime.Now).TotalSeconds;
+            }
+            return UpdateData;
         }
 
         private Building building;
@@ -36,8 +47,10 @@ namespace Browsergame.Game.Event.Timed {
             SubscriberUpdates = new SubscriberUpdates();
             SubscriberUpdates.Add(city, Utils.SubscriberLevel.Owner);
 
+            this.removeSubscription(city.owner, SubscriberLevel.Owner);
             building.lvl += 1;
-            building.BuildingUpgrade = null;
+            building.isUpgrading = false;
+
             return null;
         }
 
