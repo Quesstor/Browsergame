@@ -25,7 +25,12 @@
                 <span ng-show="city.helptext" class="glyphicon glyphicon-info-sign"></span>
                 {{city.helptext}}
 
-                <span class="label label-info">Info Label</span>
+                <div class="label label-primary" ng-show="playersCivilUnitsCount()" style="font-size: 100%; display:block;">
+                    {{playersCivilUnitsCount()}} Händler in der Stadt
+                </div>
+                <div class="label label-success" ng-show="cityOffersCount()" style="font-size: 100%; display:block;">
+                    {{cityOffersCount()}} Handelsangebote
+                </div>
             </div>
         </div>
     </div>

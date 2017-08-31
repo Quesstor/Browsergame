@@ -5,13 +5,7 @@
     $scope.cityService = cityService;
     $scope.uiService = uiService;
 
-    $scope.offer = function(key){
-        var offer = $rootScope.selectedCity.offers[key];
-        if(!offer) return;
-        if(offer.setQuant == undefined) offer.setQuant = offer.quant;
-        if(offer.setPrice == undefined) offer.setPrice = offer.price;
-        return offer;
-    };
+
     $scope.cityOffers = function(){
         var offers = [];
         city=$rootScope.selectedCity;
@@ -31,5 +25,9 @@
             }
         }
         return units;
+    }
+    $scope.trade = function(type, quant){
+        //Trade(long playerID, long unitID, long cityID, int quant, int price, ItemType itemType)
+        syncService.send("Trade", {unitID: $rootScope.selectedUnit.id, cityID: $rootScope.selectedCity.id, quant:quant, itemType: type});
     }
 });

@@ -77,32 +77,36 @@ namespace Browsergame.Game.Engine {
 
             HashSet<Subscribable> needsOnDemandCalculation = null;
             SubscriberUpdates newSubscriberUpdates = null;
+            List<IEvent> eventsFailedToGetEntities = new List<IEvent>();
             var sentCount = 0;
-            foreach (IEvent e in processingEvents) {
-
-                e.getEntities(state, out needsOnDemandCalculation);
-                OnDemandCalculations.Union(needsOnDemandCalculation);
+            foreach (IEvent @event in processingEvents) {
+                try {
+                    @event.getEntities(state, out needsOnDemandCalculation);
+                    OnDemandCalculations.Union(needsOnDemandCalculation);
+                }
+                catch (Exception ex) {
+                    eventsFailedToGetEntities.Add(@event);
+                    Logger.log(41, Category.EventEngine, Severity.Error, "Event failed to get Entities");
+                }
             }
             var processedEvents = new List<Event.IEvent>();
             if (processingEvents.Count > 0) {
                 foreach (var s in needsOnDemandCalculation) s.onDemandCalculation();
-                foreach (var e in processingEvents) {
-                    if (e.conditions()) {
+                foreach (var @event in processingEvents) {
+                    if (!eventsFailedToGetEntities.Contains(@event) && @event.conditions()) {
                         List<Event.Event> timedEvents = new List<Event.Event>();
                         try {
-                            timedEvents = e.execute(out newSubscriberUpdates);
+                            timedEvents = @event.execute(out newSubscriberUpdates);
                             AllSubscriberUpdates.Union(newSubscriberUpdates);
                             if (timedEvents != null) newTimedEvents.AddRange(timedEvents);
-                            processedEvents.Add(e);
+                            processedEvents.Add(@event);
                         }
                         catch(Exception ex) {
                             Logger.log(40, Category.Event, Severity.Warn, "Event failed to execute: " + ex.GetType().ToString()+": "+ ex.ToString());
                         }
-                        
-
                     }
                     else {
-                        Logger.log(40, Category.Event, Severity.Warn, "Event rejected: " + e.GetType().ToString());
+                        Logger.log(40, Category.Event, Severity.Warn, "Event rejected: " + @event.GetType().ToString());
                     }
                 }
                 foreach (Event.Event newTimedEvent in newTimedEvents) AddTimedEvent(newTimedEvent, state);

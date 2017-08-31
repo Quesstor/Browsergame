@@ -6,6 +6,7 @@
     $scope.uiService = uiService;
 
     $scope.cityitem = function(){
+        if(!$rootScope.selectedCity) return;
         if(!$rootScope.selectedCity.items) return;
         if(!$rootScope.selectedCity.items[$scope.item.type]) return;
         return $rootScope.selectedCity.items[$scope.item.type];
@@ -23,6 +24,7 @@
         }
     }
     $scope.cityMissingQuant = function(){
+        if(!$scope.cityitem()) return;
         return $scope.quant<0 && $scope.cityitem().quant<-$scope.quant;
     }
 });

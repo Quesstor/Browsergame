@@ -52,10 +52,22 @@
             }
         }
     }
-    $scope.playerHasUnitsInCity = function(){
-        for(unit of $rootScope.units){
-            
+    $scope.playersCivilUnitsCount = function(){
+        if(!$scope.city) return;        
+        var count =0 ;
+        for(var k in $rootScope.units){
+            var unit = $rootScope.units[k];
+            if(unit.civil && unit.city == $scope.city.id && unit.owner == $rootScope.player.id) count += 1;
         }
+        return count;
+    }
+    $scope.cityOffersCount = function(){
+        if(!$scope.city) return;
+        var count =0 ;        
+        for(var k in $scope.city.offers){
+            if($scope.city.offers[k].quant != 0) count += 1;
+        }
+        return count;
     }
 })
 

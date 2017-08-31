@@ -28,12 +28,14 @@ namespace Browsergame.Game.Entities {
         }
 
         public Item getItem(ItemType ItemType) {
+            if (!items.ContainsKey(ItemType)) items[ItemType] = new Item(ItemType);
             return items[ItemType];
         }
 
         public override UpdateData getUpdateData(SubscriberLevel subscriber) {
             var data = new UpdateData("Unit");
             data.Add("id", id);
+            data.Add("owner", owner.id);
             if (subscriber == SubscriberLevel.Owner) {
                 data.Add("type", type.ToString());
                 if (city != null) data.Add("city", city.id);

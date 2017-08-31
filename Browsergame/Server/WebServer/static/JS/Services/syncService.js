@@ -8,6 +8,7 @@
         $rootScope.city = {};
         $rootScope.units = {};
         $rootScope.events = {};
+        mapService.layers = { cities: {}, events: {} };
     }
     syncService.updateData = function (data) {
         if (!data) { console.log("NO SYNC DATA"); return; }

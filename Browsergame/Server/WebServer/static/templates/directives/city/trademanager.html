@@ -7,12 +7,53 @@
     </tr>
     <tr ng-repeat="offer in cityOffers()"
         ng-show="offer.quant!=0">
-        <td>
+        <td class="square-td">
             <itemsquare item="{type: offer.type}"
-                quant="offer.quant" />
+                quant="(offer.quant>0? 'Verkauft ':'Kauft ')+Math.abs(offer.quant)"
+                hidecityquant="true" />
         </td>
-        <td>
-            <price value="offer.price" />
+        <td class="square-td">
+            <price value="(offer.quant>0?-1:1)*offer.price" />
+        </td>
+        <!-- Händler be/entladen -->
+        <td class="btn-td"
+            ng-show="$root.selectedUnit.city == $root.selectedCity.id">
+            <div class="btn-group pull-right">
+                <div ng-click="trade(offer.type, tradeQuant)" ng-init="tradeQuant=1"
+                    ng-show="offer.quant<0"
+                    class="btn btn-sm btn-success">
+                    <span class="glyphicon glyphicon-chevron-left" /> Verkaufen
+                </div>
+                <div class="btn btn-sm btn-default"
+                    ng-click="changeTradeQuant=!changeTradeQuant "
+                    style="padding: 5px; position: relative; min-width: 30px">
+                    {{tradeQuant}}
+                    <div style=" position: absolute; background: white; bottom: -75px;right: 0; z-index: 1; border: 1px solid #ccc; padding:5px;"
+                
+                        ng-show="changeTradeQuant">
+                        {{tradeQuant}}<br>
+                        <input type="range"
+                            style="-webkit-appearance: slider-vertical;height: 150px; "
+                            orient="vertical"
+                            min="1"
+                            max="50"
+                            ng-model="$parent.tradeQuant">
+                    </div>
+                </div>
+                <div class="btn btn-sm btn-danger"
+                    ng-click="trade(offer.type, -tradeQuant)"
+                    ng-show="offer.quant>0">
+                    Kaufen
+                    <span class="glyphicon glyphicon-chevron-right" />
+                </div>
+            </div>
+        </td>
+        <td class="square-td"
+            ng-show="$root.selectedUnit.city == $root.selectedCity.id">
+            <itemsquare item="$root.selectedUnit.items[offer.type]"
+                ng-show="$root.selectedUnit.items[offer.type].quant>0"
+                quant="$root.selectedUnit.items[offer.type].quant"
+                hidecityquant="true"></itemsquare>
         </td>
     </tr>
 </table>
@@ -32,7 +73,7 @@
                 <div ng-hide="$root.selectedUnit.id == unit.id"
                     class="btn btn-sm btn-default"
                     ng-click="$root.selectedUnit = unit">
-                    <span class="glyphicon glyphicon-transfer"></span> Waren austauschen</div>
+                    <span class="glyphicon glyphicon-transfer"></span> Handeln</div>
                 <div ng-show="$root.selectedUnit.id == unit.id">
                     <div class="btn btn-sm btn-default"
                         ng-click="$root.selectedUnit = null"><span class="glyphicon glyphicon-remove"></span></div>
