@@ -15,9 +15,16 @@ namespace Browsergame.Game.Event.Timed {
         [DataMember] private long targetCityID;
         [DataMember] private long fromCityID;
         [DataMember] private List<long> unitIDs;
-        [DataMember] private Dictionary<UnitType, int> unitCounts;
 
-        public Fight(long playerID, long targetCityID, long fromCityID, Dictionary<UnitType, int> unitCounts, List<long> unitIDs, DateTime fightTime){
+        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
+            var data = new UpdateData("event");
+            data["fromCityID"] = fromCityID;
+            data["targetCityID"] = targetCityID;
+            data["unitIDs"] = unitIDs;
+            return base.getUpdateData(subscriber);
+        }
+
+        public Fight(long playerID, long targetCityID, long fromCityID, List<long> unitIDs, DateTime fightTime){
             this.playerID = playerID;
             this.targetCityID = targetCityID;
             this.unitIDs = unitIDs;
@@ -62,6 +69,8 @@ namespace Browsergame.Game.Event.Timed {
             targetCity.owner = player;
             targetCity.owner.cities.Remove(targetCity);
             player.cities.Add(targetCity);
+
+            this.removeSubscription(player, SubscriberLevel.Owner);
 
             return null;
         }
