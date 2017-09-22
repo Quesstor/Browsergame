@@ -18,6 +18,67 @@ namespace Browsergame.Game.Engine {
         private static ManualResetEvent gettingEventsFromQueue = new ManualResetEvent(false);
         private static Random rnd = new Random();
 
+        public static List<IEvent> ProcessEvents() {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            State state = StateEngine.GetWriteState();
+            List<IEvent> processingEvents = GetEventList(state);
+
+            var AllUpdatedSubscribables = new HashSet<Subscribable>();
+            var OnDemandCalculations = new HashSet<Subscribable>();
+            var newTimedEvents = new List<Event.Event>();
+
+            HashSet<Subscribable> needsOnDemandCalculation = null;
+            HashSet<Subscribable> newUpdatedSubscribables = null;
+            List<IEvent> eventsFailedToGetEntities = new List<IEvent>();
+            var sentCount = 0;
+            foreach (IEvent @event in processingEvents) {
+                try {
+                    @event.getEntities(state, out needsOnDemandCalculation);
+                    OnDemandCalculations.Union(needsOnDemandCalculation);
+                }
+                catch (Exception ex) {
+                    eventsFailedToGetEntities.Add(@event);
+                    Logger.log(41, Category.EventEngine, Severity.Error, "Event failed to get Entities: "+ex.ToString());
+                }
+            }
+            foreach (IEvent e in eventsFailedToGetEntities) processingEvents.Remove(e);
+            var processedEvents = new List<Event.IEvent>();
+            if (processingEvents.Count > 0) {
+                foreach (var s in needsOnDemandCalculation) s.onDemandCalculation();
+                foreach (var e in processingEvents) {
+                    if (e.conditions()) {
+                        try {
+                            var timedEvents = e.execute(out newUpdatedSubscribables);
+                            AllUpdatedSubscribables.Union(newUpdatedSubscribables);
+                            if (timedEvents != null) newTimedEvents.AddRange(timedEvents);
+                            processedEvents.Add(e);
+                        }
+                        catch (Exception ex) {
+                            Logger.log(40, Category.Event, Severity.Warn, "Event failed to execute: " + ex.GetType().ToString() + ": " + ex.ToString());
+                        }
+                    }
+                    else {
+                        Logger.log(40, Category.Event, Severity.Warn, "Events conditions failed: " + e.GetType().ToString());
+                    }
+                }
+                foreach (Event.Event newTimedEvent in newTimedEvents) AddTimedEvent(newTimedEvent, state);
+                sentCount = 0;
+                foreach (var s in AllUpdatedSubscribables) s.updateSubscribers();
+            }
+
+            //Log
+            stopwatch.Stop();
+            if (processedEvents.Count > 0) {
+                string eventNames = "Events: ";
+                foreach (IEvent e in processedEvents) eventNames += e.GetType().Name + " ";
+                string msg = String.Format("{0} events processed. {3} new timed Events. {1} subscribables sent in {2}ms. ", processedEvents.Count, sentCount, stopwatch.ElapsedMilliseconds, newTimedEvents.Count);
+                Logger.log(1, Category.EventEngine, Severity.Debug, msg + eventNames);
+            }
+            return processedEvents;
+        }
+
         public static void AddEvent(Event.Event e) {
             gettingEventsFromQueue.WaitOne();
             lock (eventListLock) {
@@ -64,64 +125,6 @@ namespace Browsergame.Game.Engine {
                 gettingEventsFromQueue.Set(); //Allow events to be added again
             }
         }
-        public static List<IEvent> ProcessEvents() {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
 
-            State state = StateEngine.GetWriteState();
-            List<IEvent> processingEvents = GetEventList(state);
-
-            var AllSubscriberUpdates = new SubscriberUpdates();
-            var OnDemandCalculations = new HashSet<Subscribable>();
-            var newTimedEvents = new List<Event.Event>();
-
-            HashSet<Subscribable> needsOnDemandCalculation = null;
-            SubscriberUpdates newSubscriberUpdates = null;
-            List<IEvent> eventsFailedToGetEntities = new List<IEvent>();
-            var sentCount = 0;
-            foreach (IEvent @event in processingEvents) {
-                try {
-                    @event.getEntities(state, out needsOnDemandCalculation);
-                    OnDemandCalculations.Union(needsOnDemandCalculation);
-                }
-                catch (Exception ex) {
-                    eventsFailedToGetEntities.Add(@event);
-                    Logger.log(41, Category.EventEngine, Severity.Error, "Event failed to get Entities");
-                }
-            }
-            var processedEvents = new List<Event.IEvent>();
-            if (processingEvents.Count > 0) {
-                foreach (var s in needsOnDemandCalculation) s.onDemandCalculation();
-                foreach (var @event in processingEvents) {
-                    if (!eventsFailedToGetEntities.Contains(@event) && @event.conditions()) {
-                        List<Event.Event> timedEvents = new List<Event.Event>();
-                        try {
-                            timedEvents = @event.execute(out newSubscriberUpdates);
-                            AllSubscriberUpdates.Union(newSubscriberUpdates);
-                            if (timedEvents != null) newTimedEvents.AddRange(timedEvents);
-                            processedEvents.Add(@event);
-                        }
-                        catch(Exception ex) {
-                            Logger.log(40, Category.Event, Severity.Warn, "Event failed to execute: " + ex.GetType().ToString()+": "+ ex.ToString());
-                        }
-                    }
-                    else {
-                        Logger.log(40, Category.Event, Severity.Warn, "Event rejected: " + @event.GetType().ToString());
-                    }
-                }
-                foreach (Event.Event newTimedEvent in newTimedEvents) AddTimedEvent(newTimedEvent, state);
-                sentCount = AllSubscriberUpdates.updateSubscribers();
-            }
-
-            //Log
-            stopwatch.Stop();
-            if (processedEvents.Count >0) {
-                string eventNames = "Events: ";
-                foreach (IEvent e in processedEvents) eventNames += e.GetType().Name + " ";
-                string msg = String.Format("{0} events processed. {3} new timed Events. {1} subscribables sent in {2}ms. ", processedEvents.Count, sentCount, stopwatch.ElapsedMilliseconds, newTimedEvents.Count);
-                Logger.log(1, Category.EventEngine, Severity.Debug, msg + eventNames);
-            }
-            return processedEvents;
-        }
     }
 }

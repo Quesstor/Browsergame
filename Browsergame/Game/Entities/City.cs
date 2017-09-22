@@ -12,22 +12,104 @@ using System.Device.Location;
 
 namespace Browsergame.Game.Entities {
     [DataContract(IsReference = true)]
-    class City : Subscribable, HasItems, IID {
+    class City : Subscribable, IID {
+        protected override string entityName() { return "City"; }
         [DataMember] public long id { get; set; }
-        [DataMember] public string name;
-        [DataMember] public string info;
-        [DataMember] public GeoCoordinate location;
-        [DataMember] public Player owner;
-        [DataMember] public int type;
-        [DataMember] public int population;
-        [DataMember] public double populationSurplus = 0;
-        [DataMember] public DateTime lastConsumed;
-
-        [DataMember] public Dictionary<ItemType, Item> items = Item.newItemDict();
-        [DataMember] public Dictionary<ItemType, Offer> offers = Offer.newOfferDict();
-        [DataMember] public Dictionary<BuildingType, Building> buildings = new Dictionary<BuildingType, Building>();
         [DataMember] public List<Unit> units = new List<Unit>();
-        [DataMember] public Dictionary<int, Dictionary<ItemType, double>> consumesPerPopulation = new Dictionary<int, Dictionary<ItemType, double>>();
+        [DataMember] public int type;
+
+        [DataMember]
+        public string name {
+            get { return name; }
+            set {
+                name = value;
+                addUpdateData(SubscriberLevel.Other, "name", name);
+                addUpdateData(SubscriberLevel.Owner, "name", name);
+            }
+        }
+        [DataMember]
+        public string info {
+            get { return info; }
+            set {
+                info = value;
+                addUpdateData(SubscriberLevel.Other, "info", info);
+                addUpdateData(SubscriberLevel.Owner, "info", info);
+            }
+        }
+        [DataMember]
+        public Player owner {
+            get { return owner; }
+            set {
+                owner = value;
+                addUpdateData(SubscriberLevel.Other, "owner", owner.id);
+                addUpdateData(SubscriberLevel.Owner, "owner", owner.id);
+            }
+        }
+        [DataMember]
+        public int population {
+            get { return population; }
+            set {
+                population = value;
+                addUpdateData(SubscriberLevel.Other, "population", population);
+                addUpdateData(SubscriberLevel.Owner, "population", population);
+            }
+        }
+        [DataMember]
+        public double populationSurplus {
+            get { return populationSurplus; }
+            set {
+                populationSurplus = value;
+                addUpdateData(SubscriberLevel.Owner, "populationSurplus", populationSurplus);
+            }
+        }
+        [DataMember] private GeoCoordinate location;
+        public GeoCoordinate getLocation(bool addToUpdateData) {
+            if (addToUpdateData) {
+                addUpdateData(SubscriberLevel.Other, "location", location);
+                addUpdateData(SubscriberLevel.Owner, "location", location);
+            }
+            return location;
+        }
+        [DataMember]
+        private DateTime lastConsumed {
+            get { return lastConsumed; }
+            set {
+                lastConsumed = value;
+                addUpdateData(SubscriberLevel.Owner, "consumedSeconds", (DateTime.Now - lastConsumed).TotalSeconds);
+            }
+        }
+
+        [DataMember]
+        private Dictionary<ItemType, Item> items;
+        public Dictionary<ItemType, Item> getItems(bool addToUpdateData = true) {
+            if(addToUpdateData) addUpdateData(SubscriberLevel.Owner, "items", items);
+            return items;
+        }
+        [DataMember]
+        private Dictionary<ItemType, Offer> offers;
+        public Dictionary<ItemType, Offer> getOffers(bool addToUpdateData = true) {
+            if (addToUpdateData) {
+                addUpdateData(SubscriberLevel.Owner, "offers", offers);
+                addUpdateData(SubscriberLevel.Other, "offers", offers);
+            }
+            return offers;
+        }
+        [DataMember]
+        private Dictionary<BuildingType, Building> buildings;
+        public Dictionary<BuildingType, Building> getBuildings(bool addToUpdateData = true) {
+            if (addToUpdateData) {
+                var buildingsData = new Dictionary<BuildingType, object>();
+                foreach (var b in this.buildings) buildingsData.Add(b.Key, b.Value.getSetupData(SubscriberLevel.Owner));
+                addUpdateData(SubscriberLevel.Owner, "buildings", buildingsData);
+            }
+            return buildings;
+        }
+        [DataMember]
+        private Dictionary<int, Dictionary<ItemType, double>> consumesPerPopulation;
+        public Dictionary<int, Dictionary<ItemType, double>> getConsumesPerPopulation(bool addToUpdateData = true) {
+            if(addToUpdateData) addUpdateData(SubscriberLevel.Owner, "consumesPerPopulation", consumesPerPopulation);
+            return consumesPerPopulation;
+        }
 
         public City(string name, Player owner, GeoCoordinate location, string info) {
             Random rand = new Random();
@@ -36,6 +118,7 @@ namespace Browsergame.Game.Entities {
             this.owner = owner;
             this.location = location;
             this.population = 1;
+            populationSurplus = 0;
             this.lastConsumed = DateTime.Now;
             owner.cities.Add(this);
             type = rand.Next(0, Browsergame.Settings.CityTypeCount);
@@ -46,17 +129,21 @@ namespace Browsergame.Game.Entities {
             addBuilding(BuildingType.Mine, 0);
             addBuilding(BuildingType.Coalmaker, 0);
 
+            consumesPerPopulation = new Dictionary<int, Dictionary<ItemType, double>>();
             consumesPerPopulation[1] = Browsergame.Settings.getConsumeGoods(1);
             consumesPerPopulation[2] = Browsergame.Settings.getConsumeGoods(2);
 
+            buildings = new Dictionary<BuildingType, Building>();
+            offers = Offer.newOfferDict();
+            items = Item.newItemDict();
             foreach (Entities.Item item in items.Values) item.quant = 100;
             items[ItemType.Coal].quant = 0;
         }
-        public void addBuilding(BuildingType type, int lvl) {
+        private void addBuilding(BuildingType type, int lvl) {
             buildings[type] = new Building(type);
             buildings[type].lvl = lvl;
         }
-        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
+        public override UpdateData getSetupData(SubscriberLevel subscriber) {
             var data = new UpdateData("City");
             data["id"] = id;
             data["name"] = name;
@@ -68,24 +155,15 @@ namespace Browsergame.Game.Entities {
             data["offers"] = offers;
 
             if (subscriber == SubscriberLevel.Owner) {
-                var buildings = new Dictionary<BuildingType, object>();
-                foreach (var b in this.buildings) {
-                    buildings.Add(b.Key, b.Value.getUpdateData(subscriber));
-                }
-                data["buildings"] = buildings;
+                var buildingsData = new Dictionary<BuildingType, object>();
+                foreach (var b in this.buildings) buildingsData.Add(b.Key, b.Value.getSetupData(subscriber));
+                data["buildings"] = buildingsData;
                 data["items"] = items;
                 data["populationSurplus"] = populationSurplus;
                 data["consumesPerPopulation"] = consumesPerPopulation;
                 data["consumedSeconds"] = (DateTime.Now - lastConsumed).TotalSeconds;
             }
             return data;
-        }
-
-        public Item getItem(ItemType ItemType) {
-            return items[ItemType];
-        }
-        public Building getBuilding(BuildingType BuildingType) {
-            return buildings[BuildingType];
         }
 
         public override void onDemandCalculation() {

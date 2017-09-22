@@ -33,41 +33,37 @@ namespace Browsergame.Game.Event.Instant {
             city = state.getCity(CityID);
             needsOnDemandCalculation.Add(city);
 
-            building = city.buildings[BuildingType];
+            building = city.getBuildings(true)[BuildingType];
         }
         public override bool conditions() {
             if (city.owner.id != player.id) return false;
             if (player.money < building.setting.buildPrice) return false;
             if (building.isUpgrading) return false;
             foreach (var cost in building.setting.buildCosts) {
-                if (city.items[cost.Key].quant < cost.Value * (building.lvl + 1)) return false;
+                if (city.getItems(true)[cost.Key].quant < cost.Value * (building.lvl + 1)) return false;
             }
             return true;
         }
 
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
-            var building = city.buildings[BuildingType];
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
             player.money -= building.setting.buildPrice * (building.lvl + 1);
             if (building.setting.educts.Count > 0) { //Remove ordered Productions
                 foreach (var educt in building.setting.educts) {
-                    city.items[educt.Key].quant += educt.Value * building.lvl * building.orderedProductions;
+                    city.getItems(true)[educt.Key].quant += educt.Value * building.lvl * building.orderedProductions;
                 }
                 building.orderedProductions = 0;
             }
             foreach (var cost in building.setting.buildCosts) {
-                city.items[cost.Key].quant -= cost.Value * (building.lvl + 1);
+                city.getItems(true)[cost.Key].quant -= cost.Value * (building.lvl + 1);
             }
             building.isUpgrading = true;
 
-            SubscriberUpdates = new SubscriberUpdates();
-            SubscriberUpdates.Add(player, SubscriberLevel.Owner);
-            SubscriberUpdates.Add(city, SubscriberLevel.Owner);
 
             var executionTime = DateTime.Now.AddSeconds(building.setting.buildTimeInSeconds);
             var upgradeEvent = new Timed.BuildingUpgrade(CityID, BuildingType, executionTime);
 
             upgradeEvent.addSubscription(player, SubscriberLevel.Owner);
-            SubscriberUpdates.Add(upgradeEvent, SubscriberLevel.Owner);
+            updatedSubscribables = new HashSet<Subscribable> { player, city, upgradeEvent };
 
             return new List<Event>() { upgradeEvent };
         }

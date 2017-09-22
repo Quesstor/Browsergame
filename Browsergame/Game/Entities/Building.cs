@@ -10,19 +10,35 @@ using System.Threading.Tasks;
 namespace Browsergame.Game.Entities {
     [DataContract]
     class Building : Subscribable {
+        protected override string entityName() { return "Building"; }
         [DataMember] public BuildingType type;
-        [DataMember] public int lvl;
-        [DataMember] public double orderedProductions = 0;
-        [DataMember] public DateTime lastProduced;
+        [DataMember] public int lvl { get { return lvl; } set { lvl = value; addUpdateData(SubscriberLevel.Owner, "lvl", lvl); } }
         [DataMember] public bool isUpgrading = false;
+        [DataMember]
+        public double orderedProductions {
+            get { return orderedProductions; }
+            set {
+                orderedProductions = value;
+                addUpdateData(SubscriberLevel.Owner, "orderedProductions", orderedProductions);
+            }
+        }
+        [DataMember]
+        public DateTime lastProduced {
+            get { return lastProduced; }
+            set {
+                lastProduced = value;
+                addUpdateData(SubscriberLevel.Owner, "productionSeconds", (DateTime.Now - lastProduced).TotalSeconds);
+            }
+        }
 
         public Building(BuildingType type) {
             this.type = type;
             this.lvl = 0;
+            this.orderedProductions = 0;
             lastProduced = DateTime.Now;
         }
 
-        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
+        public override UpdateData getSetupData(SubscriberLevel subscriber) {
             var data = new UpdateData(type.ToString());
             data["type"] = type.ToString();
             data["lvl"] = lvl;
@@ -37,5 +53,6 @@ namespace Browsergame.Game.Entities {
         public override void onDemandCalculation() {
             return;
         }
+
     }
 }

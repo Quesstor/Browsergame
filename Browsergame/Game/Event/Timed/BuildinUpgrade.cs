@@ -20,7 +20,7 @@ namespace Browsergame.Game.Event.Timed {
             this.executionTime = executionTime;
         }
 
-        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
+        public override UpdateData getSetupData(SubscriberLevel subscriber) {
             UpdateData UpdateData = new UpdateData("event");
             if (subscriber == SubscriberLevel.Owner) {
                 UpdateData["type"] = "BuildingUpgrade";
@@ -36,21 +36,19 @@ namespace Browsergame.Game.Event.Timed {
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
             city = state.getCity(cityID);
-            building = city.buildings[BuildingType];
+            building = city.getBuildings()[BuildingType];
         }
 
         public override bool conditions() {
             return true;
         }
 
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
-            SubscriberUpdates = new SubscriberUpdates();
-            SubscriberUpdates.Add(city, Utils.SubscriberLevel.Owner);
-
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
             this.removeSubscription(city.owner, SubscriberLevel.Owner);
             building.lvl += 1;
             building.isUpgrading = false;
 
+            updatedSubscribables = new HashSet<Subscribable> { city };
             return null;
         }
 

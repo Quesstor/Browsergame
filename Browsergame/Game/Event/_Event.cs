@@ -18,14 +18,16 @@ namespace Browsergame.Game.Event {
 
         void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
         bool conditions();
-        List<Event> execute(out SubscriberUpdates SubscriberUpdates);
+        List<Event> execute(out HashSet<Subscribable> updatedSubscribables);
     }
     [DataContract]
     abstract class Event : Subscribable, IEvent {
+        [DataMember] public DateTime executionTime;
+
+        protected override string entityName() { return "Event"; }
         public abstract void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
         public abstract bool conditions();
-        public abstract List<Event> execute(out SubscriberUpdates SubscriberUpdates);
-        [DataMember] public DateTime executionTime;
+        public abstract List<Event> execute(out HashSet<Subscribable> updatedSubscribables);
 
         public ManualResetEvent processed = new ManualResetEvent(false);
         ManualResetEvent IEvent.processed { get => processed; }
@@ -33,6 +35,6 @@ namespace Browsergame.Game.Event {
         private HashSet<Subscribable> onDemandCalculated = new HashSet<Subscribable>();
 
         public override void onDemandCalculation() { return; }
-        public override UpdateData getUpdateData(SubscriberLevel subscriber) { return null; }
+        public override UpdateData getSetupData(SubscriberLevel subscriber) { return null; }
     }
 }

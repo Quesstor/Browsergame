@@ -31,7 +31,7 @@ namespace Browsergame.Game.Event.Instant {
             unit = state.getUnit(this.unitID);
             city = state.getCity(this.cityID);
             player = state.getPlayer(playerID);
-            price = city.offers[itemType].price;
+            price = city.getOffers(true)[itemType].price;
 
             needsOnDemandCalculation = new HashSet<Subscribable>();
             needsOnDemandCalculation.Add(city);
@@ -44,37 +44,30 @@ namespace Browsergame.Game.Event.Instant {
             if (city.owner.id == player.id) return false;
             if (quant < 0) { //City sells
                 if (unit.owner.money < -quant * price) return false;
-                if (city.offers[itemType].quant < -quant) return false;
+                if (city.getOffers()[itemType].quant < -quant) return false;
             }
             else { //City buys
                 if (city.owner.money < quant * price) return false;
-                if (unit.getItem(itemType).quant < quant) return false;
+                if (unit.getItems()[itemType].quant < quant) return false;
             }
             return true;
         }
 
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
-            SubscriberUpdates = new SubscriberUpdates();
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
 
             unit.owner.money += quant * price;
             city.owner.money -= quant * price;
             if (quant < 0) { //City sells
-                city.offers[itemType].quant += quant;
+                city.getOffers()[itemType].quant += quant;
             }
             else { //City buys
-                city.getItem(itemType).quant += quant;
-                city.offers[itemType].quant += quant;
+                city.getItems()[itemType].quant += quant;
+                city.getOffers()[itemType].quant += quant;
             }
-            unit.getItem(itemType).quant -= quant;
+            unit.getItems()[itemType].quant -= quant;
 
-            SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
-            SubscriberUpdates.Add(city, SubscriberLevel.Owner);
-            SubscriberUpdates.Add(city, SubscriberLevel.Other);
-            SubscriberUpdates.Add(city.owner, SubscriberLevel.Owner);
-            SubscriberUpdates.Add(unit.owner, SubscriberLevel.Owner);
+            updatedSubscribables = new HashSet<Subscribable> { unit, city, city.owner, unit.owner };
             return null;
         }
-
-
     }
 }

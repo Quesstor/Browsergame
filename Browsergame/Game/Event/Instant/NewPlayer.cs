@@ -38,7 +38,7 @@ namespace Browsergame.Game.Event.Instant {
             var newLocation = new GeoCoordinate(48, 5);
             var count = 0;
             while (true) {
-                if ((from city in state.cities.Values where city.location.GetDistanceTo(newLocation) < Settings.minRangeBetweenCitiesInMeters select city).Count() == 0)
+                if ((from city in state.cities.Values where city.getLocation(false).GetDistanceTo(newLocation) < Settings.minRangeBetweenCitiesInMeters select city).Count() == 0)
                     return newLocation;
 
                 //offsets in meters
@@ -55,7 +55,7 @@ namespace Browsergame.Game.Event.Instant {
                 count += 1;
             }
         }
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
             var player = state.addPlayer(name, token);
             GeoCoordinate startLoc = newStartLocation(state);
             //startLoc.random(state);
@@ -75,9 +75,7 @@ namespace Browsergame.Game.Event.Instant {
             state.addUnit(city, UnitType.Horses);
             state.addUnit(city, UnitType.Horses);
 
-            SubscriberUpdates = new SubscriberUpdates();
-            SubscriberUpdates.Add(player, SubscriberLevel.Other);
-            SubscriberUpdates.Add(city, SubscriberLevel.Other);
+            updatedSubscribables = new HashSet<Subscribable> { player, city };
 
             foreach (var otherPlayer in state.players.Values) {
                 if (otherPlayer.id == player.id) {
@@ -90,10 +88,10 @@ namespace Browsergame.Game.Event.Instant {
                     otherPlayer.addSubscription(player, SubscriberLevel.Other);
                     player.addSubscription(otherPlayer, SubscriberLevel.Other);
                     foreach (var playerCity in player.cities)
-                        if (otherPlayer.isInVisibilityRange(playerCity.location))
+                        if (otherPlayer.isInVisibilityRange(playerCity.getLocation(false)))
                             playerCity.addSubscription(otherPlayer, SubscriberLevel.Other);
                     foreach (var otherPlayerCity in otherPlayer.cities)
-                        if (player.isInVisibilityRange(otherPlayerCity.location))
+                        if (player.isInVisibilityRange(otherPlayerCity.getLocation(false)))
                             otherPlayerCity.addSubscription(player, SubscriberLevel.Other);
                 }
             }

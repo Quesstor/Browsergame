@@ -53,25 +53,25 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
             var unitIDs = new List<long>();
-            SubscriberUpdates = new SubscriberUpdates();
+            updatedSubscribables = new HashSet<Subscribable>();
 
-            var range = targetCity.location.GetDistanceTo(startCity.location);
+            var range = targetCity.getLocation(false).GetDistanceTo(startCity.getLocation(false));
             var travelTimeInSeconds = range * Settings.MoveSpeedInMetersPerSecond;
 
             foreach (var unit in units) {
-                unit.city = null;
+                unit.setCity(null);
                 startCity.units.Remove(unit);
                 unitIDs.Add(unit.id);
-                SubscriberUpdates.Add(unit, Utils.SubscriberLevel.Owner);
+                updatedSubscribables.Add(unit);
             }
 
-            SubscriberUpdates.Add(startCity, SubscriberLevel.Owner);
+            updatedSubscribables.Add(startCity);
 
             var fightevent = new Timed.Fight(playerID, targetCityID, startCity.id, unitIDs, DateTime.Now.AddSeconds(travelTimeInSeconds));
             fightevent.addSubscription(player, SubscriberLevel.Owner);
-            SubscriberUpdates.Add(fightevent, SubscriberLevel.Owner);
+            updatedSubscribables.Add(fightevent);
 
             return new List<Event> { fightevent };
         }

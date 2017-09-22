@@ -6,16 +6,32 @@ using System.Text;
 using System.Threading.Tasks;
 using Browsergame.Game.Event;
 using Browsergame.Game.Entities.Settings;
+using System;
 
 namespace Browsergame.Game.Entities {
     enum OrderType { Move, Atack }
     [DataContract]
-    class Unit : Subscribable, HasItems, IID {
-        [DataMember] public Dictionary<ItemType, Item> items = new Dictionary<ItemType, Item>();
+    class Unit : Subscribable,  IID {
+        protected override string entityName() { return "Unit"; }
+        [DataMember] private Dictionary<ItemType, Item> items = new Dictionary<ItemType, Item>();
         [DataMember] public Player owner;
-        [DataMember] public City city;
+        [DataMember] private City city;
         [DataMember] public UnitType type;
         [DataMember] public long id { get; set; }
+
+        public Dictionary<ItemType, Item> getItems(bool addToUpdateData = true) {
+            if (addToUpdateData) addUpdateData(SubscriberLevel.Owner, "items", items);
+            return items;
+        }
+
+        public City getCity(bool addToUpdateData = true) {
+            if (addToUpdateData) addUpdateData(SubscriberLevel.Owner, "city", city);
+            return city;
+        }
+        public void setCity(City newCity) {
+            city = newCity;
+            addUpdateData(SubscriberLevel.Owner, "city", city);
+        }
 
         public Settings.UnitSettings setting { get => Settings.UnitSettings.settings[type]; }
 
@@ -27,12 +43,7 @@ namespace Browsergame.Game.Entities {
             city.units.Add(this);
         }
 
-        public Item getItem(ItemType ItemType) {
-            if (!items.ContainsKey(ItemType)) items[ItemType] = new Item(ItemType);
-            return items[ItemType];
-        }
-
-        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
+        public override UpdateData getSetupData(SubscriberLevel subscriber) {
             var data = new UpdateData("Unit");
             data.Add("id", id);
             data.Add("owner", owner.id);

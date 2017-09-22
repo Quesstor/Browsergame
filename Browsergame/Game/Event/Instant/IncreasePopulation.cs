@@ -34,13 +34,12 @@ namespace Browsergame.Game.Event.Instant {
             return player.id == city.owner.id && city.populationSurplus == 1;
         }
 
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
-            SubscriberUpdates = new SubscriberUpdates();
-            SubscriberUpdates.Add(city, SubscriberLevel.Owner);
-
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
             city.population += 1;
             city.populationSurplus = 0;
-            city.consumesPerPopulation[city.population+1] = Browsergame.Settings.getConsumeGoods(city.population+1);
+            city.getConsumesPerPopulation()[city.population+1] = Browsergame.Settings.getConsumeGoods(city.population+1);
+
+            updatedSubscribables = new HashSet<Subscribable> { city };
             return null;
         }
     }

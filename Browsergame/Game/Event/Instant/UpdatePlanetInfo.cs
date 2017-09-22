@@ -36,12 +36,11 @@ namespace Browsergame.Game.Event.Instant {
             if (setInfo.Length > 500) return false;
             return true;
         }
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
-            SubscriberUpdates = new SubscriberUpdates();
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
             city.info = setInfo;
             city.name = setName;
-            SubscriberUpdates.Add(city, SubscriberLevel.Owner);
-            SubscriberUpdates.Add(city, SubscriberLevel.Other);
+
+            updatedSubscribables = new HashSet<Subscribable> { city };
             return null;
         }
     }
