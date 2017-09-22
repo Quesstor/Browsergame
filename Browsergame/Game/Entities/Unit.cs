@@ -11,13 +11,13 @@ using System;
 namespace Browsergame.Game.Entities {
     enum OrderType { Move, Atack }
     [DataContract]
-    class Unit : Subscribable,  IID {
+    class Unit : Subscribable {
         protected override string entityName() { return "Unit"; }
         [DataMember] private Dictionary<ItemType, Item> items = new Dictionary<ItemType, Item>();
         [DataMember] public Player owner;
         [DataMember] private City city;
         [DataMember] public UnitType type;
-        [DataMember] public long id { get; set; }
+        [DataMember] public override long id { get; set; }
 
         public Dictionary<ItemType, Item> getItems(bool addToUpdateData = true) {
             if (addToUpdateData) addUpdateData(SubscriberLevel.Owner, "items", items);

@@ -55,15 +55,15 @@ namespace Browsergame.Game.Event.Timed {
         }
 
         public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
-            updatedSubscribables = new HashSet<Subscribable> { player, targetCity, targetCity.owner };
+            updatedSubscribables = new HashSet<Subscribable> { player, targetCity, targetCity.Owner };
 
             foreach (Unit unit in units) updatedSubscribables.Add(unit);
 
-            string msg = string.Format("Du hast die Stadt {0} eingenommen", targetCity.name);
+            string msg = string.Format("Du hast die Stadt {0} eingenommen", targetCity.Name);
             player.getMessages().Add(new Message(msg, DateTime.Now));
 
-            targetCity.owner = player;
-            targetCity.owner.cities.Remove(targetCity);
+            targetCity.Owner = player;
+            targetCity.Owner.cities.Remove(targetCity);
             player.cities.Add(targetCity);
 
             this.removeSubscription(player, SubscriberLevel.Owner);

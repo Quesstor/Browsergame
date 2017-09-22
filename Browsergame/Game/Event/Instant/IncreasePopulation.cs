@@ -31,13 +31,13 @@ namespace Browsergame.Game.Event.Instant {
             needsOnDemandCalculation.Add(city);
         }
         public override bool conditions() {
-            return player.id == city.owner.id && city.populationSurplus == 1;
+            return player.id == city.Owner.id && city.PopulationSurplus == 1;
         }
 
         public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
-            city.population += 1;
-            city.populationSurplus = 0;
-            city.getConsumesPerPopulation()[city.population+1] = Browsergame.Settings.getConsumeGoods(city.population+1);
+            city.Population += 1;
+            city.PopulationSurplus = 0;
+            city.getConsumesPerPopulation()[city.Population+1] = Browsergame.Settings.getConsumeGoods(city.Population+1);
 
             updatedSubscribables = new HashSet<Subscribable> { city };
             return null;

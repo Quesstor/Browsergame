@@ -16,13 +16,13 @@ namespace Browsergame.Server.SocketServer {
         private static Dictionary<long, PlayerWebsocket> sockets = new Dictionary<long, PlayerWebsocket>();
 
         public static void sendMessage(Player toPlayer, string json) {
-            if (toPlayer.isBot || !toPlayer.online) return;
+            if (toPlayer.isBot || !toPlayer.Online) return;
             if (sockets.ContainsKey(toPlayer.id)) {
                 sockets[toPlayer.id].Send(json);
             }
             else {
-                Logger.log(9, Category.WebSocket, Severity.Warn, string.Format("No socket found for Player '{0}'", toPlayer.name));
-                if (toPlayer.online) new PlayerOnline(toPlayer.id, false);
+                Logger.log(9, Category.WebSocket, Severity.Warn, string.Format("No socket found for Player '{0}'", toPlayer.Name));
+                if (toPlayer.Online) new PlayerOnline(toPlayer.id, false);
             }
         }
 
@@ -34,7 +34,7 @@ namespace Browsergame.Server.SocketServer {
                 EventEngine.AddEvent(new PlayerOnline(socket.playerID, true));
 
                 Player player = Browsergame.Game.Engine.StateEngine.GetState().getPlayer(socket.playerID);
-                string msg = string.Format("Socket opened. Player {0}. Token: {1}. Thread: {2}", player.name, player.token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);
+                string msg = string.Format("Socket opened. Player {0}. Token: {1}. Thread: {2}", player.Name, player.token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);
                 Logger.log(10, Category.WebSocket, Severity.Debug, msg);
             }
         }
@@ -48,7 +48,7 @@ namespace Browsergame.Server.SocketServer {
             EventEngine.AddEvent(new PlayerOnline(socket.playerID, false));
 
             Player player = Browsergame.Game.Engine.StateEngine.GetState().getPlayer(socket.playerID);
-            string msg = string.Format("Socket closed. Player {0}. Token: {1}. Thread: {2}", player.name, player.token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);
+            string msg = string.Format("Socket closed. Player {0}. Token: {1}. Thread: {2}", player.Name, player.token.Substring(0, 5), Thread.CurrentThread.ManagedThreadId);
             Logger.log(11, Category.WebSocket, Severity.Debug, msg);
         }
         public static void closeAll() {

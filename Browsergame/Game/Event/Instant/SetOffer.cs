@@ -37,7 +37,7 @@ namespace Browsergame.Game.Event.Instant {
         }
 
         public override bool conditions() {
-            if (city.owner.id != playerID) return false;
+            if (city.Owner.id != playerID) return false;
             if(city.getOffers()[itemType].quant == newQuant && city.getOffers()[itemType].price == newPrice) {
                 Logger.log(45, Category.Event, Severity.Warn, string.Format("setOffer rejected: same offer already"));
                 return false;

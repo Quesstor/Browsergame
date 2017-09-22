@@ -51,7 +51,7 @@ namespace Browsergame.Game.Engine {
                     if (e.conditions()) {
                         try {
                             var timedEvents = e.execute(out newUpdatedSubscribables);
-                            AllUpdatedSubscribables.Union(newUpdatedSubscribables);
+                            AllUpdatedSubscribables.UnionWith(newUpdatedSubscribables);
                             if (timedEvents != null) newTimedEvents.AddRange(timedEvents);
                             processedEvents.Add(e);
                         }

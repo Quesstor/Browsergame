@@ -27,7 +27,7 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
         public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
-            player.online = newOnlineStatus;
+            player.Online = newOnlineStatus;
             updatedSubscribables = new HashSet<Subscribable> { player };
             return null;
         }

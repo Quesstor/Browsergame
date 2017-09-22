@@ -36,10 +36,10 @@ namespace Browsergame.Game.Event.Instant {
         }
         public override bool conditions() {
             if (Building.isUpgrading) return false;
-            if (City.owner.id != Player.id) return false;
-            if (Building.lvl == 0) return false;
+            if (City.Owner.id != Player.id) return false;
+            if (Building.Lvl == 0) return false;
             foreach (var e in Building.setting.educts) {
-                var amountNeeded = amount * e.Value * Building.lvl;
+                var amountNeeded = amount * e.Value * Building.Lvl;
                 if (City.getItems(true)[e.Key].quant < amountNeeded) return false;
             }
             return true;
@@ -48,13 +48,13 @@ namespace Browsergame.Game.Event.Instant {
         public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
             var list = new List<Event>();
             foreach (var e in Building.setting.educts) {
-                var amountNeeded = amount * e.Value * Building.lvl;
+                var amountNeeded = amount * e.Value * Building.Lvl;
                 City.getItems(true)[e.Key].quant -= amountNeeded;
             }
             
             if (Building.setting.unitProducts.Count > 0) {
                 double productionTimePerUnit = 1f / Browsergame.Settings.productionsPerMinute;
-                DateTime startProductionTime = DateTime.Now.AddMinutes(Building.orderedProductions * productionTimePerUnit);
+                DateTime startProductionTime = DateTime.Now.AddMinutes(Building.OrderedProductions * productionTimePerUnit);
 
                 foreach (var production in Building.setting.unitProducts) {
                     for (var i = 1; i <=amount; i++) {
@@ -63,9 +63,9 @@ namespace Browsergame.Game.Event.Instant {
                     }
                 }
             }
-            if (Building.orderedProductions <= 0)
-                Building.lastProduced = DateTime.Now;
-            Building.orderedProductions += amount;
+            if (Building.OrderedProductions <= 0)
+                Building.LastProduced = DateTime.Now;
+            Building.OrderedProductions += amount;
 
             updatedSubscribables = new HashSet<Subscribable> { City };
             return list;

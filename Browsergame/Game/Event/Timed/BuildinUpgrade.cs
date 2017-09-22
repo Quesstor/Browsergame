@@ -44,8 +44,8 @@ namespace Browsergame.Game.Event.Timed {
         }
 
         public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
-            this.removeSubscription(city.owner, SubscriberLevel.Owner);
-            building.lvl += 1;
+            this.removeSubscription(city.Owner, SubscriberLevel.Owner);
+            building.Lvl += 1;
             building.isUpgrading = false;
 
             updatedSubscribables = new HashSet<Subscribable> { city };

@@ -35,19 +35,19 @@ namespace Browsergame.Game.Event.Instant {
 
             needsOnDemandCalculation = new HashSet<Subscribable>();
             needsOnDemandCalculation.Add(city);
-            needsOnDemandCalculation.Add(city.owner);
+            needsOnDemandCalculation.Add(city.Owner);
             needsOnDemandCalculation.Add(player);
         }
 
         public override bool conditions() {
             if (unit.owner.id != player.id) return false;
-            if (city.owner.id == player.id) return false;
+            if (city.Owner.id == player.id) return false;
             if (quant < 0) { //City sells
-                if (unit.owner.money < -quant * price) return false;
+                if (unit.owner.Money < -quant * price) return false;
                 if (city.getOffers()[itemType].quant < -quant) return false;
             }
             else { //City buys
-                if (city.owner.money < quant * price) return false;
+                if (city.Owner.Money < quant * price) return false;
                 if (unit.getItems()[itemType].quant < quant) return false;
             }
             return true;
@@ -55,8 +55,8 @@ namespace Browsergame.Game.Event.Instant {
 
         public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
 
-            unit.owner.money += quant * price;
-            city.owner.money -= quant * price;
+            unit.owner.Money += quant * price;
+            city.Owner.Money -= quant * price;
             if (quant < 0) { //City sells
                 city.getOffers()[itemType].quant += quant;
             }
@@ -66,7 +66,7 @@ namespace Browsergame.Game.Event.Instant {
             }
             unit.getItems()[itemType].quant -= quant;
 
-            updatedSubscribables = new HashSet<Subscribable> { unit, city, city.owner, unit.owner };
+            updatedSubscribables = new HashSet<Subscribable> { unit, city, city.Owner, unit.owner };
             return null;
         }
     }

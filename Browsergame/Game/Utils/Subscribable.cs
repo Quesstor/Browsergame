@@ -13,17 +13,22 @@ namespace Browsergame.Game.Utils {
         Owner, Other, None
     }
     [DataContract(IsReference = true)]
-    abstract class Subscribable {
+    abstract class Subscribable : IID {
         [DataMember] private Dictionary<SubscriberLevel, HashSet<Player>> subscribers = new Dictionary<SubscriberLevel, HashSet<Player>>();
         protected Dictionary<SubscriberLevel, UpdateData> updateData;
         abstract public void onDemandCalculation();
         abstract public UpdateData getSetupData(SubscriberLevel subscriber);
         abstract protected string entityName();
+        abstract public long id { get; set; }
 
         public void addUpdateData(SubscriberLevel subscriber, string propertyName, object value) {
             if (updateData == null) updateData = new Dictionary<SubscriberLevel, UpdateData>();
-            if (!updateData.ContainsKey(subscriber)) updateData[subscriber] = new UpdateData(entityName());
+            if (!updateData.ContainsKey(subscriber)) {
+                updateData[subscriber] = new UpdateData(entityName());
+                updateData[subscriber]["id"] = this.id;
+            }
             updateData[subscriber][propertyName] = value;
+            
         }
 
         public void addSubscription(Player player, SubscriberLevel level) {
@@ -38,7 +43,8 @@ namespace Browsergame.Game.Utils {
         }
 
         private void sendData(Player player, SubscriberLevel lvl) {
-            Task.Run(() => PlayerWebsocketConnections.sendMessage(player, getSetupData(lvl).toJson()));
+            if(updateData != null && updateData[lvl] != null)
+                Task.Run(() => PlayerWebsocketConnections.sendMessage(player, updateData[lvl].toJson()));
         }
 
         public void updateSubscribers() {

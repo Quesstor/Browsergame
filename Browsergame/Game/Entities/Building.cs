@@ -11,19 +11,27 @@ namespace Browsergame.Game.Entities {
     [DataContract]
     class Building : Subscribable {
         protected override string entityName() { return "Building"; }
+        [DataMember] public override long id { get; set; }
         [DataMember] public BuildingType type;
-        [DataMember] public int lvl { get { return lvl; } set { lvl = value; addUpdateData(SubscriberLevel.Owner, "lvl", lvl); } }
+        [DataMember] private int lvl;
         [DataMember] public bool isUpgrading = false;
-        [DataMember]
-        public double orderedProductions {
+        [DataMember] private double orderedProductions;
+        [DataMember] private DateTime lastProduced;
+
+        public int Lvl {
+            get { return lvl; }
+            set {
+                lvl = value; addUpdateData(SubscriberLevel.Owner, "lvl", lvl);
+            }
+        }
+        public double OrderedProductions {
             get { return orderedProductions; }
             set {
                 orderedProductions = value;
                 addUpdateData(SubscriberLevel.Owner, "orderedProductions", orderedProductions);
             }
         }
-        [DataMember]
-        public DateTime lastProduced {
+        public DateTime LastProduced {
             get { return lastProduced; }
             set {
                 lastProduced = value;

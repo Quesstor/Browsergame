@@ -44,8 +44,8 @@ namespace Browsergame.Game.Event.Instant {
         }
         public override bool conditions() {
 
-            if (player.id != startCity.owner.id) return false;
-            if (player.id == targetCity.owner.id) return false;
+            if (player.id != startCity.Owner.id) return false;
+            if (player.id == targetCity.Owner.id) return false;
             foreach (var unitgroup in unitCounts) {
                 var cityUnits = (from u in startCity.units where u.type == unitgroup.Key select u).Count();
                 if (cityUnits < unitgroup.Value) return false;

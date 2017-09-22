@@ -11,12 +11,15 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Entities {
     [DataContract(IsReference = true)]
-    class Player : Subscribable, IID {
+    class Player : Subscribable {
         protected override string entityName() { return "Player"; }
         [DataMember] public string token;
-        [DataMember] public long id { get; set; }
-        [DataMember]
-        public string name {
+        [DataMember] public override long id { get; set; }
+        [DataMember] private string name;
+        [DataMember] private double money;
+        [DataMember] private bool online;
+
+        public string Name {
             get { return name; }
             set {
                 name = value;
@@ -24,14 +27,14 @@ namespace Browsergame.Game.Entities {
                 addUpdateData(SubscriberLevel.Owner, "name", name);
             }
         }
-        [DataMember] public double money {
+        public double Money {
             get { return money; }
             set {
                 money = value;
                 addUpdateData(SubscriberLevel.Owner, "money", money);
             }
         }
-        [DataMember] public bool online {
+        public bool Online {
             get { return online; }
             set {
                 online = value;

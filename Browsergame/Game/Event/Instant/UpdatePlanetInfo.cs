@@ -37,8 +37,8 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
         public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
-            city.info = setInfo;
-            city.name = setName;
+            city.Info = setInfo;
+            city.Name = setName;
 
             updatedSubscribables = new HashSet<Subscribable> { city };
             return null;
