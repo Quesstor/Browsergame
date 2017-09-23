@@ -40,7 +40,7 @@
                 }).addTo(map);
         };
 
-        //Draw Events
+        //Draw Move Events
         var eventtype = "UnitArrives"
         if ($rootScope.events[eventtype]) {
             for (var event of $rootScope.events[eventtype]) {
@@ -68,6 +68,48 @@
                             this.layers.events[markerid] = L.marker(position, {
                                 icon: L.divIcon({
                                     html: '<unitmarker unit="$root.units[' + unit.id + ']"></unitmarker>',
+                                    className: 'mapmarker angularCompile',
+                                    iconSize: null
+                                })
+                            }).addTo(map);
+                        }
+                        this.layers.events[markerid].setLatLng(position);
+                    }
+                }
+            }
+        }
+
+        //Draw Fight Events
+        var eventtype = "Fight"
+        if ($rootScope.events[eventtype]) {
+            for (var event of $rootScope.events[eventtype]) {
+                event.id = event.unitIDs[0];
+                var offset = { lat: 0, lng: 0 };
+
+                var markerid = event.type + event.id;
+
+                var startLocation = $rootScope.cities[event.fromCityID].location;
+                var startLatLng = new L.LatLng(startLocation.x, startLocation.y);
+
+                var targetLocation = $rootScope.cities[event.targetCityID].location;
+                var targetLatLng = new L.LatLng(targetLocation.x, targetLocation.y);
+
+                var speed = 1;
+                for(var id of event.unitIDs) speed = Math.min(speed, $rootScope.units[id].movespeed);
+
+                var range = startLatLng.distanceTo(targetLatLng);
+                var totalSecsNeeded = (range / $rootScope.settings.MoveSpeedInMetersPerSecond) * speed + 1;
+                var percentageDone = 1 - event.executesInSec / totalSecsNeeded;
+
+                if (percentageDone <= 1) {
+                    var positionLat = startLocation.x + percentageDone * (targetLocation.x - startLocation.x);
+                    var positionLng = startLocation.y + percentageDone * (targetLocation.y - startLocation.y);
+                    var position = new L.LatLng(positionLat + offset.lat, positionLng + offset.lng);
+                    if (this.isInViewbox(position)) {
+                        if (!this.layers.events[markerid]) {
+                            this.layers.events[markerid] = L.marker(position, {
+                                icon: L.divIcon({
+                                    html: '<atackmarker id="'+event.id+'" style="color:red">JOJOJOJOJOJOJO</atackmarker>',
                                     className: 'mapmarker angularCompile',
                                     iconSize: null
                                 })

@@ -58,7 +58,8 @@ namespace Browsergame.Game.Event.Instant {
             SubscriberUpdates = new SubscriberUpdates();
 
             var range = targetCity.location.GetDistanceTo(startCity.location);
-            var travelTimeInSeconds = range * Settings.MoveSpeedInMetersPerSecond;
+            var speed = units.Min(u => u.setting.movespeed);
+            var travelTimeInSeconds = (range / Settings.MoveSpeedInMetersPerSecond) * speed;
 
             foreach (var unit in units) {
                 unit.city = null;
