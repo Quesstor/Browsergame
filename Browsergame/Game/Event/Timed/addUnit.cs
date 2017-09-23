@@ -35,12 +35,12 @@ namespace Browsergame.Game.Event.Timed {
             return true;
         }
 
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
-            SubscriberUpdates = new SubscriberUpdates();
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+            updatedSubscribables = new HashSet<Subscribable>();
 
             for (var i = 0; i < count; i++) {
                 var unit = state.addUnit(city, unittype);
-                SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
+                updatedSubscribables.Add(unit);
             }
 
             return null;

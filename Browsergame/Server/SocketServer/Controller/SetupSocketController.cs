@@ -15,7 +15,7 @@ namespace Browsergame.Server.SocketServer.Controller {
             var data = new List<Dictionary<string,object>>();
 
             var settings = new UpdateData("settings");
-            var location = player.cities.First().location;
+            var location = player.cities.First().getLocation(false);
             settings.Add("location", new Dictionary<String, double> { { "x", location.Latitude }, { "y", location.Longitude } });
             settings.Add("buildings", Game.Entities.Settings.BuildingSettings.settings);
             settings.Add("units", Game.Entities.Settings.UnitSettings.settings);
@@ -30,7 +30,7 @@ namespace Browsergame.Server.SocketServer.Controller {
 
             foreach (SubscriberLevel level in player.subscriptions.Keys) {
                 foreach(Subscribable s in player.subscriptions[level]) {
-                    data.Add(s.getUpdateData(level).toDictWithKey());
+                    data.Add(s.getSetupData(level).toDictWithKey());
                 }
             }
 

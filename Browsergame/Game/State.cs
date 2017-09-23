@@ -54,7 +54,7 @@ namespace Browsergame.Game {
             return city;
         }
         public Unit addUnit(City city, Entities.Settings.UnitType unitType) {
-            Unit unit = new Unit(city.owner, city, unitType);
+            Unit unit = new Unit(city.Owner, city, unitType);
             addAndSetID<Unit>(units, unit);
             return unit;
         }

@@ -44,8 +44,8 @@ namespace Browsergame.Game.Event.Instant {
         }
         public override bool conditions() {
 
-            if (player.id != startCity.owner.id) return false;
-            if (player.id == targetCity.owner.id) return false;
+            if (player.id != startCity.Owner.id) return false;
+            if (player.id == targetCity.Owner.id) return false;
             foreach (var unitgroup in unitCounts) {
                 var cityUnits = (from u in startCity.units where u.type == unitgroup.Key select u).Count();
                 if (cityUnits < unitgroup.Value) return false;
@@ -53,26 +53,26 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
             var unitIDs = new List<long>();
-            SubscriberUpdates = new SubscriberUpdates();
+            updatedSubscribables = new HashSet<Subscribable>();
 
             var range = targetCity.location.GetDistanceTo(startCity.location);
             var speed = units.Min(u => u.setting.movespeed);
             var travelTimeInSeconds = (range / Settings.MoveSpeedInMetersPerSecond) * speed;
 
             foreach (var unit in units) {
-                unit.city = null;
+                unit.setCity(null);
                 startCity.units.Remove(unit);
                 unitIDs.Add(unit.id);
-                SubscriberUpdates.Add(unit, Utils.SubscriberLevel.Owner);
+                updatedSubscribables.Add(unit);
             }
 
-            SubscriberUpdates.Add(startCity, SubscriberLevel.Owner);
+            updatedSubscribables.Add(startCity);
 
             var fightevent = new Timed.Fight(playerID, targetCityID, startCity.id, unitIDs, DateTime.Now.AddSeconds(travelTimeInSeconds));
             fightevent.addSubscription(player, SubscriberLevel.Owner);
-            SubscriberUpdates.Add(fightevent, SubscriberLevel.Owner);
+            updatedSubscribables.Add(fightevent);
 
             return new List<Event> { fightevent };
         }

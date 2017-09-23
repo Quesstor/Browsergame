@@ -131,7 +131,6 @@
     <Compile Include="Game\Event\Instant\NewPlayer.cs" />
     <Compile Include="Game\Event\_Event.cs" />
     <Compile Include="Game\Engine\StateEngine.cs" />
-    <Compile Include="Game\Utils\HasItems.cs" />
     <Compile Include="Game\Utils\Subscribable.cs" />
     <Compile Include="Game\Utils\IID.cs" />
     <Compile Include="Game\Utils\UpdateData.cs" />
@@ -577,14 +576,9 @@
     <Content Include="Server\WebServer\static\index.html" />
     <Content Include="Server\WebServer\static\JS\app.js" />
     <Content Include="Server\WebServer\static\JS\audio.js" />
-    <Content Include="Server\WebServer\static\JS\Controller\gameCtrl.js" />
-    <Content Include="Server\WebServer\static\JS\Controller\loginCtrl.js" />
-    <Content Include="Server\WebServer\static\JS\Controller\Manager\pricemanager.js" />
-    <Content Include="Server\WebServer\static\JS\Controller\mapmarkerCtrl.js" />
     <Content Include="Server\WebServer\static\JS\Controller\utilCtrl.js" />
     <Content Include="Server\WebServer\static\JS\map.js" />
     <Content Include="Server\WebServer\static\JS\Services\cityService.js" />
-    <Content Include="Server\WebServer\static\JS\Services\planetService.js" />
     <Content Include="Server\WebServer\static\JS\Services\playerService.js" />
     <Content Include="Server\WebServer\static\JS\Services\syncService.js" />
     <Content Include="Server\WebServer\static\JS\Services\tradeService.js" />
@@ -7498,30 +7492,31 @@
     <Content Include="Server\WebServer\static\templates\directives\city\trademanager.js" />
     <Content Include="Server\WebServer\static\templates\directives\city\units.html" />
     <Content Include="Server\WebServer\static\templates\directives\city\units.js" />
+    <Content Include="Server\WebServer\static\templates\directives\debugbar.html" />
     <Content Include="Server\WebServer\static\templates\directives\map\citymarker.html" />
-    <Content Include="Server\WebServer\static\templates\directives\map\debugbar.html" />
-    <Content Include="Server\WebServer\static\templates\directives\map\mapmarkerCtrl.js" />
-    <Content Include="Server\WebServer\static\templates\directives\map\navi.html" />
+    <Content Include="Server\WebServer\static\templates\directives\map\citymarker.js" />
     <Content Include="Server\WebServer\static\templates\directives\map\ordermarker.html" />
-    <Content Include="Server\WebServer\static\templates\directives\map\planetmarker.html" />
-    <Content Include="Server\WebServer\static\templates\directives\map\selectedunitbar.html" />
+    <Content Include="Server\WebServer\static\templates\directives\map\unitmarker.html" />
     <Content Include="Server\WebServer\static\templates\directives\modals\audio.html" />
     <Content Include="Server\WebServer\static\templates\directives\modals\city.html" />
     <Content Include="Server\WebServer\static\templates\directives\modals\messages.html" />
     <Content Include="Server\WebServer\static\templates\directives\modals\options.html" />
     <Content Include="Server\WebServer\static\templates\directives\modals\planet.html" />
     <Content Include="Server\WebServer\static\templates\directives\modals\players.html" />
-    <Content Include="Server\WebServer\static\templates\directives\util\goodsquare.html" />
+    <Content Include="Server\WebServer\static\templates\directives\navi.html" />
     <Content Include="Server\WebServer\static\templates\directives\util\itemsquare.html" />
     <Content Include="Server\WebServer\static\templates\directives\util\itemsquare.js" />
     <Content Include="Server\WebServer\static\templates\directives\util\price.html" />
-    <Content Include="Server\WebServer\static\templates\directives\util\pricemanager.js" />
     <Content Include="Server\WebServer\static\templates\directives\util\unitsquare.html" />
     <Content Include="Server\WebServer\static\templates\directives\util\unitsquare.js" />
     <Content Include="Server\WebServer\static\templates\game.html" />
     <Content Include="Server\WebServer\static\templates\gameCtrl.js" />
     <Content Include="Server\WebServer\static\templates\login.html" />
     <Content Include="Server\WebServer\static\templates\loginCtrl.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Server\WebServer\static\JS\Controller\Manager\" />
+    <Folder Include="Server\WebServer\static\templates\directives\planet\dock\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

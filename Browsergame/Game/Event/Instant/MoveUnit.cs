@@ -32,27 +32,25 @@ namespace Browsergame.Game.Event.Instant {
             unit = state.getUnit(unitID);
         }
         public override bool conditions() {
-            if (unit.city == null) return false;
+            if (unit.getCity() == null) return false;
             if (player.id != unit.owner.id) return false;
-            if (unit.city.id == targetCity.id) return false;
+            if (unit.getCity().id == targetCity.id) return false;
             return true;
         }
 
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
-            SubscriberUpdates = new SubscriberUpdates();
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
 
-            SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
-            var startCity = unit.city;
+            var startCity = unit.getCity();
 
-            var range = targetCity.location.GetDistanceTo(startCity.location);
+            var range = targetCity.getLocation(false).GetDistanceTo(startCity.getLocation(false));
             var travelTimeInSeconds = (range / Settings.MoveSpeedInMetersPerSecond) * unit.setting.movespeed;
             var arrivalTime = DateTime.Now.AddSeconds(travelTimeInSeconds);
 
             var arrivalEvent = new Timed.UnitArrives(unitID, startCity.id, targetCityID, arrivalTime);
             arrivalEvent.addSubscription(player, SubscriberLevel.Owner);
-            unit.city = null;
+            unit.setCity(null);
 
-            SubscriberUpdates.Add(arrivalEvent, SubscriberLevel.Owner);
+            updatedSubscribables = new HashSet<Subscribable> { unit, arrivalEvent };
             return new List<Event> { arrivalEvent };
         }
 

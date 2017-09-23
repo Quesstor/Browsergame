@@ -48,7 +48,8 @@
                 var item = data.city.items[k];                
                 angular.merge(item, $rootScope.settings.items[item.type]);
             }
-            $rootScope.cities[data.city.id] = data.city;
+            if ($rootScope.cities[data.city.id]) angular.merge($rootScope.cities[data.city.id], data.city);
+            else $rootScope.cities[data.city.id] = data.city;
             mapService.drawAll();
         }
         if (data.players) {

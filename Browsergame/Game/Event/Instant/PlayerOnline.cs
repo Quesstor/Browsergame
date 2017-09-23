@@ -26,11 +26,9 @@ namespace Browsergame.Game.Event.Instant {
         public override bool conditions() {
             return true;
         }
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
-            SubscriberUpdates = new SubscriberUpdates();
-            SubscriberUpdates.Add(player, SubscriberLevel.Other);
-
-            player.online = newOnlineStatus;
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+            player.Online = newOnlineStatus;
+            updatedSubscribables = new HashSet<Subscribable> { player };
             return null;
         }
     }

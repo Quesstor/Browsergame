@@ -37,12 +37,12 @@ namespace Browsergame.Game.Event.Instant {
         }
 
         public override bool conditions() {
-            if (city.owner.id != playerID) return false;
-            if(city.offers[itemType].quant == newQuant && city.offers[itemType].price == newPrice) {
+            if (city.Owner.id != playerID) return false;
+            if(city.getOffers()[itemType].quant == newQuant && city.getOffers()[itemType].price == newPrice) {
                 Logger.log(45, Category.Event, Severity.Warn, string.Format("setOffer rejected: same offer already"));
                 return false;
             }
-            var cityQuantWithSellOffers = city.items[itemType].quant + Math.Max(0, city.offers[itemType].quant);
+            var cityQuantWithSellOffers = city.getItems()[itemType].quant + Math.Max(0, city.getOffers()[itemType].quant);
             if (newQuant > 0 && cityQuantWithSellOffers < newQuant) {
                 Logger.log(44, Category.Event, Severity.Warn, string.Format("setOffer rejected: city only has {0} < {1} quant", cityQuantWithSellOffers, newQuant));
                 return false;
@@ -50,15 +50,13 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
-            if (city.offers[itemType].quant > 0) city.items[itemType].quant += city.offers[itemType].quant; //Return items to city from old sell orders
-            if (newQuant > 0) city.items[itemType].quant -= newQuant; //Take items from city for sell orders
-            city.offers[itemType].quant = newQuant;
-            city.offers[itemType].price = newQuant == 0 ? 0 : newPrice;
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+            if (city.getOffers()[itemType].quant > 0) city.getItems()[itemType].quant += city.getOffers()[itemType].quant; //Return items to city from old sell orders
+            if (newQuant > 0) city.getItems()[itemType].quant -= newQuant; //Take items from city for sell orders
+            city.getOffers()[itemType].quant = newQuant;
+            city.getOffers()[itemType].price = newQuant == 0 ? 0 : newPrice;
 
-            SubscriberUpdates = new SubscriberUpdates();
-            SubscriberUpdates.Add(city, Utils.SubscriberLevel.Owner);
-
+            updatedSubscribables = new HashSet<Subscribable> { city };
             return null;
         }
 

@@ -21,7 +21,7 @@ namespace Browsergame.Game.Event.Timed {
             this.executionTime = arrivalTime;
         }
 
-        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
+        public override UpdateData getSetupData(SubscriberLevel subscriber) {
             UpdateData UpdateData = new UpdateData("event");
             if (subscriber == SubscriberLevel.Owner) {
                 UpdateData["type"] = "UnitArrives";
@@ -48,15 +48,12 @@ namespace Browsergame.Game.Event.Timed {
             return true;
         }
 
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
-            unit.city = targetCity;
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+            unit.setCity(targetCity);
 
             this.removeSubscription(unit.owner, SubscriberLevel.Owner);
-            SubscriberUpdates = new SubscriberUpdates();
-            SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
+            updatedSubscribables = new HashSet<Subscribable> { unit };
             return null;
         }
-
-
     }
 }

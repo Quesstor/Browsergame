@@ -16,12 +16,12 @@ namespace Browsergame.Game.Event.Timed {
         [DataMember] private long fromCityID;
         [DataMember] private List<long> unitIDs;
 
-        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
+        public override UpdateData getSetupData(SubscriberLevel subscriber) {
             var data = new UpdateData("event");
             data["fromCityID"] = fromCityID;
             data["targetCityID"] = targetCityID;
             data["unitIDs"] = unitIDs;
-            return base.getUpdateData(subscriber);
+            return base.getSetupData(subscriber);
         }
 
         public Fight(long playerID, long targetCityID, long fromCityID, List<long> unitIDs, DateTime fightTime){
@@ -42,32 +42,28 @@ namespace Browsergame.Game.Event.Timed {
             needsOnDemandCalculation.Add(targetCity);
 
             player = state.getPlayer(playerID);
-
-
+            
             units = new List<Unit>();
             foreach(var id in unitIDs) {
                 var unit = state.getUnit(id);
                 units.Add(unit);
             }
-
         }
+
         public override bool conditions() {
             return true;
         }
 
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
-            SubscriberUpdates = new SubscriberUpdates();
-            SubscriberUpdates.Add(player, SubscriberLevel.Owner);
-            SubscriberUpdates.Add(targetCity.owner, SubscriberLevel.Owner);
-            SubscriberUpdates.Add(targetCity, SubscriberLevel.Owner);
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+            updatedSubscribables = new HashSet<Subscribable> { player, targetCity, targetCity.Owner };
 
-            foreach (Unit unit in units) SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
+            foreach (Unit unit in units) updatedSubscribables.Add(unit);
 
-            string msg = string.Format("Du hast die Stadt {0} eingenommen", targetCity.name);
-            player.messages.Add(new Message(msg, DateTime.Now));
+            string msg = string.Format("Du hast die Stadt {0} eingenommen", targetCity.Name);
+            player.getMessages().Add(new Message(msg, DateTime.Now));
 
-            targetCity.owner = player;
-            targetCity.owner.cities.Remove(targetCity);
+            targetCity.Owner = player;
+            targetCity.Owner.cities.Remove(targetCity);
             player.cities.Add(targetCity);
 
             this.removeSubscription(player, SubscriberLevel.Owner);

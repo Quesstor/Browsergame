@@ -11,16 +11,45 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Entities {
     [DataContract(IsReference = true)]
-    class Player : Subscribable, IID {
-        [DataMember] public long id { get; set; }
-        [DataMember] public string name;
+    class Player : Subscribable {
+        protected override string entityName() { return "Player"; }
         [DataMember] public string token;
-        [DataMember] public double money;
-        [DataMember] public bool online = false;
+        [DataMember] public override long id { get; set; }
+        [DataMember] private string name;
+        [DataMember] private double money;
+        [DataMember] private bool online;
+
+        public string Name {
+            get { return name; }
+            set {
+                name = value;
+                addUpdateData(SubscriberLevel.Other, "name", name);
+                addUpdateData(SubscriberLevel.Owner, "name", name);
+            }
+        }
+        public double Money {
+            get { return money; }
+            set {
+                money = value;
+                addUpdateData(SubscriberLevel.Owner, "money", money);
+            }
+        }
+        public bool Online {
+            get { return online; }
+            set {
+                online = value;
+                addUpdateData(SubscriberLevel.Other, "online", online);
+                addUpdateData(SubscriberLevel.Owner, "online", online);
+            }
+        }
 
         [DataMember] public List<City> cities = new List<City>();
         [DataMember] public List<Unit> units = new List<Unit>();
-        [DataMember] public List<Message> messages = new List<Message>();
+        [DataMember] private List<Message> messages = new List<Message>();
+        public List<Message> getMessages(bool addToUpdateData = true) {
+            if (addToUpdateData) addUpdateData(SubscriberLevel.Owner, "messages", messages);
+            return messages;
+        }
         [DataMember] public Dictionary<SubscriberLevel, HashSet<Subscribable>> subscriptions = new Dictionary<SubscriberLevel, HashSet<Subscribable>>();
         [DataMember] public bool isBot = false;
 
@@ -28,15 +57,16 @@ namespace Browsergame.Game.Entities {
             this.name = name;
             this.token = token;
             this.money = money;
+            this.online = false;
         }
 
         public bool isInVisibilityRange(GeoCoordinate location) {
-            foreach(var city in cities) {
-                if (city.location.GetDistanceTo(location) < Browsergame.Settings.visibilityRange) return true;
+            foreach (var city in cities) {
+                if (city.getLocation(false).GetDistanceTo(location) < Browsergame.Settings.visibilityRange) return true;
             }
             return false;
         }
-        public override UpdateData getUpdateData(SubscriberLevel subscriber) {
+        public override UpdateData getSetupData(SubscriberLevel subscriber) {
             string key;
             if (subscriber == SubscriberLevel.Other) { key = "Players"; }
             else { key = "Player"; }

@@ -28,16 +28,16 @@ namespace Browsergame.Game.Event.Instant {
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             player = state.getPlayer(playerID);
             unit = state.getUnit(unitID);
-            city = unit.city;
-            freeItemSpace = unit.setting.storage - (from item in unit.items select item.Value.quant).Sum();
+            city = unit.getCity();
+            freeItemSpace = unit.setting.storage - (from item in unit.getItems() select item.Value.quant).Sum();
             double dQuant = quant;
             if (dQuant < 0) { //Load to City
-                if (!unit.items.ContainsKey(itemType)) dQuant = 0;
-                else if (unit.items[itemType].quant < -dQuant) dQuant = -unit.items[itemType].quant;
+                if (!unit.getItems().ContainsKey(itemType)) dQuant = 0;
+                else if (unit.getItems()[itemType].quant < -dQuant) dQuant = -unit.getItems()[itemType].quant;
                 quant = (int)Math.Ceiling(dQuant);
             }
             else { //Load to Unit
-                dQuant = Math.Min(quant, city.items[itemType].quant);
+                dQuant = Math.Min(quant, city.getItems()[itemType].quant);
                 dQuant = Math.Min(quant, freeItemSpace);
                 quant = (int)Math.Floor(dQuant);
             }
@@ -51,18 +51,16 @@ namespace Browsergame.Game.Event.Instant {
             return unit.owner.id == player.id;
         }
 
-        public override List<Event> execute(out SubscriberUpdates SubscriberUpdates) {
-            city.items[itemType].quant -= quant;
-            if (!unit.items.ContainsKey(itemType)) unit.items[itemType] = new Item(itemType);
-            unit.items[itemType].quant += quant;
-            if (unit.items[itemType].quant == 0) unit.items.Remove(itemType);
-            SubscriberUpdates = new SubscriberUpdates();
-            SubscriberUpdates.Add(unit, SubscriberLevel.Owner);
+        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+            city.getItems()[itemType].quant -= quant;
+            if (!unit.getItems().ContainsKey(itemType)) unit.getItems()[itemType] = new Item(itemType);
+            unit.getItems()[itemType].quant += quant;
+            if (unit.getItems()[itemType].quant == 0) unit.getItems().Remove(itemType);
 
-            SubscriberUpdates.Add(city, SubscriberLevel.Owner);
+            updatedSubscribables = new HashSet<Subscribable> { city, unit };
+
             return null;
         }
-
 
     }
 }
