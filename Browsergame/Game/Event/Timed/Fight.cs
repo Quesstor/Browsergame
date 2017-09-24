@@ -18,13 +18,15 @@ namespace Browsergame.Game.Event.Timed {
 
         public override UpdateData getSetupData(SubscriberLevel subscriber) {
             var data = new UpdateData("event");
+            data["type"] = "Fight";
+            data["executesInSec"] = (executionTime - DateTime.Now).TotalSeconds;
             data["fromCityID"] = fromCityID;
             data["targetCityID"] = targetCityID;
             data["unitIDs"] = unitIDs;
-            return base.getSetupData(subscriber);
+            return data;
         }
 
-        public Fight(long playerID, long targetCityID, long fromCityID, List<long> unitIDs, DateTime fightTime){
+        public Fight(long playerID, long targetCityID, long fromCityID, List<long> unitIDs, DateTime fightTime) {
             this.playerID = playerID;
             this.targetCityID = targetCityID;
             this.unitIDs = unitIDs;
@@ -32,39 +34,81 @@ namespace Browsergame.Game.Event.Timed {
             this.executionTime = fightTime;
         }
 
+        private State state;
         private Player player;
         private City targetCity;
-        private List<Unit> units;
+        private List<Unit> atackingUnits;
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-
+            this.state = state;
             targetCity = state.getCity(targetCityID);
             needsOnDemandCalculation.Add(targetCity);
 
             player = state.getPlayer(playerID);
-            
-            units = new List<Unit>();
-            foreach(var id in unitIDs) {
+
+            atackingUnits = new List<Unit>();
+            foreach (var id in unitIDs) {
                 var unit = state.getUnit(id);
-                units.Add(unit);
+                atackingUnits.Add(unit);
             }
         }
 
         public override bool conditions() {
             return true;
         }
-
+        static Random rnd = new Random();
+        private void atack(List<Unit> atackingUnits, List<Unit> defendingUnits) {
+            foreach (var atacker in atackingUnits) {
+                if (defendingUnits.Count == 0) return;
+                var defender = defendingUnits[rnd.Next(defendingUnits.Count-1)];
+                var damage = Math.Max(0, atacker.setting.atack*3 - defender.setting.shieldpower);
+                defender.hp -= damage;
+                if (defender.hp <= 0) {
+                    state.removeUnit(defender);
+                    defendingUnits.Remove(defender);
+                }
+            }
+        }
         public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
-            updatedSubscribables = new HashSet<Subscribable> { player, targetCity, targetCity.Owner };
+            var atackedPlayer = targetCity.Owner;
+            updatedSubscribables = new HashSet<Subscribable> { player, targetCity, atackedPlayer };
 
-            foreach (Unit unit in units) updatedSubscribables.Add(unit);
+            foreach (Unit u in atackingUnits) {
+                u.setCity(targetCity);
+                updatedSubscribables.Add(u);
+            }
 
-            string msg = string.Format("Du hast die Stadt {0} eingenommen", targetCity.Name);
-            player.getMessages().Add(new Message(msg, DateTime.Now));
+            if (targetCity.Owner.id != player.id) {
+                var defendingFighters = (from u in targetCity.units where !u.setting.civil select u).ToList();
+                var atackingFighters = (from u in atackingUnits where !u.setting.civil select u).ToList();
 
-            targetCity.Owner = player;
-            targetCity.Owner.cities.Remove(targetCity);
-            player.cities.Add(targetCity);
+                defendingFighters.ForEach(u => u.hp = u.setting.hp);
+                atackingFighters.ForEach(u => u.hp = u.setting.hp);
+
+                while (defendingFighters.Count > 0 && atackingUnits.Count > 0) {
+                    atack(defendingFighters, atackingUnits); //Defenders atack first
+                    atack(atackingUnits, defendingFighters);
+                }
+
+                if (atackingUnits.Count > 0) {
+                    string msg = string.Format("Du hast die Stadt {0} eingenommen", targetCity.Name);
+                    player.addMessage(new Message(msg));
+
+                    targetCity.Owner = player;
+                    targetCity.Owner.cities.Remove(targetCity);
+                    player.cities.Add(targetCity);
+
+                    targetCity.removeSubscription(atackedPlayer, SubscriberLevel.Owner);
+                    targetCity.removeSubscription(player, SubscriberLevel.Other);
+
+                    targetCity.addSubscription(atackedPlayer, SubscriberLevel.Other);
+                    targetCity.addSubscription(player, SubscriberLevel.Owner);
+                }
+                else {
+                    string msg = string.Format("Die Streitkräfte wurden aufgelöst. Du hast die Stadt {0} nicht einnehmen können.", targetCity.Name);
+                    player.addMessage(new Message(msg));
+                }
+            }
 
             this.removeSubscription(player, SubscriberLevel.Owner);
 

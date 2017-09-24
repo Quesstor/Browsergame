@@ -37,6 +37,6 @@ namespace Browsergame {
         public static double visibilityRange = 100000;
         public static double minRangeBetweenCitiesInMeters = 8000;
 
-        public static double MoveSpeedInMetersPerSecond = 1000;
+        public static double MoveSpeedInMetersPerSecond = 500;
     }
 }

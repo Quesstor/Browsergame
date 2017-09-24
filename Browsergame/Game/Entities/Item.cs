@@ -11,24 +11,42 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Entities {
     [DataContract]
-    class Item {
-        [DataMember] public double quant = 0;
+    class Item : HasUpdateData {
+        [DataMember] private double quant;
+        public double Quant {
+            get { return quant; }
+            set {
+                quant = value;
+                setUpdateData(SubscriberLevel.Owner, "quant", quant);
+            }
+        }
         [JsonConverter(typeof(StringEnumConverter))]
-        [DataMember] public ItemType type;
+        [DataMember]
+        public ItemType type;
 
 
 
         public Item(ItemType ItemType) {
-                this.type = ItemType;
+            quant = 0;
+            this.type = ItemType;
         }
         public static Dictionary<ItemType, Item> newItemDict() {
             var dict = new Dictionary<ItemType, Item>();
-            foreach(ItemType t in Enum.GetValues(typeof(ItemType))) {
+            foreach (ItemType t in Enum.GetValues(typeof(ItemType))) {
                 dict[t] = new Item(t);
             }
             return dict;
         }
 
+        public override UpdateData getSetupData(SubscriberLevel subscriber) {
+            var data = new UpdateData(this.type.ToString());
+            data["quant"] = quant;
+            data["type"] = type;
+            return data;
+        }
 
+        protected override string entityName() {
+            return type.ToString();
+        }
     }
 }

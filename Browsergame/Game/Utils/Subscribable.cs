@@ -1,5 +1,6 @@
 ﻿using Browsergame.Game.Entities;
 using Browsergame.Game.Event;
+using Browsergame.Game.Utils;
 using Browsergame.Server.SocketServer;
 using System;
 using System.Collections.Generic;
@@ -10,25 +11,25 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Utils {
     enum SubscriberLevel {
-        Owner, Other, None
+        Owner, Other
     }
     [DataContract(IsReference = true)]
-    abstract class Subscribable : IID {
+    abstract class Subscribable : HasUpdateData, IID {
+        [DataMember] abstract public long id { get; set; }
         [DataMember] private Dictionary<SubscriberLevel, HashSet<Player>> subscribers = new Dictionary<SubscriberLevel, HashSet<Player>>();
-        protected Dictionary<SubscriberLevel, UpdateData> updateData;
         abstract public void onDemandCalculation();
-        abstract public UpdateData getSetupData(SubscriberLevel subscriber);
-        abstract protected string entityName();
-        abstract public long id { get; set; }
 
-        public void addUpdateData(SubscriberLevel subscriber, string propertyName, object value) {
-            if (updateData == null) updateData = new Dictionary<SubscriberLevel, UpdateData>();
-            if (!updateData.ContainsKey(subscriber)) {
-                updateData[subscriber] = new UpdateData(entityName());
-                updateData[subscriber]["id"] = this.id;
-            }
-            updateData[subscriber][propertyName] = value;
-            
+        new public void setUpdateDataDict<K, V>(SubscriberLevel subscriberLevel, string propertyName, K key, V value) {
+            makeUpdateDataWithIdIfNotExists(subscriberLevel);
+            base.setUpdateDataDict(subscriberLevel, propertyName, key, value);
+        }
+        new public void setUpdateData(SubscriberLevel subscriberLevel, string propertyName, object value) {
+            makeUpdateDataWithIdIfNotExists(subscriberLevel);
+            base.setUpdateData(subscriberLevel, propertyName, value);
+        }
+        protected void makeUpdateDataWithIdIfNotExists(SubscriberLevel SubscriberLevel) {
+            base.makeUpdateDataIfNotExists(SubscriberLevel);
+            updateData[SubscriberLevel]["id"] = this.id;
         }
 
         public void addSubscription(Player player, SubscriberLevel level) {
@@ -36,29 +37,26 @@ namespace Browsergame.Game.Utils {
             if (!player.subscriptions.ContainsKey(level)) player.subscriptions[level] = new HashSet<Subscribable>();
             subscribers[level].Add(player);
             player.subscriptions[level].Add(this);
+            makeUpdateDataWithIdIfNotExists(level);
+            updateData[level] = getSetupData(level);
         }
         public void removeSubscription(Player player, SubscriberLevel level) {
             subscribers[level].Remove(player);
             player.subscriptions[level].Remove(this);
         }
 
-        private void sendData(Player player, SubscriberLevel lvl) {
-            if(updateData != null && updateData[lvl] != null)
-                Task.Run(() => PlayerWebsocketConnections.sendMessage(player, updateData[lvl].toJson()));
-        }
-
-        public void updateSubscribers() {
-            foreach (SubscriberLevel lvl in subscribers.Keys) {
-                updateSubscribers(lvl);
-            }
-        }
-        public int updateSubscribers(SubscriberLevel lvl) {
+        public int updateSubscribers() {
             int count = 0;
-            if (!subscribers.ContainsKey(lvl)) return count;
-            foreach (Player player in subscribers[lvl]) {
-                sendData(player, lvl);
-                count++;
+            foreach (SubscriberLevel lvl in subscribers.Keys) {
+                foreach (Player player in subscribers[lvl]) {
+                    if (updateData != null && updateData.ContainsKey(lvl) && updateData[lvl] != null) {
+                        var data = updateData[lvl];
+                        Task.Run(() => PlayerWebsocketConnections.sendMessage(player, data.toJson()));
+                        count++;
+                    }
+                }
             }
+            updateData = new Dictionary<SubscriberLevel, UpdateData>();
             return count;
         }
     }

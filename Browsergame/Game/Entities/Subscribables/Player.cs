@@ -11,8 +11,7 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Entities {
     [DataContract(IsReference = true)]
-    class Player : Subscribable {
-        protected override string entityName() { return "Player"; }
+    class Player : Entity {
         [DataMember] public string token;
         [DataMember] public override long id { get; set; }
         [DataMember] private string name;
@@ -23,23 +22,23 @@ namespace Browsergame.Game.Entities {
             get { return name; }
             set {
                 name = value;
-                addUpdateData(SubscriberLevel.Other, "name", name);
-                addUpdateData(SubscriberLevel.Owner, "name", name);
+                setUpdateData(SubscriberLevel.Other, "name", name);
+                setUpdateData(SubscriberLevel.Owner, "name", name);
             }
         }
         public double Money {
             get { return money; }
             set {
                 money = value;
-                addUpdateData(SubscriberLevel.Owner, "money", money);
+                setUpdateData(SubscriberLevel.Owner, "money", money);
             }
         }
         public bool Online {
             get { return online; }
             set {
                 online = value;
-                addUpdateData(SubscriberLevel.Other, "online", online);
-                addUpdateData(SubscriberLevel.Owner, "online", online);
+                setUpdateData(SubscriberLevel.Other, "online", online);
+                setUpdateData(SubscriberLevel.Owner, "online", online);
             }
         }
 
@@ -47,8 +46,12 @@ namespace Browsergame.Game.Entities {
         [DataMember] public List<Unit> units = new List<Unit>();
         [DataMember] private List<Message> messages = new List<Message>();
         public List<Message> getMessages(bool addToUpdateData = true) {
-            if (addToUpdateData) addUpdateData(SubscriberLevel.Owner, "messages", messages);
+            if (addToUpdateData) setUpdateData(SubscriberLevel.Owner, "messages", from m in messages select m.getSetupData(SubscriberLevel.Owner));
             return messages;
+        }
+        public void addMessage(Message msg) {
+            setUpdateData(SubscriberLevel.Owner, "messages", from m in messages select m.getSetupData(SubscriberLevel.Owner));
+            messages.Add(msg);
         }
         [DataMember] public Dictionary<SubscriberLevel, HashSet<Subscribable>> subscriptions = new Dictionary<SubscriberLevel, HashSet<Subscribable>>();
         [DataMember] public bool isBot = false;

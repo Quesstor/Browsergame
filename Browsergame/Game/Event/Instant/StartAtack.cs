@@ -57,9 +57,9 @@ namespace Browsergame.Game.Event.Instant {
             var unitIDs = new List<long>();
             updatedSubscribables = new HashSet<Subscribable>();
 
-            var range = targetCity.location.GetDistanceTo(startCity.location);
+            var range = targetCity.getLocation(false).GetDistanceTo(startCity.getLocation(false));
             var speed = units.Min(u => u.setting.movespeed);
-            var travelTimeInSeconds = (range / Settings.MoveSpeedInMetersPerSecond) * speed;
+            var travelTimeInSeconds = (range / Settings.MoveSpeedInMetersPerSecond) / speed;
 
             foreach (var unit in units) {
                 unit.setCity(null);

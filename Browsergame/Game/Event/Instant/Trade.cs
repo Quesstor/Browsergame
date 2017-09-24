@@ -31,7 +31,7 @@ namespace Browsergame.Game.Event.Instant {
             unit = state.getUnit(this.unitID);
             city = state.getCity(this.cityID);
             player = state.getPlayer(playerID);
-            price = city.getOffers(true)[itemType].price;
+            price = city.getOffer(itemType).price;
 
             needsOnDemandCalculation = new HashSet<Subscribable>();
             needsOnDemandCalculation.Add(city);
@@ -44,11 +44,11 @@ namespace Browsergame.Game.Event.Instant {
             if (city.Owner.id == player.id) return false;
             if (quant < 0) { //City sells
                 if (unit.owner.Money < -quant * price) return false;
-                if (city.getOffers()[itemType].quant < -quant) return false;
+                if (city.getOffer(itemType).Quant < -quant) return false;
             }
             else { //City buys
                 if (city.Owner.Money < quant * price) return false;
-                if (unit.getItems()[itemType].quant < quant) return false;
+                if (unit.getItem(itemType).Quant < quant) return false;
             }
             return true;
         }
@@ -58,13 +58,13 @@ namespace Browsergame.Game.Event.Instant {
             unit.owner.Money += quant * price;
             city.Owner.Money -= quant * price;
             if (quant < 0) { //City sells
-                city.getOffers()[itemType].quant += quant;
+                city.getOffer(itemType).Quant += quant;
             }
             else { //City buys
-                city.getItems()[itemType].quant += quant;
-                city.getOffers()[itemType].quant += quant;
+                city.getItem(itemType).Quant += quant;
+                city.getOffer(itemType).Quant += quant;
             }
-            unit.getItems()[itemType].quant -= quant;
+            unit.getItem(itemType).Quant -= quant;
 
             updatedSubscribables = new HashSet<Subscribable> { unit, city, city.Owner, unit.owner };
             return null;

@@ -9,9 +9,7 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Game.Entities {
     [DataContract]
-    class Building : Subscribable {
-        protected override string entityName() { return "Building"; }
-        [DataMember] public override long id { get; set; }
+    class Building : HasUpdateData {
         [DataMember] public BuildingType type;
         [DataMember] private int lvl;
         [DataMember] public bool isUpgrading = false;
@@ -21,21 +19,21 @@ namespace Browsergame.Game.Entities {
         public int Lvl {
             get { return lvl; }
             set {
-                lvl = value; addUpdateData(SubscriberLevel.Owner, "lvl", lvl);
+                lvl = value; setUpdateData(SubscriberLevel.Owner, "lvl", lvl);
             }
         }
         public double OrderedProductions {
             get { return orderedProductions; }
             set {
                 orderedProductions = value;
-                addUpdateData(SubscriberLevel.Owner, "orderedProductions", orderedProductions);
+                setUpdateData(SubscriberLevel.Owner, "orderedProductions", orderedProductions);
             }
         }
         public DateTime LastProduced {
             get { return lastProduced; }
             set {
                 lastProduced = value;
-                addUpdateData(SubscriberLevel.Owner, "productionSeconds", (DateTime.Now - lastProduced).TotalSeconds);
+                setUpdateData(SubscriberLevel.Owner, "productionSeconds", (DateTime.Now - lastProduced).TotalSeconds);
             }
         }
 
@@ -56,11 +54,10 @@ namespace Browsergame.Game.Entities {
             return data;
         }
 
-        public Settings.BuildingSettings setting { get => Settings.BuildingSettings.settings[this.type]; }
-
-        public override void onDemandCalculation() {
-            return;
+        protected override string entityName() {
+            return type.ToString();
         }
 
+        public Settings.BuildingSettings setting { get => Settings.BuildingSettings.settings[this.type]; }
     }
 }

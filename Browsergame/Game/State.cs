@@ -22,6 +22,7 @@ namespace Browsergame.Game {
     [KnownType(typeof(AddUnits))]
     [KnownType(typeof(NewPlayer))]
     [KnownType(typeof(UnitArrives))]
+    [KnownType(typeof(HasUpdateData))]
     class State {
         [DataMember] public Dictionary<long, Player> players = new Dictionary<long, Player>();
         [DataMember] public Dictionary<long, Unit> units = new Dictionary<long, Unit>();
@@ -56,7 +57,14 @@ namespace Browsergame.Game {
         public Unit addUnit(City city, Entities.Settings.UnitType unitType) {
             Unit unit = new Unit(city.Owner, city, unitType);
             addAndSetID<Unit>(units, unit);
+            unit.owner.units.Add(unit);
+            city.units.Add(unit);
             return unit;
+        }
+        public void removeUnit(Unit unit) {
+            unit.owner.units.Remove(unit);
+            unit.getCity(false).units.Remove(unit);
+            units.Remove(unit.id);
         }
 
         public long addAndSetID<T>(Dictionary<long, T> dict, T element) where T : IID {

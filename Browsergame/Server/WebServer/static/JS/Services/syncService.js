@@ -56,8 +56,9 @@
             $rootScope.players[data.players.id] = data.players;
         }
         if (data.unit) {
-            angular.merge(data.unit, $rootScope.settings.units[data.unit.type]);            
-            $rootScope.units[data.unit.id] = data.unit;
+            angular.merge(data.unit, $rootScope.settings.units[data.unit.type]);       
+            if($rootScope.units[data.unit.id]) angular.merge($rootScope.units[data.unit.id], data.unit);     
+            else $rootScope.units[data.unit.id] = data.unit;
         }
         if (data.units) {
             angular.merge($rootScope.units, data.units);

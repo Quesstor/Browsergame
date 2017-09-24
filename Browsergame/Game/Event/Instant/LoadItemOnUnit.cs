@@ -29,15 +29,15 @@ namespace Browsergame.Game.Event.Instant {
             player = state.getPlayer(playerID);
             unit = state.getUnit(unitID);
             city = unit.getCity();
-            freeItemSpace = unit.setting.storage - (from item in unit.getItems() select item.Value.quant).Sum();
+            freeItemSpace = unit.setting.storage - (from item in unit.getItems(false) select item.Value.Quant).Sum();
             double dQuant = quant;
             if (dQuant < 0) { //Load to City
-                if (!unit.getItems().ContainsKey(itemType)) dQuant = 0;
-                else if (unit.getItems()[itemType].quant < -dQuant) dQuant = -unit.getItems()[itemType].quant;
+                if (!unit.getItems(false).ContainsKey(itemType)) dQuant = 0;
+                else if (unit.getItem(itemType).Quant < -dQuant) dQuant = -unit.getItem(itemType).Quant;
                 quant = (int)Math.Ceiling(dQuant);
             }
             else { //Load to Unit
-                dQuant = Math.Min(quant, city.getItems()[itemType].quant);
+                dQuant = Math.Min(quant, city.getItem(itemType).Quant);
                 dQuant = Math.Min(quant, freeItemSpace);
                 quant = (int)Math.Floor(dQuant);
             }
@@ -52,13 +52,10 @@ namespace Browsergame.Game.Event.Instant {
         }
 
         public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
-            city.getItems()[itemType].quant -= quant;
-            if (!unit.getItems().ContainsKey(itemType)) unit.getItems()[itemType] = new Item(itemType);
-            unit.getItems()[itemType].quant += quant;
-            if (unit.getItems()[itemType].quant == 0) unit.getItems().Remove(itemType);
+            city.getItem(itemType).Quant -= quant;
+            unit.getItem(itemType).Quant += quant;
 
             updatedSubscribables = new HashSet<Subscribable> { city, unit };
-
             return null;
         }
 

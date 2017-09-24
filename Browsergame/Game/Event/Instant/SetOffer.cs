@@ -38,11 +38,11 @@ namespace Browsergame.Game.Event.Instant {
 
         public override bool conditions() {
             if (city.Owner.id != playerID) return false;
-            if(city.getOffers()[itemType].quant == newQuant && city.getOffers()[itemType].price == newPrice) {
+            if(city.getOffer(itemType).Quant == newQuant && city.getOffer(itemType).price == newPrice) {
                 Logger.log(45, Category.Event, Severity.Warn, string.Format("setOffer rejected: same offer already"));
                 return false;
             }
-            var cityQuantWithSellOffers = city.getItems()[itemType].quant + Math.Max(0, city.getOffers()[itemType].quant);
+            var cityQuantWithSellOffers = city.getItem(itemType).Quant + Math.Max(0, city.getOffer(itemType).Quant);
             if (newQuant > 0 && cityQuantWithSellOffers < newQuant) {
                 Logger.log(44, Category.Event, Severity.Warn, string.Format("setOffer rejected: city only has {0} < {1} quant", cityQuantWithSellOffers, newQuant));
                 return false;
@@ -51,10 +51,10 @@ namespace Browsergame.Game.Event.Instant {
         }
 
         public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
-            if (city.getOffers()[itemType].quant > 0) city.getItems()[itemType].quant += city.getOffers()[itemType].quant; //Return items to city from old sell orders
-            if (newQuant > 0) city.getItems()[itemType].quant -= newQuant; //Take items from city for sell orders
-            city.getOffers()[itemType].quant = newQuant;
-            city.getOffers()[itemType].price = newQuant == 0 ? 0 : newPrice;
+            if (city.getOffer(itemType).Quant > 0) city.getItem(itemType).Quant += city.getOffer(itemType).Quant; //Return items to city from old sell orders
+            if (newQuant > 0) city.getItem(itemType).Quant -= newQuant; //Take items from city for sell orders
+            city.getOffer(itemType).Quant = newQuant;
+            city.getOffer(itemType).price = newQuant == 0 ? 0 : newPrice;
 
             updatedSubscribables = new HashSet<Subscribable> { city };
             return null;

@@ -17,8 +17,8 @@
     </tr>
     <tr data-toggle="modal" data-target="#messagesmodal">
         <td>
-            <span ng-show="playerService.newMessagesCount()>0" class="text-success" style="font-weight:bolder;">
-                {{playerService.newMessagesCount()}}
+            <span ng-show="unreadMessagesCount()>0" class="text-success" style="font-weight:bolder;">
+                {{unreadMessagesCount()}}
             </span>
         </td>
         <td><span class="glyphicon glyphicon-envelope"></span></td>

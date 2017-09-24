@@ -14,7 +14,6 @@ namespace Browsergame.Game.Utils {
         public UpdateData(string key) {
             this.key = key.ToLower();
             dict = new Dictionary<string, object>();
-
         }
         public Dictionary<string, object> toDictWithKey() {
             var dict = new Dictionary<string, object>();

@@ -33,14 +33,14 @@ namespace Browsergame.Game.Event.Instant {
             city = state.getCity(CityID);
             needsOnDemandCalculation.Add(city);
 
-            building = city.getBuildings(true)[BuildingType];
+            building = city.getBuilding(BuildingType);
         }
         public override bool conditions() {
             if (city.Owner.id != player.id) return false;
             if (player.Money < building.setting.buildPrice) return false;
             if (building.isUpgrading) return false;
             foreach (var cost in building.setting.buildCosts) {
-                if (city.getItems(true)[cost.Key].quant < cost.Value * (building.Lvl + 1)) return false;
+                if (city.getItem(cost.Key).Quant < cost.Value * (building.Lvl + 1)) return false;
             }
             return true;
         }
@@ -49,12 +49,12 @@ namespace Browsergame.Game.Event.Instant {
             player.Money -= building.setting.buildPrice * (building.Lvl + 1);
             if (building.setting.educts.Count > 0) { //Remove ordered Productions
                 foreach (var educt in building.setting.educts) {
-                    city.getItems(true)[educt.Key].quant += educt.Value * building.Lvl * building.OrderedProductions;
+                    city.getItem(educt.Key).Quant += educt.Value * building.Lvl * building.OrderedProductions;
                 }
                 building.OrderedProductions = 0;
             }
             foreach (var cost in building.setting.buildCosts) {
-                city.getItems(true)[cost.Key].quant -= cost.Value * (building.Lvl + 1);
+                city.getItem(cost.Key).Quant -= cost.Value * (building.Lvl + 1);
             }
             building.isUpgrading = true;
 

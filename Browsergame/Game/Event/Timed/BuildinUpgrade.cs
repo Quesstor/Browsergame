@@ -36,7 +36,7 @@ namespace Browsergame.Game.Event.Timed {
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
             city = state.getCity(cityID);
-            building = city.getBuildings()[BuildingType];
+            building = city.getBuilding(BuildingType);
         }
 
         public override bool conditions() {

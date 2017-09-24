@@ -11,26 +11,33 @@ using System;
 namespace Browsergame.Game.Entities {
     enum OrderType { Move, Atack }
     [DataContract]
-    class Unit : Subscribable {
-        protected override string entityName() { return "Unit"; }
+    class Unit : Entity {
         [DataMember] private Dictionary<ItemType, Item> items = new Dictionary<ItemType, Item>();
         [DataMember] public Player owner;
         [DataMember] private City city;
         [DataMember] public UnitType type;
         [DataMember] public override long id { get; set; }
+        public int hp;
 
         public Dictionary<ItemType, Item> getItems(bool addToUpdateData = true) {
-            if (addToUpdateData) addUpdateData(SubscriberLevel.Owner, "items", items);
+            if (addToUpdateData) setUpdateData(SubscriberLevel.Owner, "items", items);
             return items;
+        }
+        public Item getItem(ItemType it, bool addToUpdateData = true) {
+            if (addToUpdateData) setUpdateDataDict(SubscriberLevel.Owner, "items", it, items[it]);
+            return items[it];
         }
 
         public City getCity(bool addToUpdateData = true) {
-            if (addToUpdateData) addUpdateData(SubscriberLevel.Owner, "city", city);
+            if (addToUpdateData)
+                if (city == null) setUpdateData(SubscriberLevel.Owner, "city", null);
+                else setUpdateData(SubscriberLevel.Owner, "city", city.id);
             return city;
         }
         public void setCity(City newCity) {
             city = newCity;
-            addUpdateData(SubscriberLevel.Owner, "city", city);
+            if (city == null) setUpdateData(SubscriberLevel.Owner, "city", null);
+            else setUpdateData(SubscriberLevel.Owner, "city", city.id);
         }
 
         public Settings.UnitSettings setting { get => Settings.UnitSettings.settings[type]; }
@@ -39,8 +46,6 @@ namespace Browsergame.Game.Entities {
             this.owner = owner;
             this.city = city;
             this.type = unitType;
-            owner.units.Add(this);
-            city.units.Add(this);
         }
 
         public override UpdateData getSetupData(SubscriberLevel subscriber) {

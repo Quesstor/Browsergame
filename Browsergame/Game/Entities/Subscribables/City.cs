@@ -12,8 +12,7 @@ using System.Device.Location;
 
 namespace Browsergame.Game.Entities {
     [DataContract(IsReference = true)]
-    class City : Subscribable {
-        protected override string entityName() { return "City"; }
+    class City : Entity {
         [DataMember] public override long id { get; set; }
         [DataMember] public List<Unit> units = new List<Unit>();
         [DataMember] public int type;
@@ -33,45 +32,45 @@ namespace Browsergame.Game.Entities {
             get { return name; }
             set {
                 name = value;
-                addUpdateData(SubscriberLevel.Other, "name", name);
-                addUpdateData(SubscriberLevel.Owner, "name", name);
+                setUpdateData(SubscriberLevel.Other, "name", name);
+                setUpdateData(SubscriberLevel.Owner, "name", name);
             }
         }
         public string Info {
             get { return info; }
             set {
                 info = value;
-                addUpdateData(SubscriberLevel.Other, "info", info);
-                addUpdateData(SubscriberLevel.Owner, "info", info);
+                setUpdateData(SubscriberLevel.Other, "info", info);
+                setUpdateData(SubscriberLevel.Owner, "info", info);
             }
         }
         public Player Owner {
             get { return owner; }
             set {
                 owner = value;
-                addUpdateData(SubscriberLevel.Other, "owner", owner.id);
-                addUpdateData(SubscriberLevel.Owner, "owner", owner.id);
+                setUpdateData(SubscriberLevel.Other, "owner", owner.id);
+                setUpdateData(SubscriberLevel.Owner, "owner", owner.id);
             }
         }
         public int Population {
             get { return population; }
             set {
                 population = value;
-                addUpdateData(SubscriberLevel.Other, "population", population);
-                addUpdateData(SubscriberLevel.Owner, "population", population);
+                setUpdateData(SubscriberLevel.Other, "population", population);
+                setUpdateData(SubscriberLevel.Owner, "population", population);
             }
         }
         public double PopulationSurplus {
             get { return populationSurplus; }
             set {
                 populationSurplus = value;
-                addUpdateData(SubscriberLevel.Owner, "populationSurplus", populationSurplus);
+                setUpdateData(SubscriberLevel.Owner, "populationSurplus", populationSurplus);
             }
         }
         public GeoCoordinate getLocation(bool addToUpdateData) {
             if (addToUpdateData) {
-                addUpdateData(SubscriberLevel.Other, "location", location);
-                addUpdateData(SubscriberLevel.Owner, "location", location);
+                setUpdateData(SubscriberLevel.Other, "location", location);
+                setUpdateData(SubscriberLevel.Owner, "location", location);
             }
             return location;
         }
@@ -79,31 +78,27 @@ namespace Browsergame.Game.Entities {
             get { return lastConsumed; }
             set {
                 lastConsumed = value;
-                addUpdateData(SubscriberLevel.Owner, "consumedSeconds", (DateTime.Now - lastConsumed).TotalSeconds);
+                setUpdateData(SubscriberLevel.Owner, "consumedSeconds", (DateTime.Now - lastConsumed).TotalSeconds);
             }
         }
 
-        public Dictionary<ItemType, Item> getItems(bool addToUpdateData = true) {
-            if(addToUpdateData) addUpdateData(SubscriberLevel.Owner, "items", items);
-            return items;
+        public Item getItem(ItemType itemtype, bool addToUpdateData = true) {
+            if (addToUpdateData) setUpdateDataDict(SubscriberLevel.Owner, "items", itemtype, items[itemtype]);
+            return items[itemtype];
         }
-        public Dictionary<ItemType, Offer> getOffers(bool addToUpdateData = true) {
+        public Offer getOffer(ItemType itemtype, bool addToUpdateData = true) {
             if (addToUpdateData) {
-                addUpdateData(SubscriberLevel.Owner, "offers", offers);
-                addUpdateData(SubscriberLevel.Other, "offers", offers);
+                setUpdateDataDict(SubscriberLevel.Owner, "offers", itemtype, offers[itemtype]);
+                setUpdateDataDict(SubscriberLevel.Other, "offers", itemtype, offers[itemtype]);
             }
-            return offers;
+            return offers[itemtype];
         }
-        public Dictionary<BuildingType, Building> getBuildings(bool addToUpdateData = true) {
-            if (addToUpdateData) {
-                var buildingsData = new Dictionary<BuildingType, object>();
-                foreach (var b in this.buildings) buildingsData.Add(b.Key, b.Value.getSetupData(SubscriberLevel.Owner));
-                addUpdateData(SubscriberLevel.Owner, "buildings", buildingsData);
-            }
-            return buildings;
+        public Building getBuilding(BuildingType bt, bool addToUpdateData = true) {
+            if (addToUpdateData) setUpdateDataDict(SubscriberLevel.Owner, "buildings", bt, buildings[bt].getUpdateData(SubscriberLevel.Owner));
+            return buildings[bt];
         }
         public Dictionary<int, Dictionary<ItemType, double>> getConsumesPerPopulation(bool addToUpdateData = true) {
-            if(addToUpdateData) addUpdateData(SubscriberLevel.Owner, "consumesPerPopulation", consumesPerPopulation);
+            if(addToUpdateData) setUpdateData(SubscriberLevel.Owner, "consumesPerPopulation", consumesPerPopulation);
             return consumesPerPopulation;
         }
 
@@ -129,12 +124,10 @@ namespace Browsergame.Game.Entities {
             consumesPerPopulation = new Dictionary<int, Dictionary<ItemType, double>>();
             consumesPerPopulation[1] = Browsergame.Settings.getConsumeGoods(1);
             consumesPerPopulation[2] = Browsergame.Settings.getConsumeGoods(2);
-
-            buildings = new Dictionary<BuildingType, Building>();
             offers = Offer.newOfferDict();
             items = Item.newItemDict();
-            foreach (Entities.Item item in items.Values) item.quant = 100;
-            items[ItemType.Coal].quant = 0;
+            foreach (Entities.Item item in items.Values) item.Quant = 100;
+            items[ItemType.Coal].Quant = 0;
         }
         private void addBuilding(BuildingType type, int lvl) {
             buildings[type] = new Building(type);
@@ -153,7 +146,7 @@ namespace Browsergame.Game.Entities {
 
             if (subscriber == SubscriberLevel.Owner) {
                 var buildingsData = new Dictionary<BuildingType, object>();
-                foreach (var b in this.buildings) buildingsData.Add(b.Key, b.Value.getSetupData(subscriber));
+                foreach (var b in this.buildings) buildingsData[b.Key] = b.Value.getSetupData(subscriber);
                 data["buildings"] = buildingsData;
                 data["items"] = items;
                 data["populationSurplus"] = populationSurplus;
@@ -175,7 +168,7 @@ namespace Browsergame.Game.Entities {
                     //Produce products
                     foreach (var production in building.setting.itemProducts) {
                         double amount = production.Value * building.Lvl * productions;
-                        items[production.Key].quant += amount;
+                        items[production.Key].Quant += amount;
                     }
                     building.LastProduced = building.LastProduced.AddMilliseconds(TotalMilliseconds);
                 }
@@ -189,14 +182,14 @@ namespace Browsergame.Game.Entities {
                 foreach (var consume in consumesPerPopulation[population]) {
                     var type = consume.Key;
                     var consumed = TotalMinutesConsumed * consume.Value * Browsergame.Settings.consumePerMinute;
-                    var cityQuant = items[type].quant;
+                    var cityQuant = items[type].Quant;
 
                     if (cityQuant < consumed) {
                         missingGoodsFactor -= (1 - (cityQuant / consumed)) / consumesPerPopulation[population].Count;
-                        items[type].quant = 0;
+                        items[type].Quant = 0;
                     }
                     else {
-                        items[type].quant -= consumed;
+                        items[type].Quant -= consumed;
                     }
                 }
                 var income = missingGoodsFactor * TotalMinutesConsumed * Browsergame.Settings.incomePerMinutePerPopulation;

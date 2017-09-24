@@ -30,7 +30,7 @@
         for (var id in $rootScope.cities) {
             var city = $rootScope.cities[id];
             var latlng = new L.LatLng(city.location.x, city.location.y);
-            if (!this.layers.cities[id] && this.isInViewbox(latlng))
+            if (!this.layers.cities[id] && this.isInViewbox(latlng)){
                 this.layers.cities[id] = L.marker(latlng, {
                     icon: L.divIcon({
                         html: '<citymarker city="$root.cities[' + id + ']"></citymarker>',
@@ -38,6 +38,7 @@
                         iconSize: null
                     })
                 }).addTo(map);
+            }
         };
 
         //Draw Move Events
@@ -94,11 +95,11 @@
                 var targetLocation = $rootScope.cities[event.targetCityID].location;
                 var targetLatLng = new L.LatLng(targetLocation.x, targetLocation.y);
 
-                var speed = 1;
+                var speed = $rootScope.units[event.unitIDs[0]].movespeed;
                 for(var id of event.unitIDs) speed = Math.min(speed, $rootScope.units[id].movespeed);
 
                 var range = startLatLng.distanceTo(targetLatLng);
-                var totalSecsNeeded = (range / $rootScope.settings.MoveSpeedInMetersPerSecond) * speed + 1;
+                var totalSecsNeeded = (range / $rootScope.settings.MoveSpeedInMetersPerSecond) / speed +0.1;
                 var percentageDone = 1 - event.executesInSec / totalSecsNeeded;
 
                 if (percentageDone <= 1) {

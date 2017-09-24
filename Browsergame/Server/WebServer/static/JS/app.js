@@ -28,7 +28,7 @@ app.directive("citymarker", function () { return { templateUrl: '/templates/dire
 app.directive("unitmarker", function () { return { templateUrl: '/templates/directives/map/unitmarker.html', scope: { unit: '=' }, controller: 'citymarker' } });
 app.directive("ordermarker", function () { return { templateUrl: '/templates/directives/map/ordermarker.html', scope: { order: '=' }, controller: 'citymarker' } });
 
-app.directive("navi", function () { return { templateUrl: '/templates/directives/navi.html' } });
+app.directive("navi", function () { return { templateUrl: '/templates/directives/navi.html', controller: 'navi' } });
 app.directive("debugbar", function () { return { templateUrl: '/templates/directives/debugbar.html' } });
 
 app.directive('ngRightClick', function ($parse) {

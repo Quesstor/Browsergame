@@ -30,7 +30,7 @@ namespace Browsergame.Game.Event.Instant {
             needsOnDemandCalculation = new HashSet<Subscribable>();
 
             City = state.getCity(cityID);
-            Building = City.getBuildings(true)[BuildingType];
+            Building = City.getBuilding(BuildingType);
             Player = state.getPlayer(playerID);
             needsOnDemandCalculation.Add(City);
         }
@@ -40,7 +40,7 @@ namespace Browsergame.Game.Event.Instant {
             if (Building.Lvl == 0) return false;
             foreach (var e in Building.setting.educts) {
                 var amountNeeded = amount * e.Value * Building.Lvl;
-                if (City.getItems(true)[e.Key].quant < amountNeeded) return false;
+                if (City.getItem(e.Key).Quant < amountNeeded) return false;
             }
             return true;
         }
@@ -49,7 +49,7 @@ namespace Browsergame.Game.Event.Instant {
             var list = new List<Event>();
             foreach (var e in Building.setting.educts) {
                 var amountNeeded = amount * e.Value * Building.Lvl;
-                City.getItems(true)[e.Key].quant -= amountNeeded;
+                City.getItem(e.Key).Quant -= amountNeeded;
             }
             
             if (Building.setting.unitProducts.Count > 0) {

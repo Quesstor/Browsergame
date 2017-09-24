@@ -26,14 +26,13 @@ namespace Browsergame.Game.Event {
         [DataMember] public override long id { get; set; }
 
         protected override string entityName() { return "Event"; }
+
         public abstract void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
         public abstract bool conditions();
         public abstract List<Event> execute(out HashSet<Subscribable> updatedSubscribables);
 
         public ManualResetEvent processed = new ManualResetEvent(false);
         ManualResetEvent IEvent.processed { get => processed; }
-
-        private HashSet<Subscribable> onDemandCalculated = new HashSet<Subscribable>();
 
         public override void onDemandCalculation() { return; }
         public override UpdateData getSetupData(SubscriberLevel subscriber) { return null; }
