@@ -6,6 +6,7 @@
     $scope.uiService = uiService;
 
     $scope.settings = function(){
+        if(!$rootScope.settings) return;
         return $rootScope.settings.units[$scope.unit.type];        
     }
     $scope.loaded = function(){

@@ -18,6 +18,7 @@ namespace Browsergame.Game.Event.Timed {
 
         public override UpdateData getSetupData(SubscriberLevel subscriber) {
             var data = new UpdateData("event");
+            data["id"] = this.id;
             data["type"] = "Fight";
             data["executesInSec"] = (executionTime - DateTime.Now).TotalSeconds;
             data["fromCityID"] = fromCityID;
@@ -61,7 +62,7 @@ namespace Browsergame.Game.Event.Timed {
             foreach (var atacker in atackingUnits) {
                 if (defendingUnits.Count == 0) return;
                 var defender = defendingUnits[rnd.Next(defendingUnits.Count-1)];
-                var damage = Math.Max(0, atacker.setting.atack*3 - defender.setting.shieldpower);
+                var damage = Math.Max(0, atacker.setting.atack * rnd.Next(1,3) - defender.setting.shieldpower) * rnd.Next(1, 2);
                 defender.hp -= damage;
                 if (defender.hp <= 0) {
                     state.removeUnit(defender);
@@ -79,18 +80,19 @@ namespace Browsergame.Game.Event.Timed {
             }
 
             if (targetCity.Owner.id != player.id) {
-                var defendingFighters = (from u in targetCity.units where !u.setting.civil select u).ToList();
+                var defendingFighters = (from u in targetCity.units where !u.setting.civil && u.owner.id == atackedPlayer.id select u).ToList();
                 var atackingFighters = (from u in atackingUnits where !u.setting.civil select u).ToList();
 
                 defendingFighters.ForEach(u => u.hp = u.setting.hp);
                 atackingFighters.ForEach(u => u.hp = u.setting.hp);
 
-                while (defendingFighters.Count > 0 && atackingUnits.Count > 0) {
-                    atack(defendingFighters, atackingUnits); //Defenders atack first
-                    atack(atackingUnits, defendingFighters);
+                while (defendingFighters.Count > 0 && atackingFighters.Count > 0) {
+                    atack(defendingFighters, atackingFighters); //Defenders atack first
+                    atack(atackingFighters, defendingFighters);
+
                 }
 
-                if (atackingUnits.Count > 0) {
+                if (atackingFighters.Count > 0) {
                     string msg = string.Format("Du hast die Stadt {0} eingenommen", targetCity.Name);
                     player.addMessage(new Message(msg));
 
@@ -105,6 +107,7 @@ namespace Browsergame.Game.Event.Timed {
                     targetCity.addSubscription(player, SubscriberLevel.Owner);
                 }
                 else {
+                    atackingUnits.ForEach(u => state.removeUnit(u));
                     string msg = string.Format("Die Streitkräfte wurden aufgelöst. Du hast die Stadt {0} nicht einnehmen können.", targetCity.Name);
                     player.addMessage(new Message(msg));
                 }

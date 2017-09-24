@@ -103,6 +103,9 @@
                 var percentageDone = 1 - event.executesInSec / totalSecsNeeded;
 
                 if (percentageDone <= 1) {
+                    var minOffset = 3000;
+                    var stretchFactor = 1-(minOffset / range);
+                    percentageDone = percentageDone * stretchFactor + (1-stretchFactor)/2;
                     var positionLat = startLocation.x + percentageDone * (targetLocation.x - startLocation.x);
                     var positionLng = startLocation.y + percentageDone * (targetLocation.y - startLocation.y);
                     var position = new L.LatLng(positionLat + offset.lat, positionLng + offset.lng);
@@ -110,7 +113,7 @@
                         if (!this.layers.events[markerid]) {
                             this.layers.events[markerid] = L.marker(position, {
                                 icon: L.divIcon({
-                                    html: '<atackmarker id="'+event.id+'" style="color:red">JOJOJOJOJOJOJO</atackmarker>',
+                                    html: '<atackmarker eventid="'+event.id+'"></atackmarker>',
                                     className: 'mapmarker angularCompile',
                                     iconSize: null
                                 })
@@ -162,8 +165,9 @@
             [locY.x, locY.y]],
             {
                 color: color || 'white',
-                weight: 5,
-                opacity: 1
+                weight: 3,
+                opacity: 1,
+                dashArray : "5, 12"
             }
         ).addTo(map);
     }

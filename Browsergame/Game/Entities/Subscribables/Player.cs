@@ -13,7 +13,6 @@ namespace Browsergame.Game.Entities {
     [DataContract(IsReference = true)]
     class Player : Entity {
         [DataMember] public string token;
-        [DataMember] public override long id { get; set; }
         [DataMember] private string name;
         [DataMember] private double money;
         [DataMember] private bool online;

@@ -13,7 +13,6 @@ using System.Device.Location;
 namespace Browsergame.Game.Entities {
     [DataContract(IsReference = true)]
     class City : Entity {
-        [DataMember] public override long id { get; set; }
         [DataMember] public List<Unit> units = new List<Unit>();
         [DataMember] public int type;
         [DataMember] private string name;

@@ -14,35 +14,58 @@ namespace Browsergame.Game.Utils {
         Owner, Other
     }
     [DataContract(IsReference = true)]
-    abstract class Subscribable : HasUpdateData, IID {
-        [DataMember] abstract public long id { get; set; }
+    abstract class Subscribable : HasUpdateData {
+        //ID
+        [DataMember] private static Dictionary<string, long> lastID = new Dictionary<string, long>();
+        [DataMember] private static object idLock = new object();
+        private long getNewID() {
+            lock (idLock) {
+                if (!lastID.ContainsKey(this.GetType().Name)) lastID[this.GetType().Name] = 0;
+                lastID[this.GetType().Name] += 1;
+                return lastID[this.GetType().Name];
+            }
+        }
+        [DataMember] private long ID;
+        public long id {
+            get {
+                if (ID == 0) ID = getNewID();
+                return ID;
+            }
+        }
+
+        //Update Data
         [DataMember] private Dictionary<SubscriberLevel, HashSet<Player>> subscribers = new Dictionary<SubscriberLevel, HashSet<Player>>();
         abstract public void onDemandCalculation();
 
         new public void setUpdateDataDict<K, V>(SubscriberLevel subscriberLevel, string propertyName, K key, V value) {
-            makeUpdateDataWithIdIfNotExists(subscriberLevel);
             base.setUpdateDataDict(subscriberLevel, propertyName, key, value);
+            base.setUpdateData(subscriberLevel, "id", this.id);
         }
         new public void setUpdateData(SubscriberLevel subscriberLevel, string propertyName, object value) {
-            makeUpdateDataWithIdIfNotExists(subscriberLevel);
             base.setUpdateData(subscriberLevel, propertyName, value);
-        }
-        protected void makeUpdateDataWithIdIfNotExists(SubscriberLevel SubscriberLevel) {
-            base.makeUpdateDataIfNotExists(SubscriberLevel);
-            updateData[SubscriberLevel]["id"] = this.id;
+            base.setUpdateData(subscriberLevel, "id", this.id);
         }
 
+        //Subscriber
         public void addSubscription(Player player, SubscriberLevel level) {
             if (!subscribers.ContainsKey(level)) subscribers[level] = new HashSet<Player>();
             if (!player.subscriptions.ContainsKey(level)) player.subscriptions[level] = new HashSet<Subscribable>();
             subscribers[level].Add(player);
             player.subscriptions[level].Add(this);
-            makeUpdateDataWithIdIfNotExists(level);
+            base.setUpdateData(level, "id", this.id);
             updateData[level] = getSetupData(level);
         }
         public void removeSubscription(Player player, SubscriberLevel level) {
             subscribers[level].Remove(player);
             player.subscriptions[level].Remove(this);
+        }
+        public void removeSubscriptions() {
+            foreach(var lvl in subscribers.Keys) {
+                foreach(var p in subscribers[lvl]) {
+                    p.subscriptions[lvl].Remove(this);
+                }
+            }
+            subscribers = new Dictionary<SubscriberLevel, HashSet<Player>>();
         }
 
         public int updateSubscribers() {

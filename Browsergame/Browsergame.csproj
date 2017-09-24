@@ -133,7 +133,6 @@
     <Compile Include="Game\Event\_Event.cs" />
     <Compile Include="Game\Engine\StateEngine.cs" />
     <Compile Include="Game\Utils\Subscribable.cs" />
-    <Compile Include="Game\Utils\IID.cs" />
     <Compile Include="Game\Utils\UpdateData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

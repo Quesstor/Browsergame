@@ -1,0 +1,13 @@
+﻿<div ng-mouseover="hover=true"
+    ng-mouseleave="hover=false" style=" min-width:50px;">
+    <div style="display: table;">
+        <unitsquare ng-repeat="(type,count) in units()"
+            unit="{type:type}"
+            count="count"
+            compact="true"
+            style="display:inline"></unitsquare>
+    </div>
+    <div ng-show="hover">
+        <span class="glyphicon glyphicon-hourglass"></span> {{event().executesInSec.toFixed(0)}}s
+    </div>
+</div>

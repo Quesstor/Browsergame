@@ -16,7 +16,6 @@ namespace Browsergame.Game.Entities {
         [DataMember] public Player owner;
         [DataMember] private City city;
         [DataMember] public UnitType type;
-        [DataMember] public override long id { get; set; }
         public int hp;
 
         public Dictionary<ItemType, Item> getItems(bool addToUpdateData = true) {
@@ -24,6 +23,7 @@ namespace Browsergame.Game.Entities {
             return items;
         }
         public Item getItem(ItemType it, bool addToUpdateData = true) {
+            if (!items.ContainsKey(it)) items[it] = new Item(it);
             if (addToUpdateData) setUpdateDataDict(SubscriberLevel.Owner, "items", it, items[it]);
             return items[it];
         }
@@ -36,8 +36,13 @@ namespace Browsergame.Game.Entities {
         }
         public void setCity(City newCity) {
             city = newCity;
-            if (city == null) setUpdateData(SubscriberLevel.Owner, "city", null);
-            else setUpdateData(SubscriberLevel.Owner, "city", city.id);
+            if (city == null) {
+                setUpdateData(SubscriberLevel.Owner, "city", null);
+            }
+            else {
+                city.units.Add(this);
+                setUpdateData(SubscriberLevel.Owner, "city", city.id);
+            }
         }
 
         public Settings.UnitSettings setting { get => Settings.UnitSettings.settings[type]; }

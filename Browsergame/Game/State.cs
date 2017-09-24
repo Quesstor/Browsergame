@@ -46,32 +46,26 @@ namespace Browsergame.Game {
             Player exists = getPlayer(token);
             if (exists != null) return exists;
             Player newPlayer = new Player(name, token, 1000);
-            addAndSetID<Player>(players, newPlayer);
+            players[newPlayer.id] = newPlayer;
             return newPlayer;
         }
         public City addCity(string name, Player owner, GeoCoordinate location, string info) {
             City city = new City(name, owner, location, info);
-            addAndSetID<City>(cities, city);
+            cities[city.id] = city;
             return city;
         }
         public Unit addUnit(City city, Entities.Settings.UnitType unitType) {
             Unit unit = new Unit(city.Owner, city, unitType);
-            addAndSetID<Unit>(units, unit);
+            units[unit.id] = unit;
             unit.owner.units.Add(unit);
             city.units.Add(unit);
             return unit;
         }
         public void removeUnit(Unit unit) {
             unit.owner.units.Remove(unit);
+            unit.removeSubscriptions();
             unit.getCity(false).units.Remove(unit);
             units.Remove(unit.id);
-        }
-
-        public long addAndSetID<T>(Dictionary<long, T> dict, T element) where T : IID {
-            long id = dict.Count;
-            element.id = id;
-            dict.Add(id, element);
-            return id;
         }
     }
 }

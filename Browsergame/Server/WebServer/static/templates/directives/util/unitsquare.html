@@ -1,42 +1,31 @@
 ﻿<div ng-if="unit"
     style="display:inline-block;"
     title="{{settings().name}}">
-    <table>
-        <tr>
-            <td>
-                <div style="border: 1px solid #ccc; border-radius:3px; padding: 2px;margin:0px 3px"
-                    title="unit.type">
-                    <img ng-src="{{'img/icon/units/'+unit.type+'.png'}}" style="height:31px;" />
-                </div>
-            </td>
-            <td style="line-height:1; font-size: 13px;">
-                <table>
-                    <tr>
-                        <td>{{count}} {{settings().name}}</td>
-                    </tr>
-                    <tr>
-                        <td style="width: 200px;"
-                            ng-hide="hideinfos">
-                            <div ng-show="settings().civil">
-                                <span class="glyphicon glyphicon-oil"
-                                    title="Lagerraum"
-                                    style="height:16px;"></span> {{loaded()}}/{{settings().storage}}
-                            </div>
-                            <div ng-hide="settings().civil">
-                                <span class="glyphicon glyphicon-screenshot"
-                                    title="Angriff"></span> {{settings().atack}}
-                                <span class="glyphicon glyphicon-heart"
-                                    title="Leben" /> {{settings().hp}}
-                                <span class="glyphicon glyphicon-certificate"
-                                    title="Schild"></span> {{settings().shieldpower}}
-                                <span class="glyphicon glyphicon-oil"
-                                    title="Lagerraum"
-                                    style="height:16px;"></span> {{settings().storage}}
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+    <div style="border-radius:3px; padding: 2px;margin:0; position:relative; float:left;"
+        title="{{settings().name}}">
+        <img ng-src="{{'img/icon/units/'+unit.type+'.png'}}"
+            style="height:31px;" />
+        <div ng-show="compact" style="color:white;background: rgba(0,0,0,0.6);border-radius: 10px;position:absolute;left:0;bottom:0;width: 100%;text-align: center;line-height: 1;">
+            {{count}}
+        </div>
+    </div>
+    <div ng-hide="compact" style="width: 200px; line-height: 1.4; margin-left:40px;">
+        <div>{{count}} {{settings().name}}</div>
+        <div ng-show="settings().civil">
+            <span class="glyphicon glyphicon-oil"
+                title="Lagerraum"
+                style="height:16px;"></span> {{loaded()}}/{{settings().storage}}
+        </div>
+        <div ng-hide="settings().civil">
+            <span class="glyphicon glyphicon-screenshot"
+                title="Angriff"></span> {{settings().atack}}
+            <span class="glyphicon glyphicon-heart"
+                title="Leben" /> {{settings().hp}}
+            <span class="glyphicon glyphicon-certificate"
+                title="Schild"></span> {{settings().shieldpower}}
+            <span class="glyphicon glyphicon-oil"
+                title="Lagerraum"
+                style="height:16px;"></span> {{settings().storage}}
+        </div>
+    </div>
 </div>

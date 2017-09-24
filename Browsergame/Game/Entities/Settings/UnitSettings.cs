@@ -14,7 +14,7 @@ namespace Browsergame.Game.Entities.Settings {
         public string name;
         public int movespeed = 1;
         public int storage = 0;
-        public int hp = 100;
+        public int hp = 10;
         public int atack = 0;
         public int shieldpower = 0;
         public bool civil = false;
@@ -46,7 +46,7 @@ namespace Browsergame.Game.Entities.Settings {
                         break;
                     case UnitType.Trader:
                         settings.name = "Händler";
-                        settings.hp = 150;
+                        settings.hp = 1;
                         settings.storage = 100;
                         settings.civil = true;
                         break;

@@ -23,7 +23,6 @@ namespace Browsergame.Game.Event {
     [DataContract]
     abstract class Event : Subscribable, IEvent {
         [DataMember] public DateTime executionTime;
-        [DataMember] public override long id { get; set; }
 
         protected override string entityName() { return "Event"; }
 

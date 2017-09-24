@@ -74,7 +74,14 @@ namespace Browsergame.Game.Event.Instant {
 
             state.addUnit(city, UnitType.Horses);
             state.addUnit(city, UnitType.Horses);
-
+            if(name == "Test") {
+                state.addUnit(city, UnitType.Swords);
+                state.addUnit(city, UnitType.Swords);
+                state.addUnit(city, UnitType.Swords);
+                state.addUnit(city, UnitType.Swords);
+                state.addUnit(city, UnitType.Swords);
+                state.addUnit(city, UnitType.Swords);
+            }
             updatedSubscribables = new HashSet<Subscribable> { player, city };
 
             foreach (var otherPlayer in state.players.Values) {
@@ -98,7 +105,10 @@ namespace Browsergame.Game.Event.Instant {
 
 
             var events = new List<Event>();
-            if (name == "Test") for (var i = 0; i < 2; i++) events.Add(new NewPlayer(0, "Bot" + i, "BotToken" + i));
+            if (name == "Test") {
+
+                for (var i = 0; i < 2; i++) events.Add(new NewPlayer(0, "Bot" + i, "BotToken" + i));
+            }
 
             return events;
         }
