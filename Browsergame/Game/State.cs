@@ -49,7 +49,8 @@ namespace Browsergame.Game {
             players[newPlayer.id] = newPlayer;
             return newPlayer;
         }
-        public City addCity(string name, Player owner, GeoCoordinate location, string info) {
+        public City addCity(string name, Player owner, string info) {
+            GeoCoordinate location = newCityLocation();
             City city = new City(name, owner, location, info);
             cities[city.id] = city;
             return city;
@@ -66,6 +67,32 @@ namespace Browsergame.Game {
             unit.removeSubscriptions();
             unit.getCity(false).units.Remove(unit);
             units.Remove(unit.id);
+        }
+
+        private GeoCoordinate newCityLocation() {
+            Random rand = new Random();
+
+            //Earth’s radius, sphere
+            var R = 6378137;
+            var newLocation = new GeoCoordinate(48, 5);
+            var count = 0;
+            while (true) {
+                if ((from city in cities.Values where city.getLocation(false).GetDistanceTo(newLocation) < Settings.minRangeBetweenCitiesInMeters select city).Count() == 0)
+                    return newLocation;
+
+                //offsets in meters
+                var dn = Settings.minRangeBetweenCitiesInMeters * Math.Sin(Math.Sqrt(count) * 3) + (rand.NextDouble() - 0.5) * Settings.minRangeBetweenCitiesInMeters / 3;
+                var de = Settings.minRangeBetweenCitiesInMeters * Math.Cos(Math.Sqrt(count) * 3) + (rand.NextDouble() - 0.5) * Settings.minRangeBetweenCitiesInMeters / 3;
+
+                //Coordinate offsets in radians
+                var dLat = dn / R;
+                var dLon = de / (R * Math.Cos(Math.PI * newLocation.Latitude / 180));
+
+                //OffsetPosition, decimal degrees
+                newLocation.Latitude += dLat * 180 / Math.PI;
+                newLocation.Longitude += dLon * 180 / Math.PI;
+                count += 1;
+            }
         }
     }
 }

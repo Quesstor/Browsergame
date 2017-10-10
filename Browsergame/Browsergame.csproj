@@ -103,7 +103,6 @@
     <Compile Include="Game\Engine\EventEngine.cs" />
     <Compile Include="Game\Engine\TickEngine.cs" />
     <Compile Include="Game\Entities\Building.cs" />
-    <Compile Include="Game\Entities\Contract.cs" />
     <Compile Include="Game\Event\Instant\ProposeContract.cs" />
     <Compile Include="Game\Utils\Entity.cs" />
     <Compile Include="Game\Entities\Offer.cs" />

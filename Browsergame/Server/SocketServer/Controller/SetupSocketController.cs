@@ -25,7 +25,7 @@ namespace Browsergame.Server.SocketServer.Controller {
             settings.Add("incomePerMinutePerPopulation", Settings.incomePerMinutePerPopulation); 
             settings.Add("populationSurplusPerMinute", Settings.populationSurplusPerMinute);
             settings.Add("MoveSpeedInMetersPerSecond", Settings.MoveSpeedInMetersPerSecond);
-            settings.Add("ContractTypes", Enum.GetNames(typeof(ContractType)));
+            settings.Add("Contracts", Enum.GetNames(typeof(Contract)));
             data.Add(settings.toDictWithKey());
 
 

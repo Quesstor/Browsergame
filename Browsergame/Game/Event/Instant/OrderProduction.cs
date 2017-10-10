@@ -53,14 +53,14 @@ namespace Browsergame.Game.Event.Instant {
                 var amountNeeded = amount * e.Value * Building.Lvl;
                 City.getItem(e.Key).Quant -= amountNeeded;
             }
-            
+
             if (Building.setting.unitProducts.Count > 0) {
                 double productionTimePerUnit = 1f / Browsergame.Settings.productionsPerMinute;
                 DateTime startProductionTime = DateTime.Now.AddMinutes(Building.OrderedProductions * productionTimePerUnit);
 
                 foreach (var production in Building.setting.unitProducts) {
-                    for (var i = 1; i <=amount; i++) {
-                        var finishedTime = startProductionTime.AddMinutes(i*productionTimePerUnit);
+                    for (var i = 1; i <= amount; i++) {
+                        var finishedTime = startProductionTime.AddMinutes(i * productionTimePerUnit);
                         list.Add(new AddUnits(City.id, production.Key, production.Value, finishedTime));
                     }
                 }
@@ -72,5 +72,5 @@ namespace Browsergame.Game.Event.Instant {
             updatedSubscribables = new HashSet<Subscribable> { City };
             return list;
         }
-}
+    }
 }

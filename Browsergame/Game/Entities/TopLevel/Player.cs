@@ -8,7 +8,9 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-
+enum Contract {
+    War, Truce, ProtectionAlliance, Alliance
+}
 namespace Browsergame.Game.Entities {
     [DataContract(IsReference = true)]
     class Player : Entity {
@@ -16,7 +18,12 @@ namespace Browsergame.Game.Entities {
         [DataMember] private string name;
         [DataMember] private double money;
         [DataMember] private bool online;
-        [DataMember] private List<Contract> contracts;
+        [DataMember] private Dictionary<Player, List<Contract>> contracts;
+        [DataMember] public List<City> cities = new List<City>();
+        [DataMember] public List<Unit> units = new List<Unit>();
+        [DataMember] private List<Message> messages = new List<Message>();
+        [DataMember] public Dictionary<SubscriberLevel, HashSet<Subscribable>> subscriptions = new Dictionary<SubscriberLevel, HashSet<Subscribable>>();
+        [DataMember] public bool isBot = false;
 
         public string Name {
             get { return name; }
@@ -41,10 +48,6 @@ namespace Browsergame.Game.Entities {
                 setUpdateData(SubscriberLevel.Owner, "online", online);
             }
         }
-
-        [DataMember] public List<City> cities = new List<City>();
-        [DataMember] public List<Unit> units = new List<Unit>();
-        [DataMember] private List<Message> messages = new List<Message>();
         public List<Message> getMessages(bool addToUpdateData = true) {
             if (addToUpdateData) setUpdateData(SubscriberLevel.Owner, "messages", from m in messages select m.getSetupData(SubscriberLevel.Owner));
             return messages;
@@ -53,16 +56,13 @@ namespace Browsergame.Game.Entities {
             setUpdateData(SubscriberLevel.Owner, "messages", from m in messages select m.getSetupData(SubscriberLevel.Owner));
             messages.Add(msg);
         }
-        [DataMember] public Dictionary<SubscriberLevel, HashSet<Subscribable>> subscriptions = new Dictionary<SubscriberLevel, HashSet<Subscribable>>();
-        [DataMember] public bool isBot = false;
-
         public Player(string name, string token, int money) {
             this.name = name;
             this.token = token;
             this.money = money;
             this.online = false;
+            contracts = new Dictionary<Player, List<Contract>>();
         }
-
         public bool isInVisibilityRange(GeoCoordinate location) {
             foreach (var city in cities) {
                 if (city.getLocation(false).GetDistanceTo(location) < Browsergame.Settings.visibilityRange) return true;
@@ -71,8 +71,7 @@ namespace Browsergame.Game.Entities {
         }
         public override UpdateData getSetupData(SubscriberLevel subscriber) {
             string key;
-            if (subscriber == SubscriberLevel.Other) { key = "Players"; }
-            else { key = "Player"; }
+            if (subscriber == SubscriberLevel.Other) { key = "Players"; } else { key = "Player"; }
             UpdateData data = new UpdateData(key);
 
             data["id"] = id;
@@ -86,9 +85,15 @@ namespace Browsergame.Game.Entities {
             }
             return data;
         }
-
         public override void onDemandCalculation() {
             return;
+        }
+        public bool hasContractWith(Contract contract, Player otherPlayer) {
+            return contracts[otherPlayer].Contains(contract);
+        }
+        public void addContract(Contract contract, Player otherPlayer) {
+            if (!contracts.ContainsKey(otherPlayer)) contracts[otherPlayer] = new List<Contract>();
+            contracts[otherPlayer].Add(contract);
         }
     }
 }
