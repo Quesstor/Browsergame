@@ -40,7 +40,7 @@ namespace Browsergame.Game.Engine {
                 }
                 catch (Exception ex) {
                     eventsFailedToGetEntities.Add(@event);
-                    Logger.log(41, Category.EventEngine, Severity.Error, "Event failed to get Entities: "+ex.ToString());
+                    Logger.log(41, Category.EventEngine, Severity.Error, "Event failed to get Entities: " + ex.ToString());
                 }
             }
             foreach (IEvent e in eventsFailedToGetEntities) processingEvents.Remove(e);
@@ -50,9 +50,13 @@ namespace Browsergame.Game.Engine {
                 foreach (var e in processingEvents) {
                     if (e.conditions()) {
                         try {
-                            var timedEvents = e.execute(out newUpdatedSubscribables);
-                            AllUpdatedSubscribables.UnionWith(newUpdatedSubscribables);
-                            if (timedEvents != null) newTimedEvents.AddRange(timedEvents);
+                            e.execute();
+                            var timedEvents = e.followUpEvents();
+                            AllUpdatedSubscribables.UnionWith(e.updatedSubscribables());
+                            if (timedEvents != null) {
+                                newTimedEvents.AddRange(timedEvents);
+                                AllUpdatedSubscribables.UnionWith(timedEvents);
+                            }
                             processedEvents.Add(e);
                         }
                         catch (Exception ex) {
@@ -87,7 +91,7 @@ namespace Browsergame.Game.Engine {
         }
         private static void AddTimedEvent(Event.Event e, State currentWriteState) {
             gettingEventsFromQueue.WaitOne();
-            if (e.executionTime == DateTime.MinValue) e.executionTime = DateTime.Now.AddMilliseconds(-rnd.Next(0,10000));
+            if (e.executionTime == DateTime.MinValue) e.executionTime = DateTime.Now.AddMilliseconds(-rnd.Next(0, 10000));
             lock (eventListLock) {
                 while (currentWriteState.futureEvents.ContainsKey(e.executionTime)) {
                     Logger.log(44, Category.EventEngine, Severity.Warn, string.Format("Event for {0} already exists, increasing exec time by 1ms", e.executionTime.ToLongTimeString()));

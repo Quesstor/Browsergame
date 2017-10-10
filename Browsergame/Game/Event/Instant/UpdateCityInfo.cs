@@ -38,12 +38,16 @@ namespace Browsergame.Game.Event.Instant {
             if (setInfo.Length > 500) return false;
             return true;
         }
-        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+        public override void execute() {
             city.Info = setInfo;
             city.Name = setName;
 
-            updatedSubscribables = new HashSet<Subscribable> { city };
-            return null;
+        }
+
+        public override List<Event> followUpEvents() { return null; }
+
+        public override HashSet<Subscribable> updatedSubscribables() {
+            return new HashSet<Subscribable> { city };
         }
     }
 }

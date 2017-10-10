@@ -26,10 +26,15 @@ namespace Browsergame.Game.Event.Instant {
         public override bool conditions() {
             return true;
         }
-        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+        public override void execute() {
             player.Online = newOnlineStatus;
-            updatedSubscribables = new HashSet<Subscribable> { player };
-            return null;
+
+        }
+
+        public override List<Event> followUpEvents() { return null; }
+
+        public override HashSet<Subscribable> updatedSubscribables() {
+            return new HashSet<Subscribable> { player };
         }
     }
 }

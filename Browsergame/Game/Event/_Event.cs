@@ -18,7 +18,9 @@ namespace Browsergame.Game.Event {
 
         void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
         bool conditions();
-        List<Event> execute(out HashSet<Subscribable> updatedSubscribables);
+        void execute();
+        List<Event> followUpEvents();
+        HashSet<Subscribable> updatedSubscribables();
     }
     [DataContract]
     abstract class Event : Subscribable, IEvent {
@@ -28,7 +30,9 @@ namespace Browsergame.Game.Event {
 
         public abstract void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
         public abstract bool conditions();
-        public abstract List<Event> execute(out HashSet<Subscribable> updatedSubscribables);
+        public abstract void execute();
+        public abstract List<Event> followUpEvents();
+        public abstract HashSet<Subscribable> updatedSubscribables();
 
         public ManualResetEvent processed = new ManualResetEvent(false);
         ManualResetEvent IEvent.processed { get => processed; }

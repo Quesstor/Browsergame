@@ -53,13 +53,16 @@ namespace Browsergame.Game.Event.Instant {
             return unit.owner.id == player.id;
         }
 
-        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+        public override void execute() {
             city.getItem(itemType).Quant -= quant;
             unit.getItem(itemType).Quant += quant;
 
-            updatedSubscribables = new HashSet<Subscribable> { city, unit };
-            return null;
         }
 
+        public override List<Event> followUpEvents() { return null; }
+
+        public override HashSet<Subscribable> updatedSubscribables() {
+            return new HashSet<Subscribable> { city, unit };
+        }
     }
 }

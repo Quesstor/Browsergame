@@ -46,9 +46,9 @@ namespace Browsergame.Game.Event.Instant {
             }
             return true;
         }
-
-        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
-            var list = new List<Event>();
+        private List<Event> unitProductionEvents;
+        public override void execute() {
+            unitProductionEvents = new List<Event>();
             foreach (var e in Building.setting.educts) {
                 var amountNeeded = amount * e.Value * Building.Lvl;
                 City.getItem(e.Key).Quant -= amountNeeded;
@@ -61,16 +61,19 @@ namespace Browsergame.Game.Event.Instant {
                 foreach (var production in Building.setting.unitProducts) {
                     for (var i = 1; i <= amount; i++) {
                         var finishedTime = startProductionTime.AddMinutes(i * productionTimePerUnit);
-                        list.Add(new AddUnits(City.id, production.Key, production.Value, finishedTime));
+                        unitProductionEvents.Add(new AddUnits(City.id, production.Key, production.Value, finishedTime));
                     }
                 }
             }
             if (Building.OrderedProductions <= 0)
                 Building.LastProduced = DateTime.Now;
-            Building.OrderedProductions += amount;
-
-            updatedSubscribables = new HashSet<Subscribable> { City };
-            return list;
+            Building.OrderedProductions += amount;            
+        }
+        public override List<Event> followUpEvents() {
+            return unitProductionEvents;
+        }
+        public override HashSet<Subscribable> updatedSubscribables() {
+            return new HashSet<Subscribable> { City };
         }
     }
 }

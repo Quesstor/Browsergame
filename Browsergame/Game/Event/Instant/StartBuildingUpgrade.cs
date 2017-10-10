@@ -17,7 +17,7 @@ namespace Browsergame.Game.Event.Instant {
         private long CityID;
         private BuildingType BuildingType;
 
-        public StartBuildingUpgrade(long playerID, long cityID , BuildingType buildingType) {
+        public StartBuildingUpgrade(long playerID, long cityID, BuildingType buildingType) {
             PlayerID = playerID;
             CityID = cityID;
             BuildingType = buildingType;
@@ -46,8 +46,7 @@ namespace Browsergame.Game.Event.Instant {
             }
             return true;
         }
-
-        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+        public override void execute() {
             player.Money -= building.setting.buildPrice * (building.Lvl + 1);
             if (building.setting.educts.Count > 0) { //Remove ordered Productions
                 foreach (var educt in building.setting.educts) {
@@ -59,16 +58,18 @@ namespace Browsergame.Game.Event.Instant {
                 city.getItem(cost.Key).Quant -= cost.Value * (building.Lvl + 1);
             }
             building.isUpgrading = true;
+        }
 
-
+        public override List<Event> followUpEvents() {
             var executionTime = DateTime.Now.AddSeconds(building.setting.buildTimeInSeconds);
             var upgradeEvent = new Timed.BuildingUpgrade(CityID, BuildingType, executionTime);
-
             upgradeEvent.addSubscription(player, SubscriberLevel.Owner);
-            updatedSubscribables = new HashSet<Subscribable> { player, city, upgradeEvent };
-
             return new List<Event>() { upgradeEvent };
         }
 
+        public override HashSet<Subscribable> updatedSubscribables() {
+            return new HashSet<Subscribable> { player, city };
+
+        }
     }
 }

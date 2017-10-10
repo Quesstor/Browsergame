@@ -47,6 +47,7 @@ namespace Browsergame.Game {
             if (exists != null) return exists;
             Player newPlayer = new Player(name, token, 1000);
             players[newPlayer.id] = newPlayer;
+            newPlayer.addSubscription(newPlayer, SubscriberLevel.Owner);
             return newPlayer;
         }
         public City addCity(string name, Player owner, string info) {
@@ -59,6 +60,7 @@ namespace Browsergame.Game {
             Unit unit = new Unit(city.Owner, city, unitType);
             units[unit.id] = unit;
             unit.owner.units.Add(unit);
+            unit.addSubscription(city.Owner, SubscriberLevel.Owner);
             city.units.Add(unit);
             return unit;
         }

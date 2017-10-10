@@ -54,29 +54,26 @@ namespace Browsergame.Game.Event.Instant {
             }
             return true;
         }
-
-        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
-            var unitIDs = new List<long>();
-            updatedSubscribables = new HashSet<Subscribable>();
-
+        public override void execute() {
+            foreach (var unit in units) {
+                unit.setCity(null);
+                startCity.units.Remove(unit);
+            }
+        }
+        private Event fightEvent;
+        public override List<Event> followUpEvents() {
             var range = targetCity.getLocation(false).GetDistanceTo(startCity.getLocation(false));
             var speed = units.Min(u => u.setting.movespeed);
             var travelTimeInSeconds = (range / Settings.MoveSpeedInMetersPerSecond) / speed;
 
-            foreach (var unit in units) {
-                unit.setCity(null);
-                startCity.units.Remove(unit);
-                unitIDs.Add(unit.id);
-                updatedSubscribables.Add(unit);
-            }
-
-            updatedSubscribables.Add(startCity);
-
-            var fightevent = new Timed.Fight(playerID, targetCityID, startCity.id, unitIDs, DateTime.Now.AddSeconds(travelTimeInSeconds));
-            fightevent.addSubscription(player, SubscriberLevel.Owner);
-            updatedSubscribables.Add(fightevent);
-
-            return new List<Event> { fightevent };
+            fightEvent = new Timed.Fight(playerID, targetCityID, startCity.id, (from u in units select u.id).ToList(), DateTime.Now.AddSeconds(travelTimeInSeconds));
+            fightEvent.addSubscription(player, SubscriberLevel.Owner);
+            return new List<Event> { fightEvent };
+        }
+        public override HashSet<Subscribable> updatedSubscribables() {
+            HashSet<Subscribable> updates = new HashSet<Subscribable> { startCity };
+            units.ForEach(u => updates.Add(u));
+            return updates;
         }
     }
 }

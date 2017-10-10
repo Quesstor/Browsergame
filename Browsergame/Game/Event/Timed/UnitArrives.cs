@@ -48,12 +48,15 @@ namespace Browsergame.Game.Event.Timed {
             return true;
         }
 
-        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+        public override void execute() {
             unit.setCity(targetCity);
-
             this.removeSubscription(unit.owner, SubscriberLevel.Owner);
-            updatedSubscribables = new HashSet<Subscribable> { unit };
-            return null;
+        }
+
+        public override List<Event> followUpEvents() { return null; }
+
+        public override HashSet<Subscribable> updatedSubscribables() {
+            return new HashSet<Subscribable> { unit };
         }
     }
 }

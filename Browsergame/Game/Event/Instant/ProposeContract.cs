@@ -35,12 +35,14 @@ namespace Browsergame.Game.Event.Instant {
             return playerID != toPlayerID && !player.hasContractWith(contract, toPlayer);
         }
 
-        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
-            updatedSubscribables = new HashSet<Subscribable>();
-            updatedSubscribables.Add(toPlayer);
+        public override void execute() {
+            toPlayer.makeContractProposal(contract, player);
+        }
 
-            toPlayer.addContractProposal(contract, player);
-            return null;
+        public override List<Event> followUpEvents() { return null; }
+
+        public override HashSet<Subscribable> updatedSubscribables() {
+            return new HashSet<Subscribable> { toPlayer, player };
         }
     }
 }

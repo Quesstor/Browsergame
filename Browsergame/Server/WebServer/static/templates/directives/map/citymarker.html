@@ -17,8 +17,9 @@
             class="hoverpointer">
             <div ng-show="mapService.zoomlevel==12" style="text-align: center;">
                 <div style="padding-top: 150px;">
-                    <div ng-style="{'background': 'url(img/icon/' + (city.owner==$root.player.id?'owner':'') + 'banner.png) no-repeat', 'background-size': '200px auto'}"  
-                        style="background-position: bottom; height: 36px; padding-top: 2px;">
+                    <div ng-style="{'background': 'url(img/icon/banner.png) no-repeat', 'background-size': '200px auto'}"  
+                        style="background-position: bottom; height: 36px; padding-top: 2px;"
+                        ng-class="{'bg-success':city.owner==$root.player.id}">
                         {{city.name}}
                     </div>
                 </div>

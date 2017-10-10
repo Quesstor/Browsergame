@@ -40,7 +40,7 @@ namespace Browsergame.Game.Event.Instant {
 
         public override bool conditions() {
             if (city.Owner.id != playerID) return false;
-            if(city.getOffer(itemType).Quant == newQuant && city.getOffer(itemType).price == newPrice) {
+            if (city.getOffer(itemType).Quant == newQuant && city.getOffer(itemType).price == newPrice) {
                 Logger.log(45, Category.Event, Severity.Warn, string.Format("setOffer rejected: same offer already"));
                 return false;
             }
@@ -52,17 +52,20 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
-        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+        public override void execute() {
             if (city.getOffer(itemType).Quant > 0) city.getItem(itemType).Quant += city.getOffer(itemType).Quant; //Return items to city from old sell orders
             if (newQuant > 0) city.getItem(itemType).Quant -= newQuant; //Take items from city for sell orders
             city.getOffer(itemType).Quant = newQuant;
             city.getOffer(itemType).price = newQuant == 0 ? 0 : newPrice;
 
-            updatedSubscribables = new HashSet<Subscribable> { city };
-            return null;
+
         }
 
+        public override List<Event> followUpEvents() { return null; }
 
+        public override HashSet<Subscribable> updatedSubscribables() {
+            return new HashSet<Subscribable> { city };
+        }
     }
 }
 

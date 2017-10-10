@@ -19,7 +19,8 @@ namespace Browsergame.Game.Entities {
         [DataMember] private double money;
         [DataMember] private bool online;
         [DataMember] private Dictionary<Player, HashSet<Contract>> contracts;
-        [DataMember] private Dictionary<Player, HashSet<Contract>> contractProposals;
+        [DataMember] private Dictionary<Player, HashSet<Contract>> contractProposalsToMe;
+        [DataMember] private Dictionary<Player, HashSet<Contract>> contractProposalsFromMe;
         [DataMember] public List<City> cities = new List<City>();
         [DataMember] public List<Unit> units = new List<Unit>();
         [DataMember] private List<Message> messages = new List<Message>();
@@ -62,7 +63,6 @@ namespace Browsergame.Game.Entities {
             this.token = token;
             this.money = money;
             this.online = false;
-            contracts = new Dictionary<Player, HashSet<Contract>>();
         }
         public bool isInVisibilityRange(GeoCoordinate location) {
             foreach (var city in cities) {
@@ -83,7 +83,7 @@ namespace Browsergame.Game.Entities {
             if (subscriber == SubscriberLevel.Owner) {
                 data["money"] = money;
                 data["messages"] = messages;
-                data["contractProposals"] = contractProposals;
+                data["contractProposals"] = contractProposalsToMe;
             }
             return data;
         }
@@ -97,10 +97,19 @@ namespace Browsergame.Game.Entities {
             if (!contracts.ContainsKey(otherPlayer)) contracts[otherPlayer] = new HashSet<Contract>();
             contracts[otherPlayer].Add(contract);
         }
-        public void addContractProposal(Contract contract, Player otherPlayer) {
-            if (!contractProposals.ContainsKey(otherPlayer)) contractProposals[otherPlayer] = new HashSet<Contract>();
-            contractProposals[otherPlayer].Add(contract);
-            setUpdateDataDict(SubscriberLevel.Owner, "contractProposals", otherPlayer, contractProposals[otherPlayer]);
+        private void addContractProposal(Contract contract, Player fromPlayer) {
+            if (contractProposalsToMe == null) contractProposalsToMe = new Dictionary<Player, HashSet<Contract>>();
+            if (!contractProposalsToMe.ContainsKey(fromPlayer)) contractProposalsToMe[fromPlayer] = new HashSet<Contract>();
+
+            setUpdateDataDict(SubscriberLevel.Owner, "contractProposalsToMe", fromPlayer, contractProposalsToMe[fromPlayer]);
+        }
+        public void makeContractProposal(Contract contract, Player otherPlayer) {
+            if (contractProposalsFromMe == null) contractProposalsFromMe = new Dictionary<Player, HashSet<Contract>>();
+            if (!contractProposalsFromMe.ContainsKey(otherPlayer)) contractProposalsFromMe[otherPlayer] = new HashSet<Contract>();
+
+            contractProposalsFromMe[otherPlayer].Add(contract);
+            setUpdateDataDict(SubscriberLevel.Owner, "contractProposalsFromMe", otherPlayer, contractProposalsFromMe[otherPlayer]);
+            otherPlayer.addContractProposal(contract, this);
         }
     }
 }

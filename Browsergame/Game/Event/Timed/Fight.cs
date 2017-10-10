@@ -37,8 +37,11 @@ namespace Browsergame.Game.Event.Timed {
 
         private State state;
         private Player player;
+        private Player atackedPlayer;
         private City targetCity;
         private List<Unit> atackingUnits;
+        private List<Unit> defendingUnits;
+
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
             this.state = state;
@@ -46,12 +49,14 @@ namespace Browsergame.Game.Event.Timed {
             needsOnDemandCalculation.Add(targetCity);
 
             player = state.getPlayer(playerID);
+            atackedPlayer = targetCity.Owner;
 
             atackingUnits = new List<Unit>();
             foreach (var id in unitIDs) {
                 var unit = state.getUnit(id);
                 atackingUnits.Add(unit);
             }
+            defendingUnits = (from u in targetCity.units where !u.setting.civil && u.owner.id == atackedPlayer.id select u).ToList();
         }
 
         public override bool conditions() {
@@ -71,25 +76,19 @@ namespace Browsergame.Game.Event.Timed {
                 }
             }
         }
-        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
-            var atackedPlayer = targetCity.Owner;
-            updatedSubscribables = new HashSet<Subscribable> { player, targetCity, atackedPlayer };
-
+        public override void execute() {
             foreach (Unit u in atackingUnits) {
                 u.setCity(targetCity);
-                updatedSubscribables.Add(u);
             }
             if (targetCity.Owner.id != player.id) {
-                var defendingFighters = (from u in targetCity.units where !u.setting.civil && u.owner.id == atackedPlayer.id select u).ToList();
-                foreach (Unit u in defendingFighters) updatedSubscribables.Add(u);
                 var atackingFighters = (from u in atackingUnits where !u.setting.civil select u).ToList();
 
-                defendingFighters.ForEach(u => u.hp = u.setting.hp);
+                defendingUnits.ForEach(u => u.hp = u.setting.hp);
                 atackingFighters.ForEach(u => u.hp = u.setting.hp);
 
-                while (defendingFighters.Count > 0 && atackingFighters.Count > 0) {
-                    atack(defendingFighters, atackingFighters); //Defenders atack first
-                    atack(atackingFighters, defendingFighters);
+                while (defendingUnits.Count > 0 && atackingFighters.Count > 0) {
+                    atack(defendingUnits, atackingFighters); //Defenders atack first
+                    atack(atackingFighters, defendingUnits);
 
                 }
 
@@ -115,9 +114,14 @@ namespace Browsergame.Game.Event.Timed {
             }
 
             this.removeSubscription(player, SubscriberLevel.Owner);
-
-            return null;
         }
+        public override List<Event> followUpEvents() { return null; }
 
+        public override HashSet<Subscribable> updatedSubscribables() {
+            var updates = new HashSet<Subscribable> { player, targetCity, atackedPlayer };
+            atackingUnits.ForEach(u => updates.Add(u));
+            defendingUnits.ForEach(u => updates.Add(u));
+            return updates;
+        }
     }
 }

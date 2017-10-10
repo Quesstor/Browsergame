@@ -25,7 +25,7 @@ namespace Browsergame.Game.Event.Instant {
         private Player player;
         private Unit unit;
         private City targetCity;
-
+        
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
 
@@ -39,8 +39,8 @@ namespace Browsergame.Game.Event.Instant {
             if (unit.getCity().id == targetCity.id) return false;
             return true;
         }
-
-        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+        private Event arrivalEvent;
+        public override void execute() {
 
             var startCity = unit.getCity();
 
@@ -48,13 +48,15 @@ namespace Browsergame.Game.Event.Instant {
             var travelTimeInSeconds = (range / Settings.MoveSpeedInMetersPerSecond) * unit.setting.movespeed;
             var arrivalTime = DateTime.Now.AddSeconds(travelTimeInSeconds);
 
-            var arrivalEvent = new Timed.UnitArrives(unitID, startCity.id, targetCityID, arrivalTime);
+            arrivalEvent = new Timed.UnitArrives(unitID, startCity.id, targetCityID, arrivalTime);
             arrivalEvent.addSubscription(player, SubscriberLevel.Owner);
             unit.setCity(null);
-
-            updatedSubscribables = new HashSet<Subscribable> { unit, arrivalEvent };
+        }
+        public override HashSet<Subscribable> updatedSubscribables() {
+            return new HashSet<Subscribable> { unit };
+        }
+        public override List<Event> followUpEvents() {
             return new List<Event> { arrivalEvent };
         }
-
     }
 }

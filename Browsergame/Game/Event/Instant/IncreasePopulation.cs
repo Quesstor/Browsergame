@@ -26,7 +26,7 @@ namespace Browsergame.Game.Event.Instant {
         private City city;
         public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            
+
             player = state.getPlayer(playerID);
             city = state.getCity(cityID);
 
@@ -36,13 +36,17 @@ namespace Browsergame.Game.Event.Instant {
             return player.id == city.Owner.id && city.PopulationSurplus == 1;
         }
 
-        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+        public override void execute() {
             city.Population += 1;
             city.PopulationSurplus = 0;
-            city.getConsumesPerPopulation()[city.Population+1] = Browsergame.Settings.getConsumeGoods(city.Population+1);
+            city.getConsumesPerPopulation()[city.Population + 1] = Browsergame.Settings.getConsumeGoods(city.Population + 1);
 
-            updatedSubscribables = new HashSet<Subscribable> { city };
-            return null;
+        }
+
+        public override List<Event> followUpEvents() { return null; }
+
+        public override HashSet<Subscribable> updatedSubscribables() {
+            return new HashSet<Subscribable> { city };
         }
     }
 }

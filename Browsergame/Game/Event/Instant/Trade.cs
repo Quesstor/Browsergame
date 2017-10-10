@@ -55,7 +55,7 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
-        public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+        public override void execute() {
 
             unit.owner.Money += quant * price;
             city.Owner.Money -= quant * price;
@@ -67,9 +67,12 @@ namespace Browsergame.Game.Event.Instant {
                 city.getOffer(itemType).Quant += quant;
             }
             unit.getItem(itemType).Quant -= quant;
+        }
 
-            updatedSubscribables = new HashSet<Subscribable> { unit, city, city.Owner, unit.owner };
-            return null;
+        public override List<Event> followUpEvents() { return null; }
+
+        public override HashSet<Subscribable> updatedSubscribables() {
+            return new HashSet<Subscribable> { unit, city, city.Owner, unit.owner };
         }
     }
 }
