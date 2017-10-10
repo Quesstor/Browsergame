@@ -80,7 +80,7 @@ namespace Browsergame.Server.SocketServer {
             return true;
         }
         private static bool RouteToController(PlayerWebsocket socket, SocketMessage message) {
-            MethodInfo methodInfo = message.controllerType.GetMethod("onMessage");
+            MethodInfo methodInfo = message.controllerType.GetMethod("OnMessage");
             var args = new object[2];
             args[0] = socket;
             args[1] = message.jsonPayload;
