@@ -579,7 +579,6 @@
     <Content Include="Server\WebServer\static\JS\Controller\utilCtrl.js" />
     <Content Include="Server\WebServer\static\JS\map.js" />
     <Content Include="Server\WebServer\static\JS\Services\cityService.js" />
-    <Content Include="Server\WebServer\static\JS\Services\playerService.js" />
     <Content Include="Server\WebServer\static\JS\Services\syncService.js" />
     <Content Include="Server\WebServer\static\JS\Services\tradeService.js" />
     <Content Include="Server\WebServer\static\JS\Services\ui\mapService.js" />

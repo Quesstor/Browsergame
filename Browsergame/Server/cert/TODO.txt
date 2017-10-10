@@ -1,0 +1,27 @@
+#1. Generate Cert
+run inetmgr
+Server Certificates -> Create Self-Signed Cert
+
+
+#2. netsh add url. Use same URL as the WebApplication (and add s at the end of http)
+netsh http add urlacl url=https://+:21212/ user=Everyone
+
+#3. netsh add ssl: use correct ipport from WebApplication
+netsh http add sslcert ipport=0.0.0.0:21212 certhash=XXX appid={X-X-X}
+
+#3.1 get appid from:
+netsh http show sslcert
+
+#3.2 get certhash from:
+Doubleclick on the new cert. -> Details -> copy Thumbprint value (xx xx xx ...) -> remove spaces
+
+
+
+
+
+##OPENSSL
+#create cert:
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
+
+#create pfx:
+openssl pkcs12 -export -out certificate.pfx -inkey key.pem -in cert.pem

@@ -19,7 +19,7 @@
                 if (msg.event) events.push(msg);
                 else syncService.updateData(msg);
             }
-            for (msg of events)syncService.updateData(msg);
+            for (msg of events) syncService.updateData(msg);
             syncService.startSyncLoop();
             mapService.drawAll();
 
@@ -36,16 +36,16 @@
             $rootScope.events[data.event.type].push(data.event);
         }
         if (data.city) {
-            for(var k in data.city.buildings){
+            for (var k in data.city.buildings) {
                 var building = data.city.buildings[k];
                 angular.merge(building, $rootScope.settings.buildings[building.type]);
-            } 
-            for(var k in data.city.offers){
+            }
+            for (var k in data.city.offers) {
                 var offer = data.city.offers[k];
                 angular.merge(offer, $rootScope.settings.items[offer.type]);
-            } 
-            for(var k in data.city.items) {
-                var item = data.city.items[k];                
+            }
+            for (var k in data.city.items) {
+                var item = data.city.items[k];
                 angular.merge(item, $rootScope.settings.items[item.type]);
             }
             if ($rootScope.cities[data.city.id]) angular.merge($rootScope.cities[data.city.id], data.city);
@@ -56,8 +56,8 @@
             $rootScope.players[data.players.id] = data.players;
         }
         if (data.unit) {
-            angular.merge(data.unit, $rootScope.settings.units[data.unit.type]);       
-            if($rootScope.units[data.unit.id]) angular.merge($rootScope.units[data.unit.id], data.unit);     
+            angular.merge(data.unit, $rootScope.settings.units[data.unit.type]);
+            if ($rootScope.units[data.unit.id]) angular.merge($rootScope.units[data.unit.id], data.unit);
             else $rootScope.units[data.unit.id] = data.unit;
         }
         if (data.units) {
@@ -74,7 +74,7 @@
         if ($rootScope.selectedUnit) $rootScope.selectedUnit = $rootScope.units[$rootScope.selectedUnit.id];
     };
 
-    syncService.syncLoopIntervall = 100;
+    syncService.syncLoopIntervall = 50;
     syncService.syncLoopHandler;
     syncService.startSyncLoop = function () {
         if (syncService.syncLoopHandler) $interval.cancel(syncService.syncLoopHandler);
@@ -83,6 +83,18 @@
     syncService.syncLoop = function () {
         var perSecond = syncService.syncLoopIntervall / 1000;
         var perMinute = perSecond / 60;
+        //Events
+        for (var type in $rootScope.events) {
+            for (var key in $rootScope.events[type]) {
+                var event = $rootScope.events[type][key];
+                event.executesInSec -= perSecond;
+                if (event.executesInSec < 0) {
+                    mapService.removeEventMarker(event);
+                    $rootScope.events[type].splice(key, 1);
+                }
+            }
+        }
+        //Cities
         angular.forEach($rootScope.cities, function (city, key) {
             if (city.owner != $rootScope.player.id) return;
             if (!city.products) city.products = {};
@@ -104,16 +116,7 @@
                     building.productionSeconds = perSecond;
                 });
             }
-            for (var type in $rootScope.events) {
-                for (var key in $rootScope.events[type]) {
-                    var event = $rootScope.events[type][key];
-                    event.executesInSec -= perSecond;
-                    if (event.executesInSec < 0) {
-                        mapService.removeEventMarker(event);
-                        $rootScope.events[type].splice(key, 1);
-                    }
-                }
-            }
+
             //Consume goods & Get Money incomePerMinute
             $rootScope.player.totalIncome = 0;
             $rootScope.player.income = {};
@@ -147,9 +150,9 @@
                     city.populationSurplus = Math.min(1, city.populationSurplus);
                 }
             }
-            mapService.drawAll();
             city.consumedSeconds = perSecond;
         });
+        mapService.drawAll();
     }
 
     syncService.socketError = function (data) {
