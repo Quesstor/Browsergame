@@ -30,39 +30,16 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
-        private static GeoCoordinate newStartLocation(State state) {
-            Random rand = new Random();
 
-            //Earth’s radius, sphere
-            var R = 6378137;
-            var newLocation = new GeoCoordinate(48, 5);
-            var count = 0;
-            while (true) {
-                if ((from city in state.cities.Values where city.getLocation(false).GetDistanceTo(newLocation) < Settings.minRangeBetweenCitiesInMeters select city).Count() == 0)
-                    return newLocation;
-
-                //offsets in meters
-                var dn = Settings.minRangeBetweenCitiesInMeters * Math.Sin(Math.Sqrt(count) * 3) + (rand.NextDouble() - 0.5) * Settings.minRangeBetweenCitiesInMeters / 3;
-                var de = Settings.minRangeBetweenCitiesInMeters * Math.Cos(Math.Sqrt(count) * 3) + (rand.NextDouble() - 0.5) * Settings.minRangeBetweenCitiesInMeters / 3;
-
-                //Coordinate offsets in radians
-                var dLat = dn / R;
-                var dLon = de / (R * Math.Cos(Math.PI * newLocation.Latitude / 180));
-
-                //OffsetPosition, decimal degrees
-                newLocation.Latitude += dLat * 180 / Math.PI;
-                newLocation.Longitude += dLon * 180 / Math.PI;
-                count += 1;
-            }
-        }
         public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
+            var events = new List<Event>();
+
             var player = state.addPlayer(name, token);
-            GeoCoordinate startLoc = newStartLocation(state);
             //startLoc.random(state);
 
             string cityName = string.Format("{0} Heimatstadt", name);
             string info = string.Format("{0} Heimatstadt", name);
-            City city = state.addCity(cityName, player, startLoc, info);
+            City city = state.addCity(cityName, player, info);
 
             state.addUnit(city, UnitType.Trader);
             state.addUnit(city, UnitType.Spears);
@@ -74,15 +51,21 @@ namespace Browsergame.Game.Event.Instant {
 
             state.addUnit(city, UnitType.Horses);
             state.addUnit(city, UnitType.Horses);
-            if(name == "Test") {
+
+
+            if (name == "Test") {
                 state.addUnit(city, UnitType.Swords);
                 state.addUnit(city, UnitType.Swords);
                 state.addUnit(city, UnitType.Swords);
                 state.addUnit(city, UnitType.Swords);
                 state.addUnit(city, UnitType.Swords);
                 state.addUnit(city, UnitType.Swords);
+                for (var i = 0; i < 2; i++) events.Add(new NewPlayer(0, "Bot" + i, "BotToken" + i));
             }
-            updatedSubscribables = new HashSet<Subscribable> { player, city };
+            if (name == "Bot0") {
+                state.addCity("BotCity 1", player, "Extra City for bots hehe");
+            }
+
 
             foreach (var otherPlayer in state.players.Values) {
                 if (otherPlayer.id == player.id) {
@@ -103,13 +86,7 @@ namespace Browsergame.Game.Event.Instant {
                 }
             }
 
-
-            var events = new List<Event>();
-            if (name == "Test") {
-
-                for (var i = 0; i < 2; i++) events.Add(new NewPlayer(0, "Bot" + i, "BotToken" + i));
-            }
-
+            updatedSubscribables = new HashSet<Subscribable> { player, city };
             return events;
         }
     }

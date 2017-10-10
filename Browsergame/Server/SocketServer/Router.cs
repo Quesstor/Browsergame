@@ -11,8 +11,8 @@ using Browsergame.Game.Engine;
 using Browsergame.Game.Event;
 
 namespace Browsergame.Server.SocketServer {
+    class RoutableEvent : Attribute { }
     class socketMessage {
-        private static string[] routableEvents = { "SetOffer", "OrderProduction", "StartBuildingUpgrade", "StartAtack", "UpdateCityInfo", "IncreasePopulation" , "LoadItemOnUnit" , "MoveUnit", "Trade"};
         public dynamic jsonPayload;
         public string action;
         public Type controllerType;
@@ -23,13 +23,11 @@ namespace Browsergame.Server.SocketServer {
             action = char.ToUpper(action[0]) + action.Substring(1);
             jsonPayload = json.payload;
             controllerType = Type.GetType("Browsergame.Server.SocketServer.Controller." + action + "SocketController");
-            if (routableEvents.Contains(action)) {
-                eventType = Type.GetType("Browsergame.Game.Event.Instant." + action);
-                if (eventType == null) eventType = Type.GetType("Browsergame.Game.Event.Timed." + action);
-            }
+            eventType = Type.GetType("Browsergame.Game.Event.Instant." + action);
+            if (eventType == null) eventType = Type.GetType("Browsergame.Game.Event.Timed." + action);
+
             if (controllerType == null && eventType == null) {
-                if (routableEvents.Contains(action)) throw new Exception("No Controller or Event found for " + action);
-                throw new Exception(string.Format("No Controller found for action '{0}'. Maybe add it to routableEvents.", action));
+                throw new Exception("No Controller or Event found for " + action);
             }
         }
     }
@@ -39,23 +37,23 @@ namespace Browsergame.Server.SocketServer {
             socketMessage message;
             try {
                 message = new socketMessage(socketMessage);
-            }
-            catch (Exception e) {
-                string msg = string.Format("Error {0} parsing message {1}: ", e.Message, socketMessage);
+            } catch (Exception e) {
+                string msg = string.Format("Can not parse message {1}: \n {0}", e.Message, socketMessage);
                 Logger.log(12, Category.WebSocket, Severity.Error, msg);
                 return;
             }
             try {
                 if (message.controllerType != null) routeToController(socket, message);
                 else routeToEvent(socket, message);
-            }
-            catch (Exception e) {
-                string msg = string.Format("Error {0} routing message {1}", e.Message, socketMessage);
+            } catch (Exception e) {
+                string msg = string.Format("Can not route message {1}: \n {0}", e.Message, socketMessage);
                 Logger.log(46, Category.WebSocket, Severity.Error, msg);
             }
         }
 
         private static bool routeToEvent(PlayerWebsocket socket, socketMessage message) {
+            if (!message.eventType.GetCustomAttributes(typeof(RoutableEvent)).Any())
+                throw new Exception(string.Format("Event '{0}' is not marked as routable", message.action));
             var constructor = message.eventType.GetConstructors()[0];
             var constructorParams = new object[constructor.GetParameters().Count()];
             foreach (var param in constructor.GetParameters()) {
@@ -68,8 +66,7 @@ namespace Browsergame.Server.SocketServer {
                     if (type.GetTypeInfo().IsEnum) {
                         if (jsonParam.Value.GetType().Name == "String") paramValue = Enum.Parse(type, (string)jsonParam.Value);
                         else paramValue = Enum.ToObject(type, jsonParam.Value);
-                    }
-                    else {
+                    } else {
                         if (type == typeof(string)) paramValue = jsonParam.ToString();
                         else paramValue = JsonConvert.DeserializeObject(jsonParam.ToString(), type);
                     }

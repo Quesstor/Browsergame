@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using Browsergame.Game.Utils;
 using Browsergame.Game.Entities.Settings;
 using Browsergame.Game.Entities;
+using Browsergame.Server.SocketServer;
 
 namespace Browsergame.Game.Event.Instant {
+    [RoutableEvent]
     class LoadItemOnUnit : Event {
         private long playerID;
         private long unitID;

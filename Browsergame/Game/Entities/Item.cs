@@ -21,10 +21,7 @@ namespace Browsergame.Game.Entities {
             }
         }
         [JsonConverter(typeof(StringEnumConverter))]
-        [DataMember]
-        public ItemType type;
-
-
+        [DataMember] public ItemType type;
 
         public Item(ItemType ItemType) {
             quant = 0;

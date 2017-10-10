@@ -8,8 +8,10 @@ using Browsergame.Game.Utils;
 using Browsergame.Game.Entities;
 using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Entities.Settings;
+using Browsergame.Server.SocketServer;
 
 namespace Browsergame.Game.Event.Instant {
+    [RoutableEvent]
     class IncreasePopulation : Event {
         private long playerID;
         private long cityID;
