@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Entities.Settings;
 using Browsergame.Game.Utils;
+using Browsergame.Server.SocketServer;
 
 namespace Browsergame.Game.Event.Instant {
+    [RoutableEvent]
     class MoveUnit : Event {
         private long playerID;
         private long unitID;

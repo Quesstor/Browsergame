@@ -8,8 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Browsergame.Game.Utils;
 using Browsergame.Game.Engine;
+using Browsergame.Server.SocketServer;
 
 namespace Browsergame.Game.Event.Instant {
+    [RoutableEvent]
     class OrderProduction : Event {
         private long playerID;
         private long cityID;

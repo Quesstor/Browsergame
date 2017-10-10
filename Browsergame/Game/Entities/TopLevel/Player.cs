@@ -12,10 +12,11 @@ using System.Threading.Tasks;
 namespace Browsergame.Game.Entities {
     [DataContract(IsReference = true)]
     class Player : Entity {
-        [DataMember] public string token;
+        [DataMember] public readonly string token;
         [DataMember] private string name;
         [DataMember] private double money;
         [DataMember] private bool online;
+        [DataMember] private List<Contract> contracts;
 
         public string Name {
             get { return name; }
@@ -77,6 +78,8 @@ namespace Browsergame.Game.Entities {
             data["id"] = id;
             data["name"] = name;
             data["online"] = online;
+            data["contracts"] = contracts;
+
             if (subscriber == SubscriberLevel.Owner) {
                 data["money"] = money;
                 data["messages"] = messages;
