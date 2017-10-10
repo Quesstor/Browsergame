@@ -18,7 +18,8 @@ namespace Browsergame.Game.Entities {
         [DataMember] private string name;
         [DataMember] private double money;
         [DataMember] private bool online;
-        [DataMember] private Dictionary<Player, List<Contract>> contracts;
+        [DataMember] private Dictionary<Player, HashSet<Contract>> contracts;
+        [DataMember] private Dictionary<Player, HashSet<Contract>> contractProposals;
         [DataMember] public List<City> cities = new List<City>();
         [DataMember] public List<Unit> units = new List<Unit>();
         [DataMember] private List<Message> messages = new List<Message>();
@@ -61,7 +62,7 @@ namespace Browsergame.Game.Entities {
             this.token = token;
             this.money = money;
             this.online = false;
-            contracts = new Dictionary<Player, List<Contract>>();
+            contracts = new Dictionary<Player, HashSet<Contract>>();
         }
         public bool isInVisibilityRange(GeoCoordinate location) {
             foreach (var city in cities) {
@@ -82,6 +83,7 @@ namespace Browsergame.Game.Entities {
             if (subscriber == SubscriberLevel.Owner) {
                 data["money"] = money;
                 data["messages"] = messages;
+                data["contractProposals"] = contractProposals;
             }
             return data;
         }
@@ -92,8 +94,13 @@ namespace Browsergame.Game.Entities {
             return contracts[otherPlayer].Contains(contract);
         }
         public void addContract(Contract contract, Player otherPlayer) {
-            if (!contracts.ContainsKey(otherPlayer)) contracts[otherPlayer] = new List<Contract>();
+            if (!contracts.ContainsKey(otherPlayer)) contracts[otherPlayer] = new HashSet<Contract>();
             contracts[otherPlayer].Add(contract);
+        }
+        public void addContractProposal(Contract contract, Player otherPlayer) {
+            if (!contractProposals.ContainsKey(otherPlayer)) contractProposals[otherPlayer] = new HashSet<Contract>();
+            contractProposals[otherPlayer].Add(contract);
+            setUpdateDataDict(SubscriberLevel.Owner, "contractProposals", otherPlayer, contractProposals[otherPlayer]);
         }
     }
 }

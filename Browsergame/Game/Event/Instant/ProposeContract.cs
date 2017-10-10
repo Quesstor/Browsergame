@@ -36,7 +36,11 @@ namespace Browsergame.Game.Event.Instant {
         }
 
         public override List<Event> execute(out HashSet<Subscribable> updatedSubscribables) {
-            throw new NotImplementedException();
+            updatedSubscribables = new HashSet<Subscribable>();
+            updatedSubscribables.Add(toPlayer);
+
+            toPlayer.addContractProposal(contract, player);
+            return null;
         }
     }
 }
