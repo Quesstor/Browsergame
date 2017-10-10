@@ -1,6 +1,6 @@
 ﻿angular.module('app').controller('atackmarker', function ($scope, $rootScope, mapService) {
     $scope.event = function(){
-        if(!$rootScope.events) return;        
+        if(!$rootScope.events || !$rootScope.events["Fight"]) return;        
         for(var e of $rootScope.events["Fight"]){
             if(e.id == $scope.eventid) return e;
         }

@@ -99,7 +99,7 @@
                 for(var id of event.unitIDs) speed = Math.min(speed, $rootScope.units[id].movespeed);
 
                 var range = startLatLng.distanceTo(targetLatLng);
-                var totalSecsNeeded = (range / $rootScope.settings.MoveSpeedInMetersPerSecond) / speed +0.1;
+                var totalSecsNeeded = (range / $rootScope.settings.MoveSpeedInMetersPerSecond) / speed +0.5;
                 var percentageDone = 1 - event.executesInSec / totalSecsNeeded;
 
                 if (percentageDone <= 1) {

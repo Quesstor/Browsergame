@@ -56,25 +56,18 @@
             $rootScope.players[data.players.id] = data.players;
         }
         if (data.unit) {
-            angular.merge(data.unit, $rootScope.settings.units[data.unit.type]);       
-            if($rootScope.units[data.unit.id]) angular.merge($rootScope.units[data.unit.id], data.unit);     
-            else $rootScope.units[data.unit.id] = data.unit;
-        }
-        if (data.units) {
-            angular.merge($rootScope.units, data.units);
-            for (var k in $rootScope.cities) $rootScope.cities[k].unitcounts = {};
-            for (var k in data.units) {
-                var unit = data.units[k];
-                if ((unit.city || unit.city === 0) && $rootScope.cities[unit.city]) {
-                    $rootScope.cities[unit.city].unitcounts[unit.type] = ($rootScope.cities[unit.city].unitcounts[unit.type] + 1) || 1;
-                }
+            if(data.unit.deleted) delete $rootScope.units[data.unit.id];
+            else{
+                angular.merge(data.unit, $rootScope.settings.units[data.unit.type]);       
+                if($rootScope.units[data.unit.id]) angular.merge($rootScope.units[data.unit.id], data.unit);     
+                else $rootScope.units[data.unit.id] = data.unit;
             }
         }
         if ($rootScope.selectedCity) $rootScope.selectedCity = $rootScope.cities[$rootScope.selectedCity.id];
         if ($rootScope.selectedUnit) $rootScope.selectedUnit = $rootScope.units[$rootScope.selectedUnit.id];
     };
 
-    syncService.syncLoopIntervall = 100;
+    syncService.syncLoopIntervall = 10;
     syncService.syncLoopHandler;
     syncService.startSyncLoop = function () {
         if (syncService.syncLoopHandler) $interval.cancel(syncService.syncLoopHandler);

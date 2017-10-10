@@ -2,6 +2,7 @@
 using Browsergame.Game.Event;
 using Browsergame.Game.Utils;
 using Browsergame.Server.SocketServer;
+using Browsergame.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,6 @@ namespace Browsergame.Game.Utils {
         //Update Data
         [DataMember] private Dictionary<SubscriberLevel, HashSet<Player>> subscribers = new Dictionary<SubscriberLevel, HashSet<Player>>();
         abstract public void onDemandCalculation();
-
         new public void setUpdateDataDict<K, V>(SubscriberLevel subscriberLevel, string propertyName, K key, V value) {
             base.setUpdateDataDict(subscriberLevel, propertyName, key, value);
             base.setUpdateData(subscriberLevel, "id", this.id);
@@ -45,6 +45,7 @@ namespace Browsergame.Game.Utils {
             base.setUpdateData(subscriberLevel, propertyName, value);
             base.setUpdateData(subscriberLevel, "id", this.id);
         }
+
 
         //Subscriber
         public void addSubscription(Player player, SubscriberLevel level) {
@@ -59,26 +60,37 @@ namespace Browsergame.Game.Utils {
             subscribers[level].Remove(player);
             player.subscriptions[level].Remove(this);
         }
-        public void removeSubscriptions() {
-            foreach(var lvl in subscribers.Keys) {
-                foreach(var p in subscribers[lvl]) {
+        private void removeSubscriptions() {
+            foreach (var lvl in subscribers.Keys) {
+                foreach (var p in subscribers[lvl]) {
                     p.subscriptions[lvl].Remove(this);
                 }
             }
             subscribers = new Dictionary<SubscriberLevel, HashSet<Player>>();
         }
-
+        private bool deleted = false;
+        public void delete() {
+            deleted = true;
+        }
         public int updateSubscribers() {
             int count = 0;
             foreach (SubscriberLevel lvl in subscribers.Keys) {
                 foreach (Player player in subscribers[lvl]) {
-                    if (updateData != null && updateData.ContainsKey(lvl) && updateData[lvl] != null) {
-                        var data = updateData[lvl];
+                    UpdateData data = null;
+                    if (deleted) {
+                        data = new UpdateData(entityName());
+                        data["deleted"] = true;
+                        data["id"] = id;
+                    }
+                    else if (updateData != null && updateData.ContainsKey(lvl) && updateData[lvl] != null)
+                        data = updateData[lvl];
+                    if (data != null) {
                         Task.Run(() => PlayerWebsocketConnections.sendMessage(player, data.toJson()));
                         count++;
                     }
                 }
             }
+            if (deleted) removeSubscriptions();
             updateData = new Dictionary<SubscriberLevel, UpdateData>();
             return count;
         }

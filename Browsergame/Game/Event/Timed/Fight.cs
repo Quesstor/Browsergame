@@ -61,12 +61,13 @@ namespace Browsergame.Game.Event.Timed {
         private void atack(List<Unit> atackingUnits, List<Unit> defendingUnits) {
             foreach (var atacker in atackingUnits) {
                 if (defendingUnits.Count == 0) return;
-                var defender = defendingUnits[rnd.Next(defendingUnits.Count-1)];
-                var damage = Math.Max(0, atacker.setting.atack * rnd.Next(1,3) - defender.setting.shieldpower) * rnd.Next(1, 2);
+                var defender = defendingUnits[rnd.Next(defendingUnits.Count - 1)];
+                var damage = Math.Max(0, atacker.setting.atack * rnd.Next(1, 3) - defender.setting.shieldpower) * rnd.Next(1, 2);
                 defender.hp -= damage;
                 if (defender.hp <= 0) {
                     state.removeUnit(defender);
                     defendingUnits.Remove(defender);
+                    defender.delete();
                 }
             }
         }
@@ -78,9 +79,9 @@ namespace Browsergame.Game.Event.Timed {
                 u.setCity(targetCity);
                 updatedSubscribables.Add(u);
             }
-
             if (targetCity.Owner.id != player.id) {
                 var defendingFighters = (from u in targetCity.units where !u.setting.civil && u.owner.id == atackedPlayer.id select u).ToList();
+                foreach (Unit u in defendingFighters) updatedSubscribables.Add(u);
                 var atackingFighters = (from u in atackingUnits where !u.setting.civil select u).ToList();
 
                 defendingFighters.ForEach(u => u.hp = u.setting.hp);

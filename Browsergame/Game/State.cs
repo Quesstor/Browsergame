@@ -63,7 +63,6 @@ namespace Browsergame.Game {
         }
         public void removeUnit(Unit unit) {
             unit.owner.units.Remove(unit);
-            unit.removeSubscriptions();
             unit.getCity(false).units.Remove(unit);
             units.Remove(unit.id);
         }

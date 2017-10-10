@@ -26,7 +26,6 @@ namespace Browsergame.Game.Utils {
             var dict = (Dictionary<K, V>)updateData[subscriberLevel][propertyName];
             dict[key] = value;
         }
-
         protected void makeUpdateDataIfNotExists(SubscriberLevel subscriberLevel) {
             if (updateData == null) updateData = new Dictionary<SubscriberLevel, UpdateData>();
             if (!updateData.ContainsKey(subscriberLevel)) {
