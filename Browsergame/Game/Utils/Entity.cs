@@ -9,6 +9,6 @@ using System.Threading.Tasks;
 namespace Browsergame.Game.Entities {
     [DataContract]
     abstract class Entity : Subscribable {
-        protected override string entityName() { return this.GetType().Name; }
+        protected override string EntityName() { return this.GetType().Name; }
     }
 }

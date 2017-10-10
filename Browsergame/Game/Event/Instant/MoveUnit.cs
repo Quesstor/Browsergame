@@ -26,21 +26,21 @@ namespace Browsergame.Game.Event.Instant {
         private Unit unit;
         private City targetCity;
         
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
 
-            player = state.getPlayer(playerID);
-            targetCity = state.getCity(targetCityID);
-            unit = state.getUnit(unitID);
+            player = state.GetPlayer(playerID);
+            targetCity = state.GetCity(targetCityID);
+            unit = state.GetUnit(unitID);
         }
-        public override bool conditions() {
+        public override bool Conditions() {
             if (unit.getCity() == null) return false;
-            if (player.id != unit.owner.id) return false;
-            if (unit.getCity().id == targetCity.id) return false;
+            if (player.Id != unit.owner.Id) return false;
+            if (unit.getCity().Id == targetCity.Id) return false;
             return true;
         }
         private Event arrivalEvent;
-        public override void execute() {
+        public override void Execute() {
 
             var startCity = unit.getCity();
 
@@ -48,14 +48,14 @@ namespace Browsergame.Game.Event.Instant {
             var travelTimeInSeconds = (range / Settings.MoveSpeedInMetersPerSecond) * unit.setting.movespeed;
             var arrivalTime = DateTime.Now.AddSeconds(travelTimeInSeconds);
 
-            arrivalEvent = new Timed.UnitArrives(unitID, startCity.id, targetCityID, arrivalTime);
-            arrivalEvent.addSubscription(player, SubscriberLevel.Owner);
+            arrivalEvent = new Timed.UnitArrives(unitID, startCity.Id, targetCityID, arrivalTime);
+            arrivalEvent.AddSubscription(player, SubscriberLevel.Owner);
             unit.setCity(null);
         }
-        public override HashSet<Subscribable> updatedSubscribables() {
+        public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { unit };
         }
-        public override List<Event> followUpEvents() {
+        public override List<Event> FollowUpEvents() {
             return new List<Event> { arrivalEvent };
         }
     }

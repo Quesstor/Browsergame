@@ -12,12 +12,12 @@ using Browsergame.Game.Event;
 
 namespace Browsergame.Server.SocketServer {
     class RoutableEvent : Attribute { }
-    class socketMessage {
+    class SocketMessage {
         public dynamic jsonPayload;
         public string action;
         public Type controllerType;
         public Type eventType;
-        public socketMessage(string socketMessage) {
+        public SocketMessage(string socketMessage) {
             dynamic json = JsonConvert.DeserializeObject(socketMessage);
             action = json.action;
             action = char.ToUpper(action[0]) + action.Substring(1);
@@ -33,25 +33,25 @@ namespace Browsergame.Server.SocketServer {
     }
     class Router {
 
-        public static void route(PlayerWebsocket socket, string socketMessage) {
-            socketMessage message;
+        public static void Route(PlayerWebsocket socket, string socketMessage) {
+            SocketMessage message;
             try {
-                message = new socketMessage(socketMessage);
+                message = new SocketMessage(socketMessage);
             } catch (Exception e) {
                 string msg = string.Format("Can not parse message {1}: \n {0}", e.Message, socketMessage);
                 Logger.log(12, Category.WebSocket, Severity.Error, msg);
                 return;
             }
             try {
-                if (message.controllerType != null) routeToController(socket, message);
-                else routeToEvent(socket, message);
+                if (message.controllerType != null) RouteToController(socket, message);
+                else RouteToEvent(socket, message);
             } catch (Exception e) {
                 string msg = string.Format("Can not route message {1}: \n {0}", e.Message, socketMessage);
                 Logger.log(46, Category.WebSocket, Severity.Error, msg);
             }
         }
 
-        private static bool routeToEvent(PlayerWebsocket socket, socketMessage message) {
+        private static bool RouteToEvent(PlayerWebsocket socket, SocketMessage message) {
             if (!message.eventType.GetCustomAttributes(typeof(RoutableEvent)).Any())
                 throw new Exception(string.Format("Event '{0}' is not marked as routable", message.action));
             var constructor = message.eventType.GetConstructors()[0];
@@ -79,7 +79,7 @@ namespace Browsergame.Server.SocketServer {
 
             return true;
         }
-        private static bool routeToController(PlayerWebsocket socket, socketMessage message) {
+        private static bool RouteToController(PlayerWebsocket socket, SocketMessage message) {
             MethodInfo methodInfo = message.controllerType.GetMethod("onMessage");
             var args = new object[2];
             args[0] = socket;

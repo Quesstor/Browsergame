@@ -14,9 +14,9 @@ namespace Browsergame.Game.Engine {
         private static bool entitiesInitialized = false;
         public static void Init() {
             if (!entitiesInitialized) {
-                Entities.Settings.BuildingSettings.makeSettings();
-                Entities.Settings.UnitSettings.makeSettings();
-                Entities.Settings.ItemSettings.makeSettings();
+                Entities.Settings.BuildingSettings.MakeSettings();
+                Entities.Settings.UnitSettings.MakeSettings();
+                Entities.Settings.ItemSettings.MakeSettings();
                 entitiesInitialized = true;
             }
             StateEngine.Init();
@@ -38,7 +38,7 @@ namespace Browsergame.Game.Engine {
             if (EventsProcessed.Count > 0) {
                 StateEngine.CopyWriteStateToReadState();
 
-                foreach (var e in EventsProcessed) e.processed.Set();
+                foreach (var e in EventsProcessed) e.Processed.Set();
                 if (makePersitentSave) {
                     StateEngine.TryPersistentSave();
                     makePersitentSave = false;

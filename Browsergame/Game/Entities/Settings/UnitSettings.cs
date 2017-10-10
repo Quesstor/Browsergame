@@ -21,10 +21,9 @@ namespace Browsergame.Game.Entities.Settings {
 
         public static Dictionary<UnitType, Settings.UnitSettings> settings = new Dictionary<UnitType, Settings.UnitSettings>();
 
-        public static void makeSettings() {
+        public static void MakeSettings() {
             foreach (UnitType t in Enum.GetValues(typeof(UnitType))) {
-                var settings = new UnitSettings();
-                settings.name = t.ToString();
+                var settings = new UnitSettings() { name = t.ToString() };
                 switch (t) {
                     case UnitType.Spears:
                         settings.name = "Speerträger";

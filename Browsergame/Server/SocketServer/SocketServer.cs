@@ -33,14 +33,14 @@ namespace Browsergame.Server.SocketServer {
             server.Start(socket => {
                 var playerWebSocket = new PlayerWebsocket(socket);
                 socket.OnOpen = () => {
-                    if (playerWebSocket.isAuthenticated) PlayerWebsocketConnections.addSocket(playerWebSocket);
+                    if (playerWebSocket.isAuthenticated) PlayerWebsocketConnections.AddSocket(playerWebSocket);
                     else playerWebSocket.Close();
                 };
                 socket.OnClose = () => {
-                    if (playerWebSocket.isAuthenticated) PlayerWebsocketConnections.removeSocket(playerWebSocket);
+                    if (playerWebSocket.isAuthenticated) PlayerWebsocketConnections.RemoveSocket(playerWebSocket);
                 };
                 socket.OnMessage = message => {
-                    if (playerWebSocket.isAuthenticated) Router.route(playerWebSocket, message);
+                    if (playerWebSocket.isAuthenticated) Router.Route(playerWebSocket, message);
                 };
             });
 
@@ -49,7 +49,7 @@ namespace Browsergame.Server.SocketServer {
         }
 
         public void Dispose() {
-            PlayerWebsocketConnections.closeAll();
+            PlayerWebsocketConnections.CloseAll();
             server.Dispose();
         }
     }

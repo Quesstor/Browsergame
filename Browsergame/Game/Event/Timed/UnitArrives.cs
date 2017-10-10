@@ -21,7 +21,7 @@ namespace Browsergame.Game.Event.Timed {
             this.executionTime = arrivalTime;
         }
 
-        public override UpdateData getSetupData(SubscriberLevel subscriber) {
+        public override UpdateData GetSetupData(SubscriberLevel subscriber) {
             UpdateData UpdateData = new UpdateData("event");
             if (subscriber == SubscriberLevel.Owner) {
                 UpdateData["type"] = "UnitArrives";
@@ -37,25 +37,25 @@ namespace Browsergame.Game.Event.Timed {
         private Unit unit;
         private City targetCity;
 
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
 
-            targetCity = state.getCity(targetCityID);
-            unit = state.getUnit(unitID);
+            targetCity = state.GetCity(targetCityID);
+            unit = state.GetUnit(unitID);
         }
 
-        public override bool conditions() {
+        public override bool Conditions() {
             return true;
         }
 
-        public override void execute() {
+        public override void Execute() {
             unit.setCity(targetCity);
-            this.removeSubscription(unit.owner, SubscriberLevel.Owner);
+            this.RemoveSubscription(unit.owner, SubscriberLevel.Owner);
         }
 
-        public override List<Event> followUpEvents() { return null; }
+        public override List<Event> FollowUpEvents() { return null; }
 
-        public override HashSet<Subscribable> updatedSubscribables() {
+        public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { unit };
         }
     }

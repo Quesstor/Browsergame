@@ -22,26 +22,26 @@ namespace Browsergame.Game.Event.Instant {
 
         private Player player;
         private Player toPlayer;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
-            player = state.getPlayer(playerID);
-            toPlayer = state.getPlayer(toPlayerID);
+        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+            player = state.GetPlayer(playerID);
+            toPlayer = state.GetPlayer(toPlayerID);
 
             needsOnDemandCalculation = new HashSet<Subscribable>();
 
             throw new NotImplementedException();
         }
 
-        public override bool conditions() {
-            return playerID != toPlayerID && !player.hasContractWith(contract, toPlayer);
+        public override bool Conditions() {
+            return playerID != toPlayerID && !player.HasContractWith(contract, toPlayer);
         }
 
-        public override void execute() {
-            toPlayer.makeContractProposal(contract, player);
+        public override void Execute() {
+            toPlayer.MakeContractProposal(contract, player);
         }
 
-        public override List<Event> followUpEvents() { return null; }
+        public override List<Event> FollowUpEvents() { return null; }
 
-        public override HashSet<Subscribable> updatedSubscribables() {
+        public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { toPlayer, player };
         }
     }

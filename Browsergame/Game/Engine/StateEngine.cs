@@ -1,15 +1,10 @@
-﻿using Browsergame.Game.Entities;
+﻿using Browsergame.Services;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using System.Threading;
-using Browsergame.Services;
-using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Browsergame.Game.Engine {
     static class StateEngine {
@@ -17,7 +12,7 @@ namespace Browsergame.Game.Engine {
         private static State readState;
 
         public static void Init() {
-            writeState = loadState(Settings.persistenSavePath);
+            writeState = LoadState(Settings.persistenSavePath);
             CopyWriteStateToReadState();
         }
         public static State GetState() {
@@ -50,7 +45,7 @@ namespace Browsergame.Game.Engine {
                     return;
                 }
                 try {
-                    peristentSave();
+                    PeristentSave();
                 }
                 catch (Exception e) {
                     Logger.log(6, Category.StateEngine, Severity.Error, e.ToString());
@@ -60,7 +55,7 @@ namespace Browsergame.Game.Engine {
                 }
             });
         }
-        public static void peristentSave() {
+        public static void PeristentSave() {
             var sw = new Stopwatch();
             sw.Start();
             using (var ms = new MemoryStream()) {
@@ -75,7 +70,7 @@ namespace Browsergame.Game.Engine {
             sw.Stop();
             Logger.log(47, Category.StateEngine, Severity.Debug, string.Format("Persistent save took {0}ms", sw.ElapsedMilliseconds));
         }
-        private static State loadState(string path) {
+        private static State LoadState(string path) {
             State state = new State();
             try {
                 using (var fs = new FileStream(Settings.persistenSavePath, FileMode.Open, FileAccess.Read)) {
@@ -96,10 +91,10 @@ namespace Browsergame.Game.Engine {
         public static void Dispose() {
             Logger.log(4, Category.StateEngine, Severity.Info, "Making persistent save before shutting down.");
             makingPersistentSave.WaitOne();
-            peristentSave();
+            PeristentSave();
             makingPersistentSave.Set();
         }
-        public static void resetState() {
+        public static void ResetState() {
             writeState = new State();
             CopyWriteStateToReadState();
             //for(var i=0; i<100; i++) EventEngine.AddEvent(new Event.Instant.NewPlayer(0, "Bot"+i, "BotToken"+i));

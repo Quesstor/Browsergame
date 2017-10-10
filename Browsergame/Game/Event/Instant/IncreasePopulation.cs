@@ -24,28 +24,28 @@ namespace Browsergame.Game.Event.Instant {
 
         private Player player;
         private City city;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
 
-            player = state.getPlayer(playerID);
-            city = state.getCity(cityID);
+            player = state.GetPlayer(playerID);
+            city = state.GetCity(cityID);
 
             needsOnDemandCalculation.Add(city);
         }
-        public override bool conditions() {
-            return player.id == city.Owner.id && city.PopulationSurplus == 1;
+        public override bool Conditions() {
+            return player.Id == city.Owner.Id && city.PopulationSurplus == 1;
         }
 
-        public override void execute() {
+        public override void Execute() {
             city.Population += 1;
             city.PopulationSurplus = 0;
-            city.getConsumesPerPopulation()[city.Population + 1] = Browsergame.Settings.getConsumeGoods(city.Population + 1);
+            city.getConsumesPerPopulation()[city.Population + 1] = Browsergame.Settings.GetConsumeGoods(city.Population + 1);
 
         }
 
-        public override List<Event> followUpEvents() { return null; }
+        public override List<Event> FollowUpEvents() { return null; }
 
-        public override HashSet<Subscribable> updatedSubscribables() {
+        public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { city };
         }
     }

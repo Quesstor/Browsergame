@@ -26,7 +26,7 @@ namespace Browsergame {
         public static double incomePerMinutePerPopulation = 5;
         public static double populationSurplusPerMinute = 5;
 
-        public static Dictionary<ItemType, double> getConsumeGoods(int cityPopulation) {
+        public static Dictionary<ItemType, double> GetConsumeGoods(int cityPopulation) {
             if (cityPopulation == 1) return new Dictionary<ItemType, double> { { ItemType.Water, 1 } };
             if (cityPopulation == 2) return new Dictionary<ItemType, double> { { ItemType.Water, 2 }, { ItemType.Food, 1 } };
             if (cityPopulation == 3) return new Dictionary<ItemType, double> { { ItemType.Water, 2 }, { ItemType.Food, 2 } };

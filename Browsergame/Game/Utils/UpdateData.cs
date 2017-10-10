@@ -15,16 +15,14 @@ namespace Browsergame.Game.Utils {
             this.key = key.ToLower();
             dict = new Dictionary<string, object>();
         }
-        public Dictionary<string, object> toDictWithKey() {
-            var dict = new Dictionary<string, object>();
-            dict[key] = this.dict;
-            return dict;
+        public Dictionary<string, object> ToDictWithKey() {
+            return new Dictionary<string, object>() { {key, this.dict } };
         }
-        public string toJson() {
-            return JsonConvert.SerializeObject(toDictWithKey());
+        public string ToJson() {
+            return JsonConvert.SerializeObject(ToDictWithKey());
         }
 
-        public Dictionary<string, object> getDict() { return dict; }
+        public Dictionary<string, object> GetDict() { return dict; }
 
         public object this[string key] { get => ((IDictionary<string, object>)dict)[key]; set => ((IDictionary<string, object>)dict)[key] = value; }
 

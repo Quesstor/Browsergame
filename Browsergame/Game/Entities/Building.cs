@@ -19,21 +19,21 @@ namespace Browsergame.Game.Entities {
         public int Lvl {
             get { return lvl; }
             set {
-                lvl = value; setUpdateData(SubscriberLevel.Owner, "lvl", lvl);
+                lvl = value; SetUpdateData(SubscriberLevel.Owner, "lvl", lvl);
             }
         }
         public double OrderedProductions {
             get { return orderedProductions; }
             set {
                 orderedProductions = value;
-                setUpdateData(SubscriberLevel.Owner, "orderedProductions", orderedProductions);
+                SetUpdateData(SubscriberLevel.Owner, "orderedProductions", orderedProductions);
             }
         }
         public DateTime LastProduced {
             get { return lastProduced; }
             set {
                 lastProduced = value;
-                setUpdateData(SubscriberLevel.Owner, "productionSeconds", (DateTime.Now - lastProduced).TotalSeconds);
+                SetUpdateData(SubscriberLevel.Owner, "productionSeconds", (DateTime.Now - lastProduced).TotalSeconds);
             }
         }
 
@@ -44,20 +44,21 @@ namespace Browsergame.Game.Entities {
             lastProduced = DateTime.Now;
         }
 
-        public override UpdateData getSetupData(SubscriberLevel subscriber) {
-            var data = new UpdateData(type.ToString());
-            data["type"] = type.ToString();
-            data["lvl"] = lvl;
-            data["productionSeconds"] = (DateTime.Now - lastProduced).TotalSeconds;
+        public override UpdateData GetSetupData(SubscriberLevel subscriber) {
+            var data = new UpdateData(type.ToString()) {
+                {"type", type.ToString()},
+                {"lvl", lvl },
+                {"productionSeconds", (DateTime.Now - lastProduced).TotalSeconds} };
 
-            if (setting.educts.Count > 0) data["orderedProductions"] = orderedProductions;
+
+            if (Setting.educts.Count > 0) data["orderedProductions"] = orderedProductions;
             return data;
         }
 
-        protected override string entityName() {
+        protected override string EntityName() {
             return type.ToString();
         }
 
-        public Settings.BuildingSettings setting { get => Settings.BuildingSettings.settings[this.type]; }
+        public Settings.BuildingSettings Setting { get => Settings.BuildingSettings.settings[this.type]; }
     }
 }

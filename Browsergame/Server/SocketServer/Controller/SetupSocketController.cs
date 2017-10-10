@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Browsergame.Server.SocketServer.Controller {
     static class SetupSocketController {
-        public static void onMessage(PlayerWebsocket socket, dynamic json) {
-            Player player = Browsergame.Game.Engine.StateEngine.GetState().getPlayer(socket.playerID);
+        public static void OnMessage(PlayerWebsocket socket, dynamic json) {
+            Player player = Browsergame.Game.Engine.StateEngine.GetState().GetPlayer(socket.playerID);
 
             var data = new List<Dictionary<string,object>>();
 
@@ -26,17 +26,16 @@ namespace Browsergame.Server.SocketServer.Controller {
             settings.Add("populationSurplusPerMinute", Settings.populationSurplusPerMinute);
             settings.Add("MoveSpeedInMetersPerSecond", Settings.MoveSpeedInMetersPerSecond);
             settings.Add("Contracts", Enum.GetNames(typeof(Contract)));
-            data.Add(settings.toDictWithKey());
+            data.Add(settings.ToDictWithKey());
 
 
             foreach (SubscriberLevel level in player.subscriptions.Keys) {
                 foreach(Subscribable s in player.subscriptions[level]) {
-                    data.Add(s.getSetupData(level).toDictWithKey());
+                    data.Add(s.GetSetupData(level).ToDictWithKey());
                 }
             }
 
-            var setup = new Dictionary<string, object>();
-            setup["setup"] = data;
+            var setup = new Dictionary<string, object>() { { "setup", data } };
             socket.Send(JsonConvert.SerializeObject(setup));
         }
     }

@@ -28,13 +28,13 @@ namespace Browsergame.Game.Event.Instant {
         private Player player;
         private List<Unit> units;
 
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
 
-            player = state.getPlayer(playerID);
-            targetCity = state.getCity(targetCityID);
+            player = state.GetPlayer(playerID);
+            targetCity = state.GetCity(targetCityID);
 
-            startCity = state.getCity(startCityID);
+            startCity = state.GetCity(startCityID);
             needsOnDemandCalculation.Add(startCity);
 
             units = new List<Unit>();
@@ -44,33 +44,33 @@ namespace Browsergame.Game.Event.Instant {
 
             }
         }
-        public override bool conditions() {
+        public override bool Conditions() {
 
-            if (player.id != startCity.Owner.id) return false;
-            if (player.id == targetCity.Owner.id) return false;
+            if (player.Id != startCity.Owner.Id) return false;
+            if (player.Id == targetCity.Owner.Id) return false;
             foreach (var unitgroup in unitCounts) {
                 var cityUnits = (from u in startCity.units where u.type == unitgroup.Key select u).Count();
                 if (cityUnits < unitgroup.Value) return false;
             }
             return true;
         }
-        public override void execute() {
+        public override void Execute() {
             foreach (var unit in units) {
                 unit.setCity(null);
                 startCity.units.Remove(unit);
             }
         }
         private Event fightEvent;
-        public override List<Event> followUpEvents() {
+        public override List<Event> FollowUpEvents() {
             var range = targetCity.getLocation(false).GetDistanceTo(startCity.getLocation(false));
             var speed = units.Min(u => u.setting.movespeed);
             var travelTimeInSeconds = (range / Settings.MoveSpeedInMetersPerSecond) / speed;
 
-            fightEvent = new Timed.Fight(playerID, targetCityID, startCity.id, (from u in units select u.id).ToList(), DateTime.Now.AddSeconds(travelTimeInSeconds));
-            fightEvent.addSubscription(player, SubscriberLevel.Owner);
+            fightEvent = new Timed.Fight(playerID, targetCityID, startCity.Id, (from u in units select u.Id).ToList(), DateTime.Now.AddSeconds(travelTimeInSeconds));
+            fightEvent.AddSubscription(player, SubscriberLevel.Owner);
             return new List<Event> { fightEvent };
         }
-        public override HashSet<Subscribable> updatedSubscribables() {
+        public override HashSet<Subscribable> UpdatedSubscribables() {
             HashSet<Subscribable> updates = new HashSet<Subscribable> { startCity };
             units.ForEach(u => updates.Add(u));
             return updates;

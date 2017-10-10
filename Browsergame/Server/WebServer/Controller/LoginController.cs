@@ -15,12 +15,12 @@ namespace Browsergame.Server.WebServer.Controller {
             public string pw;
         }
 
-        public HttpResponseMessage post(PostData logindata) {
+        public HttpResponseMessage Post(PostData logindata) {
             if (logindata == null) return new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest);
 
             string token = Security.getToken(logindata.name, logindata.pw);
             State state = StateEngine.GetState();
-            if (state.getPlayer(token) == null) {
+            if (state.GetPlayer(token) == null) {
                 Event e = new NewPlayer(0, logindata.name, token);
                 EventEngine.AddEvent(e);
                 e.processed.WaitOne();

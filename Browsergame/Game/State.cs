@@ -30,47 +30,47 @@ namespace Browsergame.Game {
         [DataMember] public Dictionary<long, Item> items = new Dictionary<long, Item>();
         [DataMember] public SortedList<DateTime, Event.Event> futureEvents = new SortedList<DateTime, Event.Event>();
 
-        public Player getPlayer(string token) {
+        public Player GetPlayer(string token) {
             return (from p in players.Values where p.token == token select p).FirstOrDefault();
         }
-        public Player getPlayer(long id) {
+        public Player GetPlayer(long id) {
             return players[id];
         }
-        public Unit getUnit(long id) {
+        public Unit GetUnit(long id) {
             return units[id];
         }
-        public City getCity(long id) {
+        public City GetCity(long id) {
             return cities[id];
         }
-        public Player addPlayer(string name, string token) {
-            Player exists = getPlayer(token);
+        public Player AddPlayer(string name, string token) {
+            Player exists = GetPlayer(token);
             if (exists != null) return exists;
             Player newPlayer = new Player(name, token, 1000);
-            players[newPlayer.id] = newPlayer;
-            newPlayer.addSubscription(newPlayer, SubscriberLevel.Owner);
+            players[newPlayer.Id] = newPlayer;
+            newPlayer.AddSubscription(newPlayer, SubscriberLevel.Owner);
             return newPlayer;
         }
-        public City addCity(string name, Player owner, string info) {
-            GeoCoordinate location = newCityLocation();
+        public City AddCity(string name, Player owner, string info) {
+            GeoCoordinate location = NewCityLocation();
             City city = new City(name, owner, location, info);
-            cities[city.id] = city;
+            cities[city.Id] = city;
             return city;
         }
-        public Unit addUnit(City city, Entities.Settings.UnitType unitType) {
+        public Unit AddUnit(City city, Entities.Settings.UnitType unitType) {
             Unit unit = new Unit(city.Owner, city, unitType);
-            units[unit.id] = unit;
+            units[unit.Id] = unit;
             unit.owner.units.Add(unit);
-            unit.addSubscription(city.Owner, SubscriberLevel.Owner);
+            unit.AddSubscription(city.Owner, SubscriberLevel.Owner);
             city.units.Add(unit);
             return unit;
         }
-        public void removeUnit(Unit unit) {
+        public void RemoveUnit(Unit unit) {
             unit.owner.units.Remove(unit);
             unit.getCity(false).units.Remove(unit);
-            units.Remove(unit.id);
+            units.Remove(unit.Id);
         }
 
-        private GeoCoordinate newCityLocation() {
+        private GeoCoordinate NewCityLocation() {
             Random rand = new Random();
 
             //Earth’s radius, sphere

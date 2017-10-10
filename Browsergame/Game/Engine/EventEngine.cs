@@ -35,7 +35,7 @@ namespace Browsergame.Game.Engine {
             var sentCount = 0;
             foreach (IEvent @event in processingEvents) {
                 try {
-                    @event.getEntities(state, out needsOnDemandCalculation);
+                    @event.GetEntities(state, out needsOnDemandCalculation);
                     OnDemandCalculations.Union(needsOnDemandCalculation);
                 }
                 catch (Exception ex) {
@@ -46,13 +46,13 @@ namespace Browsergame.Game.Engine {
             foreach (IEvent e in eventsFailedToGetEntities) processingEvents.Remove(e);
             var processedEvents = new List<Event.IEvent>();
             if (processingEvents.Count > 0) {
-                foreach (var s in needsOnDemandCalculation) s.onDemandCalculation();
+                foreach (var s in needsOnDemandCalculation) s.OnDemandCalculation();
                 foreach (var e in processingEvents) {
-                    if (e.conditions()) {
+                    if (e.Conditions()) {
                         try {
-                            e.execute();
-                            var timedEvents = e.followUpEvents();
-                            AllUpdatedSubscribables.UnionWith(e.updatedSubscribables());
+                            e.Execute();
+                            var timedEvents = e.FollowUpEvents();
+                            AllUpdatedSubscribables.UnionWith(e.UpdatedSubscribables());
                             if (timedEvents != null) {
                                 newTimedEvents.AddRange(timedEvents);
                                 AllUpdatedSubscribables.UnionWith(timedEvents);
@@ -69,7 +69,7 @@ namespace Browsergame.Game.Engine {
                 }
                 foreach (Event.Event newTimedEvent in newTimedEvents) AddTimedEvent(newTimedEvent, state);
                 sentCount = 0;
-                foreach (var s in AllUpdatedSubscribables) s.updateSubscribers();
+                foreach (var s in AllUpdatedSubscribables) s.UpdateSubscribers();
             }
 
             //Log

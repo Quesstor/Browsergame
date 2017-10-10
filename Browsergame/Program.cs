@@ -11,24 +11,24 @@ namespace Browsergame {
         private static WebServer WebServer;
         private static SocketServer SocketServer;
         static void Main(string[] args) {
-            start();
-            waitForInputLoop();
-            stop();
+            Start();
+            WaitForInputLoop();
+            Stop();
         }
 
-        private static void start() {
+        private static void Start() {
             WebServer = new Server.WebServer.WebServer();
             SocketServer = new Server.SocketServer.SocketServer();
             Game.Engine.Engine.Init();
         }
-        private static void stop() {
-            PlayerWebsocketConnections.closeAll();
+        private static void Stop() {
+            PlayerWebsocketConnections.CloseAll();
             Thread.Sleep(1000);
             WebServer.Dispose();
             SocketServer.Dispose();
             Game.Engine.Engine.Stop();
         }
-        private static void waitForInputLoop() {
+        private static void WaitForInputLoop() {
             string input = "h";
             while (input != "") {
                 switch (input.ToUpper()) {
@@ -48,9 +48,9 @@ namespace Browsergame {
                     case "G":
                         Process.Start(Settings.webserverUrl); break;
                     case "R":
-                        stop();
-                        start();
-                        StateEngine.resetState();
+                        Stop();
+                        Start();
+                        StateEngine.ResetState();
 
                         Console.WriteLine("Game reset done");
                         break;

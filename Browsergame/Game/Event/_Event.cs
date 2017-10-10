@@ -14,30 +14,30 @@ using System.Threading.Tasks;
 namespace Browsergame.Game.Event {
 
     interface IEvent {
-        ManualResetEvent processed { get; }
+        ManualResetEvent Processed { get; }
 
-        void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
-        bool conditions();
-        void execute();
-        List<Event> followUpEvents();
-        HashSet<Subscribable> updatedSubscribables();
+        void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
+        bool Conditions();
+        void Execute();
+        List<Event> FollowUpEvents();
+        HashSet<Subscribable> UpdatedSubscribables();
     }
     [DataContract]
     abstract class Event : Subscribable, IEvent {
         [DataMember] public DateTime executionTime;
 
-        protected override string entityName() { return "Event"; }
+        protected override string EntityName() { return "Event"; }
 
-        public abstract void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
-        public abstract bool conditions();
-        public abstract void execute();
-        public abstract List<Event> followUpEvents();
-        public abstract HashSet<Subscribable> updatedSubscribables();
+        public abstract void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
+        public abstract bool Conditions();
+        public abstract void Execute();
+        public abstract List<Event> FollowUpEvents();
+        public abstract HashSet<Subscribable> UpdatedSubscribables();
 
         public ManualResetEvent processed = new ManualResetEvent(false);
-        ManualResetEvent IEvent.processed { get => processed; }
+        ManualResetEvent IEvent.Processed { get => processed; }
 
-        public override void onDemandCalculation() { return; }
-        public override UpdateData getSetupData(SubscriberLevel subscriber) { return null; }
+        public override void OnDemandCalculation() { return; }
+        public override UpdateData GetSetupData(SubscriberLevel subscriber) { return null; }
     }
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Browsergame.Game.Entities {
     [DataContract]
     class Message : HasUpdateData {
-        protected override string entityName() { return "Message"; }
+        protected override string EntityName() { return "Message"; }
         [DataMember] private string message;
         [DataMember] private Dictionary<String, object> jsonData;
         [DataMember] private DateTime date;
@@ -25,9 +25,9 @@ namespace Browsergame.Game.Entities {
             this.from = from;
         }
 
-        public override UpdateData getSetupData(SubscriberLevel subscriber) {
-            var data = new UpdateData(entityName());
-            if (from != null) data["from"] = from.id;
+        public override UpdateData GetSetupData(SubscriberLevel subscriber) {
+            var data = new UpdateData(EntityName());
+            if (from != null) data["from"] = from.Id;
             data["message"] = message;
             data["read"] = read;
             data["date"] = date;

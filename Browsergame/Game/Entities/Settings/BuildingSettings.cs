@@ -22,10 +22,9 @@ namespace Browsergame.Game.Entities.Settings {
         public int buildPrice = 100;
 
 
-        public static void makeSettings() {
+        public static void MakeSettings() {
             foreach (BuildingType type in Enum.GetValues(typeof(BuildingType))) {
-                var setting = new BuildingSettings();
-                setting.name = type.ToString();
+                var setting = new BuildingSettings() { name = type.ToString() };
                 switch (type) {
                     case BuildingType.Stonecutter:
                         setting.buildCosts.Add(ItemType.Wood, 20);

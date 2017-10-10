@@ -17,15 +17,15 @@ namespace Browsergame.Server.SocketServer
         public string token;
         public long playerID;
         public bool isAuthenticated;
-        private Player getPlayer() {
-            return StateEngine.GetState().getPlayer(playerID);
+        private Player GetPlayer() {
+            return StateEngine.GetState().GetPlayer(playerID);
         }
         public PlayerWebsocket(IWebSocketConnection socket) {
             this.socket = socket;
             this.isAuthenticated = Security.authenticateRequest(socket);
             if (isAuthenticated) {
                 this.token = socket.ConnectionInfo.Cookies["token"];
-                this.playerID = StateEngine.GetState().getPlayer(token).id;
+                this.playerID = StateEngine.GetState().GetPlayer(token).Id;
             }
         }
 

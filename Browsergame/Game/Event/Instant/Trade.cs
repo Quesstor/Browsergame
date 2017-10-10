@@ -29,21 +29,18 @@ namespace Browsergame.Game.Event.Instant {
         private City city;
         private Player player;
         private int price;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
-            unit = state.getUnit(this.unitID);
-            city = state.getCity(this.cityID);
-            player = state.getPlayer(playerID);
+        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+            unit = state.GetUnit(this.unitID);
+            city = state.GetCity(this.cityID);
+            player = state.GetPlayer(playerID);
             price = city.getOffer(itemType).price;
 
-            needsOnDemandCalculation = new HashSet<Subscribable>();
-            needsOnDemandCalculation.Add(city);
-            needsOnDemandCalculation.Add(city.Owner);
-            needsOnDemandCalculation.Add(player);
+            needsOnDemandCalculation = new HashSet<Subscribable>() { city, city.Owner, player };
         }
 
-        public override bool conditions() {
-            if (unit.owner.id != player.id) return false;
-            if (city.Owner.id == player.id) return false;
+        public override bool Conditions() {
+            if (unit.owner.Id != player.Id) return false;
+            if (city.Owner.Id == player.Id) return false;
             if (quant < 0) { //City sells
                 if (unit.owner.Money < -quant * price) return false;
                 if (city.getOffer(itemType).Quant < -quant) return false;
@@ -55,7 +52,7 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
-        public override void execute() {
+        public override void Execute() {
 
             unit.owner.Money += quant * price;
             city.Owner.Money -= quant * price;
@@ -69,9 +66,9 @@ namespace Browsergame.Game.Event.Instant {
             unit.getItem(itemType).Quant -= quant;
         }
 
-        public override List<Event> followUpEvents() { return null; }
+        public override List<Event> FollowUpEvents() { return null; }
 
-        public override HashSet<Subscribable> updatedSubscribables() {
+        public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { unit, city, city.Owner, unit.owner };
         }
     }

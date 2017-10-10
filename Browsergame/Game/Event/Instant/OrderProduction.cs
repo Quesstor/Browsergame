@@ -28,40 +28,40 @@ namespace Browsergame.Game.Event.Instant {
         private City City;
         private Player Player;
         private Building Building;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
 
-            City = state.getCity(cityID);
+            City = state.GetCity(cityID);
             Building = City.getBuilding(BuildingType);
-            Player = state.getPlayer(playerID);
+            Player = state.GetPlayer(playerID);
             needsOnDemandCalculation.Add(City);
         }
-        public override bool conditions() {
+        public override bool Conditions() {
             if (Building.isUpgrading) return false;
-            if (City.Owner.id != Player.id) return false;
+            if (City.Owner.Id != Player.Id) return false;
             if (Building.Lvl == 0) return false;
-            foreach (var e in Building.setting.educts) {
+            foreach (var e in Building.Setting.educts) {
                 var amountNeeded = amount * e.Value * Building.Lvl;
                 if (City.getItem(e.Key).Quant < amountNeeded) return false;
             }
             return true;
         }
         private List<Event> unitProductionEvents;
-        public override void execute() {
+        public override void Execute() {
             unitProductionEvents = new List<Event>();
-            foreach (var e in Building.setting.educts) {
+            foreach (var e in Building.Setting.educts) {
                 var amountNeeded = amount * e.Value * Building.Lvl;
                 City.getItem(e.Key).Quant -= amountNeeded;
             }
 
-            if (Building.setting.unitProducts.Count > 0) {
+            if (Building.Setting.unitProducts.Count > 0) {
                 double productionTimePerUnit = 1f / Browsergame.Settings.productionsPerMinute;
                 DateTime startProductionTime = DateTime.Now.AddMinutes(Building.OrderedProductions * productionTimePerUnit);
 
-                foreach (var production in Building.setting.unitProducts) {
+                foreach (var production in Building.Setting.unitProducts) {
                     for (var i = 1; i <= amount; i++) {
                         var finishedTime = startProductionTime.AddMinutes(i * productionTimePerUnit);
-                        unitProductionEvents.Add(new AddUnits(City.id, production.Key, production.Value, finishedTime));
+                        unitProductionEvents.Add(new AddUnits(City.Id, production.Key, production.Value, finishedTime));
                     }
                 }
             }
@@ -69,10 +69,10 @@ namespace Browsergame.Game.Event.Instant {
                 Building.LastProduced = DateTime.Now;
             Building.OrderedProductions += amount;            
         }
-        public override List<Event> followUpEvents() {
+        public override List<Event> FollowUpEvents() {
             return unitProductionEvents;
         }
-        public override HashSet<Subscribable> updatedSubscribables() {
+        public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { City };
         }
     }

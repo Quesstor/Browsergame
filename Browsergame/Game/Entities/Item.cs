@@ -17,7 +17,7 @@ namespace Browsergame.Game.Entities {
             get { return quant; }
             set {
                 quant = value;
-                setUpdateData(SubscriberLevel.Owner, "quant", quant);
+                SetUpdateData(SubscriberLevel.Owner, "quant", quant);
             }
         }
         [JsonConverter(typeof(StringEnumConverter))]
@@ -27,7 +27,7 @@ namespace Browsergame.Game.Entities {
             quant = 0;
             this.type = ItemType;
         }
-        public static Dictionary<ItemType, Item> newItemDict() {
+        public static Dictionary<ItemType, Item> NewItemDict() {
             var dict = new Dictionary<ItemType, Item>();
             foreach (ItemType t in Enum.GetValues(typeof(ItemType))) {
                 dict[t] = new Item(t);
@@ -35,14 +35,13 @@ namespace Browsergame.Game.Entities {
             return dict;
         }
 
-        public override UpdateData getSetupData(SubscriberLevel subscriber) {
-            var data = new UpdateData(this.type.ToString());
-            data["quant"] = quant;
-            data["type"] = type;
-            return data;
+        public override UpdateData GetSetupData(SubscriberLevel subscriber) {
+            return new UpdateData(this.type.ToString()){
+                {"quant",quant },
+                {"type",type } };
         }
 
-        protected override string entityName() {
+        protected override string EntityName() {
             return type.ToString();
         }
     }

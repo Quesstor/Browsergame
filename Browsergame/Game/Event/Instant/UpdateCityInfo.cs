@@ -27,26 +27,26 @@ namespace Browsergame.Game.Event.Instant {
 
         private Player player;
         private City city;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            player = state.getPlayer(playerID);
-            city = state.getCity(cityID);
+            player = state.GetPlayer(playerID);
+            city = state.GetCity(cityID);
 
         }
-        public override bool conditions() {
+        public override bool Conditions() {
             if (setName.Length > 50) return false;
             if (setInfo.Length > 500) return false;
             return true;
         }
-        public override void execute() {
+        public override void Execute() {
             city.Info = setInfo;
             city.Name = setName;
 
         }
 
-        public override List<Event> followUpEvents() { return null; }
+        public override List<Event> FollowUpEvents() { return null; }
 
-        public override HashSet<Subscribable> updatedSubscribables() {
+        public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { city };
         }
     }

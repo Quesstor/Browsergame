@@ -48,11 +48,11 @@ namespace Browsergame.Server.WebServer
         private IDisposable server;
         public WebServer()
         {
-            startWebserver();
+            StartWebserver();
             Logger.log(18, Category.Webserver, Severity.Info, "Server started at "+ Settings.webserverUrl);
 
         }
-        private void startWebserver()
+        private void StartWebserver()
         {
             server = WebApp.Start<WebserverConfiguration>(Settings.webserverUrl);
         }

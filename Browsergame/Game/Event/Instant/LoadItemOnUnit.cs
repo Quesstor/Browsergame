@@ -27,9 +27,9 @@ namespace Browsergame.Game.Event.Instant {
         private Unit unit;
         private City city;
         private double freeItemSpace;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
-            player = state.getPlayer(playerID);
-            unit = state.getUnit(unitID);
+        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+            player = state.GetPlayer(playerID);
+            unit = state.GetUnit(unitID);
             city = unit.getCity();
             freeItemSpace = unit.setting.storage - (from item in unit.getItems(false) select item.Value.Quant).Sum();
             double dQuant = quant;
@@ -47,21 +47,21 @@ namespace Browsergame.Game.Event.Instant {
             needsOnDemandCalculation = new HashSet<Subscribable>();
         }
 
-        public override bool conditions() {
+        public override bool Conditions() {
             if (city == null) return false;
             if (quant == 0) return false;
-            return unit.owner.id == player.id;
+            return unit.owner.Id == player.Id;
         }
 
-        public override void execute() {
+        public override void Execute() {
             city.getItem(itemType).Quant -= quant;
             unit.getItem(itemType).Quant += quant;
 
         }
 
-        public override List<Event> followUpEvents() { return null; }
+        public override List<Event> FollowUpEvents() { return null; }
 
-        public override HashSet<Subscribable> updatedSubscribables() {
+        public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { city, unit };
         }
     }

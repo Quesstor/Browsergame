@@ -17,10 +17,9 @@ namespace Browsergame.Game.Entities.Settings {
 
         public static Dictionary<ItemType, ItemSettings> settings = new Dictionary<ItemType, ItemSettings>();
 
-        public static void makeSettings() {
+        public static void MakeSettings() {
             foreach (ItemType type in Enum.GetValues(typeof(ItemType))) {
-                var setting = new ItemSettings();
-                setting.name = type.ToString();
+                var setting = new ItemSettings() { name = type.ToString() };
                 switch (type) {
                     case ItemType.Water:
                         setting.rarity = ItemRarity.poor; 

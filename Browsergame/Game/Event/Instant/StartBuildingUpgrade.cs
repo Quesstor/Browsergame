@@ -26,48 +26,49 @@ namespace Browsergame.Game.Event.Instant {
         private Player player;
         private City city;
         private Building building;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
 
-            player = state.getPlayer(PlayerID);
+            player = state.GetPlayer(PlayerID);
             needsOnDemandCalculation.Add(player);
 
-            city = state.getCity(CityID);
+            city = state.GetCity(CityID);
             needsOnDemandCalculation.Add(city);
 
             building = city.getBuilding(BuildingType);
         }
-        public override bool conditions() {
-            if (city.Owner.id != player.id) return false;
-            if (player.Money < building.setting.buildPrice) return false;
+        public override bool Conditions() {
+            if (city.Owner.Id != player.Id) return false;
+            if (player.Money < building.Setting.buildPrice) return false;
             if (building.isUpgrading) return false;
-            foreach (var cost in building.setting.buildCosts) {
+            foreach (var cost in building.Setting.buildCosts) {
                 if (city.getItem(cost.Key).Quant < cost.Value * (building.Lvl + 1)) return false;
             }
             return true;
         }
-        public override void execute() {
-            player.Money -= building.setting.buildPrice * (building.Lvl + 1);
-            if (building.setting.educts.Count > 0) { //Remove ordered Productions
-                foreach (var educt in building.setting.educts) {
+
+        public override void Execute() {
+            player.Money -= building.Setting.buildPrice * (building.Lvl + 1);
+            if (building.Setting.educts.Count > 0) { //Remove ordered Productions
+                foreach (var educt in building.Setting.educts) {
                     city.getItem(educt.Key).Quant += educt.Value * building.Lvl * building.OrderedProductions;
                 }
                 building.OrderedProductions = 0;
             }
-            foreach (var cost in building.setting.buildCosts) {
+            foreach (var cost in building.Setting.buildCosts) {
                 city.getItem(cost.Key).Quant -= cost.Value * (building.Lvl + 1);
             }
             building.isUpgrading = true;
         }
 
-        public override List<Event> followUpEvents() {
-            var executionTime = DateTime.Now.AddSeconds(building.setting.buildTimeInSeconds);
+        public override List<Event> FollowUpEvents() {
+            var executionTime = DateTime.Now.AddSeconds(building.Setting.buildTimeInSeconds);
             var upgradeEvent = new Timed.BuildingUpgrade(CityID, BuildingType, executionTime);
-            upgradeEvent.addSubscription(player, SubscriberLevel.Owner);
+            upgradeEvent.AddSubscription(player, SubscriberLevel.Owner);
             return new List<Event>() { upgradeEvent };
         }
 
-        public override HashSet<Subscribable> updatedSubscribables() {
+        public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { player, city };
 
         }

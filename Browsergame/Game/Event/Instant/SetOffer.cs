@@ -30,16 +30,16 @@ namespace Browsergame.Game.Event.Instant {
 
         private City city;
         private Player player;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            city = state.getCity(cityID);
+            city = state.GetCity(cityID);
             needsOnDemandCalculation.Add(city);
 
-            player = state.getPlayer(playerID);
+            player = state.GetPlayer(playerID);
         }
 
-        public override bool conditions() {
-            if (city.Owner.id != playerID) return false;
+        public override bool Conditions() {
+            if (city.Owner.Id != playerID) return false;
             if (city.getOffer(itemType).Quant == newQuant && city.getOffer(itemType).price == newPrice) {
                 Logger.log(45, Category.Event, Severity.Warn, string.Format("setOffer rejected: same offer already"));
                 return false;
@@ -52,7 +52,7 @@ namespace Browsergame.Game.Event.Instant {
             return true;
         }
 
-        public override void execute() {
+        public override void Execute() {
             if (city.getOffer(itemType).Quant > 0) city.getItem(itemType).Quant += city.getOffer(itemType).Quant; //Return items to city from old sell orders
             if (newQuant > 0) city.getItem(itemType).Quant -= newQuant; //Take items from city for sell orders
             city.getOffer(itemType).Quant = newQuant;
@@ -61,9 +61,9 @@ namespace Browsergame.Game.Event.Instant {
 
         }
 
-        public override List<Event> followUpEvents() { return null; }
+        public override List<Event> FollowUpEvents() { return null; }
 
-        public override HashSet<Subscribable> updatedSubscribables() {
+        public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { city };
         }
     }

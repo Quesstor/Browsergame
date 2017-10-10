@@ -25,21 +25,21 @@ namespace Browsergame.Game.Event.Timed {
 
         private City city;
         private State state;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
-            city = state.getCity(cityID);
+            city = state.GetCity(cityID);
             this.state = state;
         }
 
-        public override bool conditions() { return true; }
+        public override bool Conditions() { return true; }
 
-        private HashSet<Subscribable> newUnits;
-        public override void execute() {
-            for (var i = 0; i < count; i++) newUnits.Add(state.addUnit(city, unittype));
+        private HashSet<Subscribable> newUnits = new HashSet<Subscribable>();
+        public override void Execute() {
+            for (var i = 0; i < count; i++) newUnits.Add(state.AddUnit(city, unittype));
         }
-        public override List<Event> followUpEvents() { return null; }
+        public override List<Event> FollowUpEvents() { return null; }
 
-        public override HashSet<Subscribable> updatedSubscribables() {
+        public override HashSet<Subscribable> UpdatedSubscribables() {
             return newUnits;
         }
     }

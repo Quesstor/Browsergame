@@ -21,68 +21,68 @@ namespace Browsergame.Game.Event.Instant {
         }
 
         private State state;
-        public override void getEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
             needsOnDemandCalculation = new HashSet<Subscribable>();
             this.state = state;
         }
 
-        public override bool conditions() {
+        public override bool Conditions() {
             return true;
         }
         private City startCity;
         private Player player;
-        public override void execute() {
-            player = state.addPlayer(name, token);
+        public override void Execute() {
+            player = state.AddPlayer(name, token);
             //startLoc.random(state);
 
             string cityName = string.Format("{0} Heimatstadt", name);
             string info = string.Format("{0} Heimatstadt", name);
-            startCity = state.addCity(cityName, player, info);
+            startCity = state.AddCity(cityName, player, info);
 
-            state.addUnit(startCity, UnitType.Trader);
-            state.addUnit(startCity, UnitType.Spears);
-            state.addUnit(startCity, UnitType.Spears);
+            state.AddUnit(startCity, UnitType.Trader);
+            state.AddUnit(startCity, UnitType.Spears);
+            state.AddUnit(startCity, UnitType.Spears);
 
-            state.addUnit(startCity, UnitType.Swords);
-            state.addUnit(startCity, UnitType.Swords);
-            state.addUnit(startCity, UnitType.Swords);
+            state.AddUnit(startCity, UnitType.Swords);
+            state.AddUnit(startCity, UnitType.Swords);
+            state.AddUnit(startCity, UnitType.Swords);
 
-            state.addUnit(startCity, UnitType.Horses);
-            state.addUnit(startCity, UnitType.Horses);
+            state.AddUnit(startCity, UnitType.Horses);
+            state.AddUnit(startCity, UnitType.Horses);
 
             if (name == "Test") {
-                state.addUnit(startCity, UnitType.Swords);
-                state.addUnit(startCity, UnitType.Swords);
-                state.addUnit(startCity, UnitType.Swords);
-                state.addUnit(startCity, UnitType.Swords);
-                state.addUnit(startCity, UnitType.Swords);
-                state.addUnit(startCity, UnitType.Swords);
+                state.AddUnit(startCity, UnitType.Swords);
+                state.AddUnit(startCity, UnitType.Swords);
+                state.AddUnit(startCity, UnitType.Swords);
+                state.AddUnit(startCity, UnitType.Swords);
+                state.AddUnit(startCity, UnitType.Swords);
+                state.AddUnit(startCity, UnitType.Swords);
             }
             if (name == "Bot0") {
-                state.addCity("BotCity 1", player, "Extra City for bots hehe");
+                state.AddCity("BotCity 1", player, "Extra City for bots hehe");
             }
 
             foreach (var otherPlayer in state.players.Values) {
-                if (otherPlayer.id == player.id) {
-                    player.addSubscription(player, SubscriberLevel.Owner);
-                    foreach (var pl in player.cities) pl.addSubscription(player, SubscriberLevel.Owner);
-                    foreach (Unit unit in player.units) unit.addSubscription(player, SubscriberLevel.Owner);
+                if (otherPlayer.Id == player.Id) {
+                    player.AddSubscription(player, SubscriberLevel.Owner);
+                    foreach (var pl in player.cities) pl.AddSubscription(player, SubscriberLevel.Owner);
+                    foreach (Unit unit in player.units) unit.AddSubscription(player, SubscriberLevel.Owner);
 
                 }
                 else {
-                    otherPlayer.addSubscription(player, SubscriberLevel.Other);
-                    player.addSubscription(otherPlayer, SubscriberLevel.Other);
+                    otherPlayer.AddSubscription(player, SubscriberLevel.Other);
+                    player.AddSubscription(otherPlayer, SubscriberLevel.Other);
                     foreach (var playerCity in player.cities)
-                        if (otherPlayer.isInVisibilityRange(playerCity.getLocation(false)))
-                            playerCity.addSubscription(otherPlayer, SubscriberLevel.Other);
+                        if (otherPlayer.IsInVisibilityRange(playerCity.getLocation(false)))
+                            playerCity.AddSubscription(otherPlayer, SubscriberLevel.Other);
                     foreach (var otherPlayerCity in otherPlayer.cities)
-                        if (player.isInVisibilityRange(otherPlayerCity.getLocation(false)))
-                            otherPlayerCity.addSubscription(player, SubscriberLevel.Other);
+                        if (player.IsInVisibilityRange(otherPlayerCity.getLocation(false)))
+                            otherPlayerCity.AddSubscription(player, SubscriberLevel.Other);
                 }
             }
         }
 
-        public override List<Event> followUpEvents() {
+        public override List<Event> FollowUpEvents() {
             if (name == "Test") {
                 var events = new List<Event>();
 
@@ -92,7 +92,7 @@ namespace Browsergame.Game.Event.Instant {
             return null;
         }
 
-        public override HashSet<Subscribable> updatedSubscribables() {
+        public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { player, startCity };
         }
     }
