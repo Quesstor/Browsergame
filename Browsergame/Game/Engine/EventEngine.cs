@@ -34,7 +34,8 @@ namespace Browsergame.Game.Engine {
             foreach (IEvent e in processingEvents) {
                 try {
                     e.GetEntities(state);
-                    OnDemandCalculations.Union(e.NeedsOnDemandCalculation());
+                    var onDemandCalculation = e.NeedsOnDemandCalculation();
+                    if (onDemandCalculation != null) OnDemandCalculations.Union(e.NeedsOnDemandCalculation());
                 }
                 catch (Exception ex) {
                     eventsFailedToGetEntities.Add(e);

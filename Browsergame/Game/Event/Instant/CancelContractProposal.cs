@@ -8,8 +8,8 @@ using Browsergame.Server.SocketServer;
 
 namespace Browsergame.Game.Event.Instant {
     [RoutableEvent]
-    class DeleteContractProposal : ProposeContract {
-        public DeleteContractProposal(long playerID, long toPlayerID, Contract contract) : base(playerID, toPlayerID, contract) { }
+    class CancelContractProposal : ProposeContract {
+        public CancelContractProposal(long playerID, long toPlayerID, Contract contract) : base(playerID, toPlayerID, contract) { }
 
         public override bool Conditions() {
             return player.HasOpenContractProposalTo(toPlayer, contract);
