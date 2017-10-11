@@ -42,11 +42,9 @@ namespace Browsergame.Game.Event.Timed {
         private List<Unit> atackingUnits;
         private List<Unit> defendingUnits;
 
-        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
-            needsOnDemandCalculation = new HashSet<Subscribable>();
+        public override void GetEntities(State state) {
             this.state = state;
             targetCity = state.GetCity(targetCityID);
-            needsOnDemandCalculation.Add(targetCity);
 
             player = state.GetPlayer(playerID);
             atackedPlayer = targetCity.Owner;
@@ -122,6 +120,10 @@ namespace Browsergame.Game.Event.Timed {
             atackingUnits.ForEach(u => updates.Add(u));
             defendingUnits.ForEach(u => updates.Add(u));
             return updates;
+        }
+
+        public override HashSet<Subscribable> NeedsOnDemandCalculation() {
+            return new HashSet<Subscribable>() { targetCity };
         }
     }
 }

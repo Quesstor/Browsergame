@@ -29,13 +29,11 @@ namespace Browsergame.Game.Event.Instant {
         private City city;
         private Player player;
         private int price;
-        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+        public override void GetEntities(State state) {
             unit = state.GetUnit(this.unitID);
             city = state.GetCity(this.cityID);
             player = state.GetPlayer(playerID);
             price = city.getOffer(itemType).price;
-
-            needsOnDemandCalculation = new HashSet<Subscribable>() { city, city.Owner, player };
         }
 
         public override bool Conditions() {
@@ -70,6 +68,10 @@ namespace Browsergame.Game.Event.Instant {
 
         public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { unit, city, city.Owner, unit.owner };
+        }
+
+        public override HashSet<Subscribable> NeedsOnDemandCalculation() {
+            return new HashSet<Subscribable>() { city, city.Owner, player };
         }
     }
 }

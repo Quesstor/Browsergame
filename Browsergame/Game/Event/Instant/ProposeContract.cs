@@ -10,9 +10,9 @@ using Browsergame.Game.Entities;
 namespace Browsergame.Game.Event.Instant {
     [RoutableEvent]
     class ProposeContract : Event {
-        private long playerID;
-        private long toPlayerID;
-        private Contract contract;
+        protected long playerID;
+        protected long toPlayerID;
+        protected Contract contract;
 
         public ProposeContract(long playerID, long toPlayerID, Contract contract) {
             this.playerID = playerID;
@@ -20,15 +20,11 @@ namespace Browsergame.Game.Event.Instant {
             this.contract = contract;
         }
 
-        private Player player;
-        private Player toPlayer;
-        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+        protected Player player;
+        protected Player toPlayer;
+        public override void GetEntities(State state) {
             player = state.GetPlayer(playerID);
             toPlayer = state.GetPlayer(toPlayerID);
-
-            needsOnDemandCalculation = new HashSet<Subscribable>();
-
-            throw new NotImplementedException();
         }
 
         public override bool Conditions() {
@@ -36,7 +32,7 @@ namespace Browsergame.Game.Event.Instant {
         }
 
         public override void Execute() {
-            toPlayer.MakeContractProposal(contract, player);
+            player.MakeContractProposal(toPlayer, contract);
         }
 
         public override List<Event> FollowUpEvents() { return null; }
@@ -44,5 +40,7 @@ namespace Browsergame.Game.Event.Instant {
         public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { toPlayer, player };
         }
+
+        public override HashSet<Subscribable> NeedsOnDemandCalculation() { return null; }
     }
 }

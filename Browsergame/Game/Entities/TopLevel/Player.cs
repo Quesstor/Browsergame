@@ -96,19 +96,29 @@ namespace Browsergame.Game.Entities {
             if (!contracts.ContainsKey(otherPlayer)) contracts[otherPlayer] = new HashSet<Contract>();
             contracts[otherPlayer].Add(contract);
         }
-        private void AddContractProposal(Contract contract, Player fromPlayer) {
-            if (contractProposalsToMe == null) contractProposalsToMe = new Dictionary<Player, HashSet<Contract>>();
-            if (!contractProposalsToMe.ContainsKey(fromPlayer)) contractProposalsToMe[fromPlayer] = new HashSet<Contract>();
-
-            SetUpdateDataDict(SubscriberLevel.Owner, "contractProposalsToMe", fromPlayer, contractProposalsToMe[fromPlayer]);
+        public bool HasOpenContractProposalTo(Player otherPlayer, Contract contract) {
+            if (contractProposalsFromMe == null) return false;
+            if (!contractProposalsFromMe.ContainsKey(otherPlayer)) return false;
+            return contractProposalsFromMe[otherPlayer].Contains(contract);
         }
-        public void MakeContractProposal(Contract contract, Player otherPlayer) {
+        public void MakeContractProposal(Player otherPlayer, Contract contract) {
             if (contractProposalsFromMe == null) contractProposalsFromMe = new Dictionary<Player, HashSet<Contract>>();
             if (!contractProposalsFromMe.ContainsKey(otherPlayer)) contractProposalsFromMe[otherPlayer] = new HashSet<Contract>();
-
             contractProposalsFromMe[otherPlayer].Add(contract);
-            SetUpdateDataDict(SubscriberLevel.Owner, "contractProposalsFromMe", otherPlayer, contractProposalsFromMe[otherPlayer]);
-            otherPlayer.AddContractProposal(contract, this);
+            SetUpdateDataDict(SubscriberLevel.Owner, "contractProposalsFromMe", otherPlayer.Id, contractProposalsFromMe[otherPlayer]);
+
+            if (otherPlayer.contractProposalsToMe == null) otherPlayer.contractProposalsToMe = new Dictionary<Player, HashSet<Contract>>();
+            if (!otherPlayer.contractProposalsToMe.ContainsKey(this)) otherPlayer.contractProposalsToMe[this] = new HashSet<Contract>();
+            otherPlayer.contractProposalsToMe[this].Add(contract);
+            otherPlayer.SetUpdateDataDict(SubscriberLevel.Owner, "contractProposalsToMe", this.Id, contractProposalsToMe[this]);
         }
+        public void CancelContractProposal(Player otherPlayer, Contract contract) {
+            contractProposalsFromMe[otherPlayer].Remove(contract);
+            otherPlayer.contractProposalsToMe[this].Remove(contract);
+            SetUpdateDataDict(SubscriberLevel.Owner, "contractProposalsFromMe", otherPlayer.Id, contractProposalsFromMe[otherPlayer]);
+            otherPlayer.SetUpdateDataDict(SubscriberLevel.Owner, "contractProposalsToMe", this.Id, contractProposalsToMe[this]);
+        }
+
+
     }
 }

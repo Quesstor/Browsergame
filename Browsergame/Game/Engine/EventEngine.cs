@@ -23,30 +23,28 @@ namespace Browsergame.Game.Engine {
             stopwatch.Start();
 
             State state = StateEngine.GetWriteState();
-            List<IEvent> processingEvents = GetEventList(state);
+            var processingEvents = GetEventList(state);
 
             var AllUpdatedSubscribables = new HashSet<Subscribable>();
             var OnDemandCalculations = new HashSet<Subscribable>();
             var newTimedEvents = new List<Event.Event>();
 
-            HashSet<Subscribable> needsOnDemandCalculation = null;
-            HashSet<Subscribable> newUpdatedSubscribables = null;
             List<IEvent> eventsFailedToGetEntities = new List<IEvent>();
             var sentCount = 0;
-            foreach (IEvent @event in processingEvents) {
+            foreach (IEvent e in processingEvents) {
                 try {
-                    @event.GetEntities(state, out needsOnDemandCalculation);
-                    OnDemandCalculations.Union(needsOnDemandCalculation);
+                    e.GetEntities(state);
+                    OnDemandCalculations.Union(e.NeedsOnDemandCalculation());
                 }
                 catch (Exception ex) {
-                    eventsFailedToGetEntities.Add(@event);
+                    eventsFailedToGetEntities.Add(e);
                     Logger.log(41, Category.EventEngine, Severity.Error, "Event failed to get Entities: " + ex.ToString());
                 }
             }
             foreach (IEvent e in eventsFailedToGetEntities) processingEvents.Remove(e);
             var processedEvents = new List<Event.IEvent>();
             if (processingEvents.Count > 0) {
-                foreach (var s in needsOnDemandCalculation) s.OnDemandCalculation();
+                foreach (var s in OnDemandCalculations) s.OnDemandCalculation();
                 foreach (var e in processingEvents) {
                     if (e.Conditions()) {
                         try {

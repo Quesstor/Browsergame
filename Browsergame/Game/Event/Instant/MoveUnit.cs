@@ -26,9 +26,7 @@ namespace Browsergame.Game.Event.Instant {
         private Unit unit;
         private City targetCity;
         
-        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
-            needsOnDemandCalculation = new HashSet<Subscribable>();
-
+        public override void GetEntities(State state) {
             player = state.GetPlayer(playerID);
             targetCity = state.GetCity(targetCityID);
             unit = state.GetUnit(unitID);
@@ -57,6 +55,10 @@ namespace Browsergame.Game.Event.Instant {
         }
         public override List<Event> FollowUpEvents() {
             return new List<Event> { arrivalEvent };
+        }
+
+        public override HashSet<Subscribable> NeedsOnDemandCalculation() {
+            return null;
         }
     }
 }

@@ -16,7 +16,8 @@ namespace Browsergame.Game.Event {
     interface IEvent {
         ManualResetEvent Processed { get; }
 
-        void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
+        void GetEntities(State state);
+        HashSet<Subscribable> NeedsOnDemandCalculation();
         bool Conditions();
         void Execute();
         List<Event> FollowUpEvents();
@@ -28,7 +29,8 @@ namespace Browsergame.Game.Event {
 
         protected override string EntityName() { return "Event"; }
 
-        public abstract void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation);
+        public abstract void GetEntities(State state);
+        public abstract HashSet<Subscribable> NeedsOnDemandCalculation();
         public abstract bool Conditions();
         public abstract void Execute();
         public abstract List<Event> FollowUpEvents();

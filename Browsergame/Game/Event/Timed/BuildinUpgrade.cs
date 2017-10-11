@@ -33,8 +33,7 @@ namespace Browsergame.Game.Event.Timed {
 
         private Building building;
         private City city;
-        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
-            needsOnDemandCalculation = new HashSet<Subscribable>();
+        public override void GetEntities(State state) {
             city = state.GetCity(cityID);
             building = city.getBuilding(BuildingType);
         }
@@ -55,5 +54,7 @@ namespace Browsergame.Game.Event.Timed {
         public override HashSet<Subscribable> UpdatedSubscribables() {
             return new HashSet<Subscribable> { city };
         }
+
+        public override HashSet<Subscribable> NeedsOnDemandCalculation() { return null; }
     }
 }

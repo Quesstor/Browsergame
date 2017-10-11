@@ -28,14 +28,11 @@ namespace Browsergame.Game.Event.Instant {
         private Player player;
         private List<Unit> units;
 
-        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
-            needsOnDemandCalculation = new HashSet<Subscribable>();
-
+        public override void GetEntities(State state) {
             player = state.GetPlayer(playerID);
             targetCity = state.GetCity(targetCityID);
 
             startCity = state.GetCity(startCityID);
-            needsOnDemandCalculation.Add(startCity);
 
             units = new List<Unit>();
             foreach (var unitgroup in unitCounts) {
@@ -74,6 +71,10 @@ namespace Browsergame.Game.Event.Instant {
             HashSet<Subscribable> updates = new HashSet<Subscribable> { startCity };
             units.ForEach(u => updates.Add(u));
             return updates;
+        }
+
+        public override HashSet<Subscribable> NeedsOnDemandCalculation() {
+            return new HashSet<Subscribable>() { startCity };
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Browsergame.Game.Event.Instant {
         private Unit unit;
         private City city;
         private double freeItemSpace;
-        public override void GetEntities(State state, out HashSet<Subscribable> needsOnDemandCalculation) {
+        public override void GetEntities(State state) {
             player = state.GetPlayer(playerID);
             unit = state.GetUnit(unitID);
             city = unit.getCity();
@@ -43,10 +43,10 @@ namespace Browsergame.Game.Event.Instant {
                 dQuant = Math.Min(quant, freeItemSpace);
                 quant = (int)Math.Floor(dQuant);
             }
-
-            needsOnDemandCalculation = new HashSet<Subscribable>();
         }
-
+        public override HashSet<Subscribable> NeedsOnDemandCalculation() {
+            return null;
+        }
         public override bool Conditions() {
             if (city == null) return false;
             if (quant == 0) return false;
