@@ -39,7 +39,7 @@ namespace Browsergame.Game.Event.Instant {
                 quant = (int)Math.Ceiling(dQuant);
             }
             else { //Load to Unit
-                dQuant = Math.Min(quant, city.getItem(itemType).Quant);
+                dQuant = Math.Min(quant, city.GetItem(itemType).Quant);
                 dQuant = Math.Min(quant, freeItemSpace);
                 quant = (int)Math.Floor(dQuant);
             }
@@ -54,7 +54,7 @@ namespace Browsergame.Game.Event.Instant {
         }
 
         public override void Execute() {
-            city.getItem(itemType).Quant -= quant;
+            city.GetItem(itemType).Quant -= quant;
             unit.getItem(itemType).Quant += quant;
 
         }

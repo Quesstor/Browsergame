@@ -66,7 +66,7 @@ namespace Browsergame.Game.Entities {
                 SetUpdateData(SubscriberLevel.Owner, "populationSurplus", populationSurplus);
             }
         }
-        public GeoCoordinate getLocation(bool addToUpdateData) {
+        public GeoCoordinate GetLocation(bool addToUpdateData) {
             if (addToUpdateData) {
                 SetUpdateData(SubscriberLevel.Other, "location", location);
                 SetUpdateData(SubscriberLevel.Owner, "location", location);
@@ -81,22 +81,22 @@ namespace Browsergame.Game.Entities {
             }
         }
 
-        public Item getItem(ItemType itemtype, bool addToUpdateData = true) {
+        public Item GetItem(ItemType itemtype, bool addToUpdateData = true) {
             if (addToUpdateData) SetUpdateDataDict(SubscriberLevel.Owner, "items", itemtype, items[itemtype]);
             return items[itemtype];
         }
-        public Offer getOffer(ItemType itemtype, bool addToUpdateData = true) {
+        public Offer GetOffer(ItemType itemtype, bool addToUpdateData = true) {
             if (addToUpdateData) {
                 SetUpdateDataDict(SubscriberLevel.Owner, "offers", itemtype, offers[itemtype]);
                 SetUpdateDataDict(SubscriberLevel.Other, "offers", itemtype, offers[itemtype]);
             }
             return offers[itemtype];
         }
-        public Building getBuilding(BuildingType bt, bool addToUpdateData = true) {
+        public Building GetBuilding(BuildingType bt, bool addToUpdateData = true) {
             if (addToUpdateData) SetUpdateDataDict(SubscriberLevel.Owner, "buildings", bt, buildings[bt].GetUpdateData(SubscriberLevel.Owner));
             return buildings[bt];
         }
-        public Dictionary<int, Dictionary<ItemType, double>> getConsumesPerPopulation(bool addToUpdateData = true) {
+        public Dictionary<int, Dictionary<ItemType, double>> GetConsumesPerPopulation(bool addToUpdateData = true) {
             if(addToUpdateData) SetUpdateData(SubscriberLevel.Owner, "consumesPerPopulation", consumesPerPopulation);
             return consumesPerPopulation;
         }
@@ -113,12 +113,12 @@ namespace Browsergame.Game.Entities {
             owner.cities.Add(this);
             type = rand.Next(0, Browsergame.Settings.CityTypeCount);
             buildings = new Dictionary<BuildingType, Building>();
-            addBuilding(BuildingType.Well, 1);
-            addBuilding(BuildingType.Woodcutter, 1);
-            addBuilding(BuildingType.Stonecutter, 1);
-            addBuilding(BuildingType.Applefarm, 1);
-            addBuilding(BuildingType.Mine, 0);
-            addBuilding(BuildingType.Coalmaker, 0);
+            AddBuilding(BuildingType.Well, 1);
+            AddBuilding(BuildingType.Woodcutter, 1);
+            AddBuilding(BuildingType.Stonecutter, 1);
+            AddBuilding(BuildingType.Applefarm, 1);
+            AddBuilding(BuildingType.Mine, 0);
+            AddBuilding(BuildingType.Coalmaker, 0);
 
             consumesPerPopulation = new Dictionary<int, Dictionary<ItemType, double>>();
             consumesPerPopulation[1] = Browsergame.Settings.GetConsumeGoods(1);
@@ -128,7 +128,7 @@ namespace Browsergame.Game.Entities {
             foreach (Entities.Item item in items.Values) item.Quant = 100;
             items[ItemType.Coal].Quant = 0;
         }
-        private void addBuilding(BuildingType type, int lvl) {
+        private void AddBuilding(BuildingType type, int lvl) {
             buildings[type] = new Building(type);
             buildings[type].Lvl = lvl;
         }
@@ -196,7 +196,7 @@ namespace Browsergame.Game.Entities {
 
                 if (population == this.population) {
                     if (missingGoodsFactor < 1 && populationSurplus > missingGoodsFactor) populationSurplus = missingGoodsFactor;
-                    else populationSurplus += missingGoodsFactor * TotalMinutesConsumed * Browsergame.Settings.populationSurplusPerMinute;
+                    else populationSurplus += missingGoodsFactor * TotalMinutesConsumed * Browsergame.Settings.populationSurplusPerMinuteInPercent;
                     populationSurplus = Math.Min(1, populationSurplus);
                 }
             }

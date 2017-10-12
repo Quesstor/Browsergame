@@ -37,7 +37,8 @@ namespace Browsergame.Server.SocketServer {
             SocketMessage message;
             try {
                 message = new SocketMessage(socketMessage);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 string msg = string.Format("Can not parse message {1}: \n {0}", e.Message, socketMessage);
                 Logger.log(12, Category.WebSocket, Severity.Error, msg);
                 return;
@@ -45,8 +46,9 @@ namespace Browsergame.Server.SocketServer {
             try {
                 if (message.controllerType != null) RouteToController(socket, message);
                 else RouteToEvent(socket, message);
-            } catch (Exception e) {
-                string msg = string.Format("Can not route message {1}: \n {0}", e.Message, socketMessage);
+            }
+            catch (Exception e) {
+                string msg = string.Format("Can not route message {1}: \n {0}", e.ToString(), socketMessage);
                 Logger.log(46, Category.WebSocket, Severity.Error, msg);
             }
         }
@@ -57,21 +59,28 @@ namespace Browsergame.Server.SocketServer {
             var constructor = message.eventType.GetConstructors()[0];
             var constructorParams = new object[constructor.GetParameters().Count()];
             foreach (var param in constructor.GetParameters()) {
-                Type type = param.ParameterType;
-                object paramValue = null;
-                if (param.Name == "playerID") paramValue = socket.playerID;
-                else {
-                    var jsonParam = message.jsonPayload[param.Name];
-                    if (jsonParam == null) throw new ArgumentException(string.Format("{0}. parameter named '{1}' not found in payload", param.Position, param.Name));
-                    if (type.GetTypeInfo().IsEnum) {
-                        if (jsonParam.Value.GetType().Name == "String") paramValue = Enum.Parse(type, (string)jsonParam.Value);
-                        else paramValue = Enum.ToObject(type, jsonParam.Value);
-                    } else {
-                        if (type == typeof(string)) paramValue = jsonParam.ToString();
-                        else paramValue = JsonConvert.DeserializeObject(jsonParam.ToString(), type);
+                try {
+                    Type type = param.ParameterType;
+                    object paramValue = null;
+                    if (param.Name == "playerID") paramValue = socket.playerID;
+                    else {
+                        var jsonParam = message.jsonPayload[param.Name];
+                        if (jsonParam == null) throw new ArgumentException(string.Format("{0}. parameter named '{1}' not found in payload", param.Position, param.Name));
+                        if (type.GetTypeInfo().IsEnum) {
+                            if (jsonParam.Value.GetType().Name == "String") paramValue = Enum.Parse(type, (string)jsonParam.Value);
+                            else paramValue = Enum.ToObject(type, jsonParam.Value);
+                        }
+                        else {
+                            if (type == typeof(string)) paramValue = jsonParam.ToString();
+                            if (type == typeof(bool)) paramValue = JsonConvert.DeserializeObject(jsonParam.ToString().ToLower(), type);
+                            else paramValue = JsonConvert.DeserializeObject(jsonParam.ToString(), type);
+                        }
                     }
+                    constructorParams[param.Position] = paramValue;
                 }
-                constructorParams[param.Position] = paramValue;
+                catch (Exception e) {
+                    throw new Exception(string.Format("Failed to parse param '{0}'.", param.Name), e);
+                }
             }
 
             var eventObject = (Event)Activator.CreateInstance(message.eventType, constructorParams); //constructorParams

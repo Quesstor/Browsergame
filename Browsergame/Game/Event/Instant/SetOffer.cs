@@ -37,11 +37,11 @@ namespace Browsergame.Game.Event.Instant {
 
         public override bool Conditions() {
             if (city.Owner.Id != playerID) return false;
-            if (city.getOffer(itemType).Quant == newQuant && city.getOffer(itemType).price == newPrice) {
+            if (city.GetOffer(itemType).Quant == newQuant && city.GetOffer(itemType).price == newPrice) {
                 Logger.log(45, Category.Event, Severity.Warn, string.Format("setOffer rejected: same offer already"));
                 return false;
             }
-            var cityQuantWithSellOffers = city.getItem(itemType).Quant + Math.Max(0, city.getOffer(itemType).Quant);
+            var cityQuantWithSellOffers = city.GetItem(itemType).Quant + Math.Max(0, city.GetOffer(itemType).Quant);
             if (newQuant > 0 && cityQuantWithSellOffers < newQuant) {
                 Logger.log(44, Category.Event, Severity.Warn, string.Format("setOffer rejected: city only has {0} < {1} quant", cityQuantWithSellOffers, newQuant));
                 return false;
@@ -50,10 +50,10 @@ namespace Browsergame.Game.Event.Instant {
         }
 
         public override void Execute() {
-            if (city.getOffer(itemType).Quant > 0) city.getItem(itemType).Quant += city.getOffer(itemType).Quant; //Return items to city from old sell orders
-            if (newQuant > 0) city.getItem(itemType).Quant -= newQuant; //Take items from city for sell orders
-            city.getOffer(itemType).Quant = newQuant;
-            city.getOffer(itemType).price = newQuant == 0 ? 0 : newPrice;
+            if (city.GetOffer(itemType).Quant > 0) city.GetItem(itemType).Quant += city.GetOffer(itemType).Quant; //Return items to city from old sell orders
+            if (newQuant > 0) city.GetItem(itemType).Quant -= newQuant; //Take items from city for sell orders
+            city.GetOffer(itemType).Quant = newQuant;
+            city.GetOffer(itemType).price = newQuant == 0 ? 0 : newPrice;
 
 
         }

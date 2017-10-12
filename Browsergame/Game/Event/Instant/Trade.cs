@@ -33,7 +33,7 @@ namespace Browsergame.Game.Event.Instant {
             unit = state.GetUnit(this.unitID);
             city = state.GetCity(this.cityID);
             player = state.GetPlayer(playerID);
-            price = city.getOffer(itemType).price;
+            price = city.GetOffer(itemType).price;
         }
 
         public override bool Conditions() {
@@ -41,7 +41,7 @@ namespace Browsergame.Game.Event.Instant {
             if (city.Owner.Id == player.Id) return false;
             if (quant < 0) { //City sells
                 if (unit.owner.Money < -quant * price) return false;
-                if (city.getOffer(itemType).Quant < -quant) return false;
+                if (city.GetOffer(itemType).Quant < -quant) return false;
             }
             else { //City buys
                 if (city.Owner.Money < quant * price) return false;
@@ -55,11 +55,11 @@ namespace Browsergame.Game.Event.Instant {
             unit.owner.Money += quant * price;
             city.Owner.Money -= quant * price;
             if (quant < 0) { //City sells
-                city.getOffer(itemType).Quant += quant;
+                city.GetOffer(itemType).Quant += quant;
             }
             else { //City buys
-                city.getItem(itemType).Quant += quant;
-                city.getOffer(itemType).Quant += quant;
+                city.GetItem(itemType).Quant += quant;
+                city.GetOffer(itemType).Quant += quant;
             }
             unit.getItem(itemType).Quant -= quant;
         }

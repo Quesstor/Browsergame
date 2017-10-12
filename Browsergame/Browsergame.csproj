@@ -98,19 +98,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Game\Content\Buildings.cs" />
     <Compile Include="Game\Engine\Engine.cs" />
     <Compile Include="Game\Engine\EventEngine.cs" />
     <Compile Include="Game\Engine\TickEngine.cs" />
     <Compile Include="Game\Entities\Building.cs" />
     <Compile Include="Game\Event\Instant\CancelContractProposal.cs" />
     <Compile Include="Game\Event\Instant\ProposeContract.cs" />
-    <Compile Include="Game\Utils\Entity.cs" />
+    <Compile Include="Game\Abstract\Entity.cs" />
     <Compile Include="Game\Entities\Offer.cs" />
     <Compile Include="Game\Entities\Item.cs" />
     <Compile Include="Game\Entities\Message.cs" />
     <Compile Include="Game\Entities\TopLevel\City.cs" />
-    <Compile Include="Game\Utils\HasUpdateData.cs" />
+    <Compile Include="Game\Abstract\HasUpdateData.cs" />
     <Compile Include="Game\Entities\TopLevel\Player.cs" />
     <Compile Include="Game\Entities\Settings\BuildingSettings.cs" />
     <Compile Include="Game\Entities\Settings\ItemSettings.cs" />
@@ -134,8 +133,10 @@
     <Compile Include="Game\Event\Instant\NewPlayer.cs" />
     <Compile Include="Game\Event\_Event.cs" />
     <Compile Include="Game\Engine\StateEngine.cs" />
-    <Compile Include="Game\Utils\Subscribable.cs" />
-    <Compile Include="Game\Utils\UpdateData.cs" />
+    <Compile Include="Game\Abstract\Subscribable.cs" />
+    <Compile Include="Game\Abstract\UpdateData.cs" />
+    <Compile Include="Game\Utils\Contract.cs" />
+    <Compile Include="Game\Utils\ContractProposal.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server\SocketServer\SocketServer.cs" />

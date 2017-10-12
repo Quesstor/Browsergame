@@ -1,10 +1,16 @@
 ﻿<div style="color:white; z-index: 1051; padding: 20px;position:fixed; bottom:0; right:0; width:100%; max-height: 90%; overflow:auto"
-     ng-show="$root.debug">
-    <pre ng-repeat="(k,data) in $root[show]" style="overflow:auto; max-width: 250px; float:left">{{k}}: {{data|json}}</pre>
+    ng-show="$root.debug">
+
     <div class="btn-group">
-        <div class="btn btn-default" ng-click="$parent.show=k" ng-repeat="(k,data) in $root">
+        <div class="btn btn-default"
+            ng-click="$parent.show=k"
+            ng-repeat="(k,data) in $root">
             {{k}}
         </div>
+    </div>
+    <div ng-repeat="(k,data) in $root[show]"
+        style="display: table">
+        <pre style="overflow:auto; max-width: 250px; float:left">{{k}}: {{data|json}}</pre>
     </div>
     <br />
 </div>

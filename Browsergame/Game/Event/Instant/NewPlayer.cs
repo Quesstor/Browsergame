@@ -72,10 +72,10 @@ namespace Browsergame.Game.Event.Instant {
                     otherPlayer.AddSubscription(player, SubscriberLevel.Other);
                     player.AddSubscription(otherPlayer, SubscriberLevel.Other);
                     foreach (var playerCity in player.cities)
-                        if (otherPlayer.IsInVisibilityRange(playerCity.getLocation(false)))
+                        if (otherPlayer.IsInVisibilityRange(playerCity.GetLocation(false)))
                             playerCity.AddSubscription(otherPlayer, SubscriberLevel.Other);
                     foreach (var otherPlayerCity in otherPlayer.cities)
-                        if (player.IsInVisibilityRange(otherPlayerCity.getLocation(false)))
+                        if (player.IsInVisibilityRange(otherPlayerCity.GetLocation(false)))
                             otherPlayerCity.AddSubscription(player, SubscriberLevel.Other);
                 }
             }

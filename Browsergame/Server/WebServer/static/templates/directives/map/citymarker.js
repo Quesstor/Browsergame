@@ -16,6 +16,15 @@
             targetCityID: targetCityId
         });
     }
+    $scope.click = function(){
+        if(mapService.zoomlevel==12){
+            $rootScope.selectedCity = $scope.city;
+            $("#cityModal").modal()            
+        }else{
+            $rootScope.selectedPlayer = $scope.owner();
+            $("#negotiationsModal").modal()                        
+        }
+    }
     $scope.rightclickCity = function () {
         if ($rootScope.selectedUnits) {
             $scope.atack($scope.city.id);
@@ -68,6 +77,11 @@
             if($scope.city.offers[k].quant != 0) count += 1;
         }
         return count;
+    }
+    $scope.owner = function(){
+        if(!$scope.city) return;                
+        if($scope.city.owner == $rootScope.player.id) return $rootScope.player;
+        return $rootScope.players[$scope.city.owner];
     }
 })
 

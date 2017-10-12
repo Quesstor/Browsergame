@@ -59,7 +59,7 @@ namespace Browsergame.Game.Event.Instant {
         }
         private Event fightEvent;
         public override List<Event> FollowUpEvents() {
-            var range = targetCity.getLocation(false).GetDistanceTo(startCity.getLocation(false));
+            var range = targetCity.GetLocation(false).GetDistanceTo(startCity.GetLocation(false));
             var speed = units.Min(u => u.setting.movespeed);
             var travelTimeInSeconds = (range / Settings.MoveSpeedInMetersPerSecond) / speed;
 

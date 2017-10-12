@@ -5,13 +5,14 @@ app.config(['$routeProvider', function ($routeProvider) {
     when('/game', {templateUrl: '/templates/game.html',controller: 'gameCtrl'}).
     otherwise({redirectTo: '/login'});
 }]);
-
+//Modals
 app.directive("audiomodal", function () { return { templateUrl: '/templates/directives/modals/audio.html' } });
 app.directive("optionsmodal", function () { return { templateUrl: '/templates/directives/modals/options.html' } });
 app.directive("playersmodal", function () { return { templateUrl: '/templates/directives/modals/players.html' } });
-app.directive("messagesmodal", function () { return { templateUrl: '/templates/directives/modals/messages.html' } });
+app.directive("messagesmodal", function () { return { templateUrl: '/templates/directives/modals/messages.html' , controller: 'messages'} });
+app.directive("negotiationsmodal", function () { return { templateUrl: '/templates/directives/modals/negotiations.html', controller: 'negotiations'  } });
 app.directive("citymodal", function () { return { templateUrl: '/templates/directives/modals/city.html', controller: 'utilCtrl' } });
-//city
+//City
 app.directive("cityinfo", function () { return { templateUrl: '/templates/directives/city/cityinfo.html', controller: 'cityinfo' } });
 app.directive("pricemanager", function () { return { templateUrl: '/templates/directives/city/pricemanager.html', controller: 'pricemanager' } });
 app.directive("trademanager", function () { return { templateUrl: '/templates/directives/city/trademanager.html', controller: 'trademanager' } });

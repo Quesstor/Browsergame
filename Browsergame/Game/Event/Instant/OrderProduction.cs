@@ -30,7 +30,7 @@ namespace Browsergame.Game.Event.Instant {
         private Building Building;
         public override void GetEntities(State state) {
             City = state.GetCity(cityID);
-            Building = City.getBuilding(BuildingType);
+            Building = City.GetBuilding(BuildingType);
             Player = state.GetPlayer(playerID);
         }
         public override bool Conditions() {
@@ -39,7 +39,7 @@ namespace Browsergame.Game.Event.Instant {
             if (Building.Lvl == 0) return false;
             foreach (var e in Building.Setting.educts) {
                 var amountNeeded = amount * e.Value * Building.Lvl;
-                if (City.getItem(e.Key).Quant < amountNeeded) return false;
+                if (City.GetItem(e.Key).Quant < amountNeeded) return false;
             }
             return true;
         }
@@ -48,7 +48,7 @@ namespace Browsergame.Game.Event.Instant {
             unitProductionEvents = new List<Event>();
             foreach (var e in Building.Setting.educts) {
                 var amountNeeded = amount * e.Value * Building.Lvl;
-                City.getItem(e.Key).Quant -= amountNeeded;
+                City.GetItem(e.Key).Quant -= amountNeeded;
             }
 
             if (Building.Setting.unitProducts.Count > 0) {

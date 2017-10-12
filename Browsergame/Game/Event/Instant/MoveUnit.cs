@@ -42,7 +42,7 @@ namespace Browsergame.Game.Event.Instant {
 
             var startCity = unit.getCity();
 
-            var range = targetCity.getLocation(false).GetDistanceTo(startCity.getLocation(false));
+            var range = targetCity.GetLocation(false).GetDistanceTo(startCity.GetLocation(false));
             var travelTimeInSeconds = (range / Settings.MoveSpeedInMetersPerSecond) * unit.setting.movespeed;
             var arrivalTime = DateTime.Now.AddSeconds(travelTimeInSeconds);
 

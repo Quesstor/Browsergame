@@ -35,7 +35,7 @@ namespace Browsergame.Game.Event.Timed {
         private City city;
         public override void GetEntities(State state) {
             city = state.GetCity(cityID);
-            building = city.getBuilding(BuildingType);
+            building = city.GetBuilding(BuildingType);
         }
 
         public override bool Conditions() {

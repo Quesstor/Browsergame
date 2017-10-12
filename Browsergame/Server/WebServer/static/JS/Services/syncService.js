@@ -29,7 +29,11 @@
             mapService.panHome();
         }
         if (data.player) {
-            angular.merge($rootScope.player, data.player);
+            if(data.player.id == $rootScope.settings.playerId) angular.merge($rootScope.player, data.player);
+            else {
+                if(!$rootScope.players[data.player.id])$rootScope.players[data.player.id] = data.player; 
+                else angular.merge($rootScope.players[data.player.id], data.player);
+            }           
         }
         if (data.event) {
             if (!$rootScope.events[data.event.type]) $rootScope.events[data.event.type] = [];
@@ -51,9 +55,6 @@
             if ($rootScope.cities[data.city.id]) angular.merge($rootScope.cities[data.city.id], data.city);
             else $rootScope.cities[data.city.id] = data.city;
             mapService.drawAll();
-        }
-        if (data.players) {
-            $rootScope.players[data.players.id] = data.players;
         }
         if (data.unit) {
             if(data.unit.deleted) delete $rootScope.units[data.unit.id];
@@ -171,7 +172,7 @@
     syncService.connected = false;
     syncService.connect = function () {
         if (syncService.connected) return;
-        syncService.connected = true;
+        syncService.resetData();
 
         var socketUrl = "ws:" + $location.absUrl().split(":")[1] + ":2121";
         console.log("Connecting to " + socketUrl);
@@ -188,6 +189,7 @@
             .onOpen(function () {
                 syncService.send("setup");
             });
+        syncService.connected = true;
     }
     syncService.disconnect = function () {
         if (!syncService.connected) return;

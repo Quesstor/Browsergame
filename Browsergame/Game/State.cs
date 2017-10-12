@@ -78,7 +78,7 @@ namespace Browsergame.Game {
             var newLocation = new GeoCoordinate(48, 5);
             var count = 0;
             while (true) {
-                if ((from city in cities.Values where city.getLocation(false).GetDistanceTo(newLocation) < Settings.minRangeBetweenCitiesInMeters select city).Count() == 0)
+                if ((from city in cities.Values where city.GetLocation(false).GetDistanceTo(newLocation) < Settings.minRangeBetweenCitiesInMeters select city).Count() == 0)
                     return newLocation;
 
                 //offsets in meters

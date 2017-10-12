@@ -1,8 +1,7 @@
 ﻿<div style="position: relative">
     <div ng-style="{'left': (-markerSize()/2 + 25)+'px' , 'top': (-markerSize()/2 + 25)+'px'}"
         style="position: absolute;"
-        ng-click="$root.selectedCity = city;"
-        data-toggle="modal" data-target="#cityModal"
+        ng-click="click()"
         ng-right-click="rightclickCity()"
         ng-dblclick="$event.stopPropagation();"
         ng-mouseover="hoverCity(true);hover=true;"
@@ -15,22 +14,32 @@
                     'height':markerSize()+'px'}"
             ng-class="{'cityWithUnit':uiService.playerHasUnitOnCity()}"
             class="hoverpointer">
-            <div ng-show="mapService.zoomlevel==12" style="text-align: center;">
-                <div style="padding-top: 150px;">
-                    <div ng-style="{'background': 'url(img/icon/banner.png) no-repeat', 'background-size': '200px auto'}"  
+            <div ng-style="{'padding-top': 0.8*markerSize()+'px'}">
+                <div ng-show="mapService.zoomlevel==12"
+                    style="text-align: center;">
+                    <div ng-style="{'background': 'url(img/icon/banner.png) no-repeat', 'background-size': '200px auto'}"
                         style="background-position: bottom; height: 36px; padding-top: 2px;"
                         ng-class="{'text-success':city.owner==$root.player.id}">
                         {{city.name}}
                     </div>
-                </div>
-                <span ng-show="city.helptext" class="glyphicon glyphicon-info-sign"></span>
-                {{city.helptext}}
+                    <span ng-show="city.helptext"
+                        class="glyphicon glyphicon-info-sign"></span> {{city.helptext}}
 
-                <div class="label label-primary" ng-show="playersCivilUnitsCount()" style="font-size: 100%; display:block;">
-                    {{playersCivilUnitsCount()}} Händler in der Stadt
+                    <div class="label label-default"
+                        ng-show="playersCivilUnitsCount()"
+                        style="font-size: 100%; display:block;">
+                        {{playersCivilUnitsCount()}} Händler in der Stadt
+                    </div>
+                    <div class="label label-success"
+                        ng-show="cityOffersCount()"
+                        style="font-size: 100%; display:block;">
+                        {{cityOffersCount()}} Handelsangebote
+                    </div>
                 </div>
-                <div class="label label-success" ng-show="cityOffersCount()" style="font-size: 100%; display:block;">
-                    {{cityOffersCount()}} Handelsangebote
+                <div ng-hide="mapService.zoomlevel==12"
+                    style="text-align: center;">
+                    <div class="label label-default"
+                        ng-class="{'label-primary':owner().id == $root.player.id}">{{owner().name}}</div>
                 </div>
             </div>
         </div>

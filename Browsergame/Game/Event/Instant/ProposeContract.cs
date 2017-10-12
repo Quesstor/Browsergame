@@ -12,27 +12,37 @@ namespace Browsergame.Game.Event.Instant {
     class ProposeContract : Event {
         protected long playerID;
         protected long toPlayerID;
-        protected Contract contract;
-
-        public ProposeContract(long playerID, long toPlayerID, Contract contract) {
-            this.playerID = playerID;
-            this.toPlayerID = toPlayerID;
-            this.contract = contract;
-        }
+        protected ContractType contract;
+        protected int costs;
+        protected int validHours;
+        private bool threatenWithWar;
 
         protected Player player;
         protected Player toPlayer;
+
+        public ProposeContract(long playerID, long toPlayerID, ContractType contract, int costs, int validHours, bool threatenWithWar) {
+            this.playerID = playerID;
+            this.toPlayerID = toPlayerID;
+            this.contract = contract;
+            this.costs = costs;
+            this.validHours = validHours;
+            this.threatenWithWar = threatenWithWar;
+        }
+
         public override void GetEntities(State state) {
             player = state.GetPlayer(playerID);
             toPlayer = state.GetPlayer(toPlayerID);
         }
 
         public override bool Conditions() {
-            return playerID != toPlayerID && !player.HasContractWith(contract, toPlayer);
+            if (playerID == toPlayerID) return false;
+            if (player.HasContractWith(toPlayer, contract)) return false;
+            return true;
         }
 
         public override void Execute() {
-            player.MakeContractProposal(toPlayer, contract);
+            var proposal = new ContractProposal(player, toPlayer, contract, DateTime.Now.AddHours(validHours), costs, threatenWithWar);
+            player.MakeContractProposal(toPlayer, proposal);
         }
 
         public override List<Event> FollowUpEvents() { return null; }

@@ -29,14 +29,14 @@ namespace Browsergame.Game.Event.Instant {
         public override void GetEntities(State state) {
             player = state.GetPlayer(PlayerID);
             city = state.GetCity(CityID);
-            building = city.getBuilding(BuildingType);
+            building = city.GetBuilding(BuildingType);
         }
         public override bool Conditions() {
             if (city.Owner.Id != player.Id) return false;
             if (player.Money < building.Setting.buildPrice) return false;
             if (building.isUpgrading) return false;
             foreach (var cost in building.Setting.buildCosts) {
-                if (city.getItem(cost.Key).Quant < cost.Value * (building.Lvl + 1)) return false;
+                if (city.GetItem(cost.Key).Quant < cost.Value * (building.Lvl + 1)) return false;
             }
             return true;
         }
@@ -45,12 +45,12 @@ namespace Browsergame.Game.Event.Instant {
             player.Money -= building.Setting.buildPrice * (building.Lvl + 1);
             if (building.Setting.educts.Count > 0) { //Remove ordered Productions
                 foreach (var educt in building.Setting.educts) {
-                    city.getItem(educt.Key).Quant += educt.Value * building.Lvl * building.OrderedProductions;
+                    city.GetItem(educt.Key).Quant += educt.Value * building.Lvl * building.OrderedProductions;
                 }
                 building.OrderedProductions = 0;
             }
             foreach (var cost in building.Setting.buildCosts) {
-                city.getItem(cost.Key).Quant -= cost.Value * (building.Lvl + 1);
+                city.GetItem(cost.Key).Quant -= cost.Value * (building.Lvl + 1);
             }
             building.isUpgrading = true;
         }

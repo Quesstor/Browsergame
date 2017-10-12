@@ -1,0 +1,82 @@
+﻿<div id="negotiationsModal"
+    class="modal fade"
+    role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header coverbg"
+                ng-class="{'coverbgbig':coverbgbig}"
+                style="background:#000 cover; background-position: center; position:relative"
+                ng-style="{'background-image':'url(/img/negotiations/default.jpg)'}">
+                <div class="btn-group pull-right"
+                    style="margin-top: 3px;">
+                    <div class="btn"
+                        ng-click="coverbgbig=!coverbgbig"
+                        style="color:white"><span class="glyphicon glyphicon-resize-{{coverbgbig?'small':'full'}}"></span></div>
+                    <div class="btn"
+                        data-dismiss="modal"
+                        style="color:white"><span class="glyphicon glyphicon-remove"></span></div>
+                </div>
+                <div class="nav nav-blackbg"
+                    style="color:white; font-size: 14px; padding:10px 10px 6px 10px;">
+                    Verhandlungen mit {{$root.selectedPlayer.name}}
+                </div>
+            </div>
+            <div class="modal-body">
+                <br>
+                <div class="btn-group btn-group-vertical"
+                    style="width: 100%">
+                    Vertrag vorschlagen
+                    <div class="btn btn-default"
+                        ng-class="{'btn-primary':contract == 'Truce'}"
+                        ng-click="contract = 'Truce'">
+                        Waffenstillstand</div>
+                    <div class="btn btn-default"
+                        ng-class="{'btn-primary':contract == 'NonAggressionPact'}"
+                        ng-click="contract = 'NonAggressionPact'">
+                        Nichtangriffspakt</div>
+                    <div class="btn btn-default"
+                        ng-class="{'btn-primary':contract == 'ProtectionAlliance'}"
+                        ng-click="contract = 'ProtectionAlliance'">
+                        Schutzbündniss</div>
+                    <div class="btn btn-default"
+                        ng-class="{'btn-primary':contract == 'Alliance'}"
+                        ng-click="contract = 'Alliance'">
+                        Allianz</div>
+                </div><br><br>
+                <div class="input-group">
+                    <input type="number"
+                        class="form-control"
+                        ng-model="validHours"
+                        placeholder="Vertragslaufzeit">
+                    <span class="input-group-addon">Stunden</span>
+                </div>
+                <br>
+                <input type="radio"
+                    ng-model="payOrDemand"
+                    value="pay"> Zahlung anbieten<br>
+                <input type="radio"
+                    ng-model="payOrDemand"
+                    value="demand"> Zahlung verlangen
+                <div class="input-group">
+                    <input type="number"
+                        class="form-control"
+                        ng-model="costs">
+                    <span class="input-group-addon">Gold</span>
+                </div>
+
+                <br>
+                <div class="btn btn-default"
+                    style="width:100%"
+                    ng-class="{'btn-warning':threatenWithWar}"
+                    ng-click="threatenWithWar =! threatenWithWar">
+                    <input type="checkbox"
+                        ng-model="threatenWithWar"> Mit Krieg drohen
+                </div>
+                <br><br>
+                <div class="btn btn-primary pull-right"
+                    ng-click="propose()">Vorschlag übermitteln</div>
+                <div class="btn btn-danger">Krieg erklären</div>
+            </div>
+        </div>
+    </div>
+</div>

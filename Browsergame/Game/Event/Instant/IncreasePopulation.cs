@@ -35,7 +35,7 @@ namespace Browsergame.Game.Event.Instant {
         public override void Execute() {
             city.Population += 1;
             city.PopulationSurplus = 0;
-            city.getConsumesPerPopulation()[city.Population + 1] = Browsergame.Settings.GetConsumeGoods(city.Population + 1);
+            city.GetConsumesPerPopulation()[city.Population + 1] = Browsergame.Settings.GetConsumeGoods(city.Population + 1);
 
         }
 
