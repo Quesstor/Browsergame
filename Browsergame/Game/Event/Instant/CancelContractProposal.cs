@@ -15,6 +15,7 @@ namespace Browsergame.Game.Event.Instant {
 
         private Player player;
         private Player toPlayer;
+        private ContractProposal proposal;
 
         public CancelContractProposal(long playerID, long toPlayerID) {
             this.playerID = playerID;
@@ -22,28 +23,32 @@ namespace Browsergame.Game.Event.Instant {
         }
 
         public override bool Conditions() {
-            return true;
+            return player.HasOpenContractProposalTo(toPlayer);
         }
 
         public override void Execute() {
-            player.CancelContractProposal(toPlayer);
+            player.RemoveContractProposal(toPlayer);
+            toPlayer.RemoveContractProposal(player);
+            if (proposal.costs > 0) player.Money += proposal.costs;
         }
 
         public override List<Event> FollowUpEvents() {
-            throw new NotImplementedException();
+            return null;
         }
 
         public override void GetEntities(State state) {
             player = state.GetPlayer(playerID);
             toPlayer = state.GetPlayer(toPlayerID);
+            proposal = player.GetContractProposal(toPlayer, false);
         }
 
         public override HashSet<Subscribable> NeedsOnDemandCalculation() {
-            throw new NotImplementedException();
+            if (proposal.costs > 0) return new HashSet<Subscribable> { player };
+            return null;
         }
 
         public override HashSet<Subscribable> UpdatedSubscribables() {
-            throw new NotImplementedException();
+            return new HashSet<Subscribable> { toPlayer, player };
         }
     }
 }

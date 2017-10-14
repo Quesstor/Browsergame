@@ -22,60 +22,65 @@
                 </div>
             </div>
             <div class="modal-body">
-                <br>
-                <div class="btn-group btn-group-vertical"
-                    style="width: 100%">
-                    Vertrag vorschlagen
-                    <div class="btn btn-default"
-                        ng-class="{'btn-primary':contract == 'Truce'}"
-                        ng-click="contract = 'Truce'">
-                        Waffenstillstand</div>
-                    <div class="btn btn-default"
-                        ng-class="{'btn-primary':contract == 'NonAggressionPact'}"
-                        ng-click="contract = 'NonAggressionPact'">
-                        Nichtangriffspakt</div>
-                    <div class="btn btn-default"
-                        ng-class="{'btn-primary':contract == 'ProtectionAlliance'}"
-                        ng-click="contract = 'ProtectionAlliance'">
-                        Schutzbündniss</div>
-                    <div class="btn btn-default"
-                        ng-class="{'btn-primary':contract == 'Alliance'}"
-                        ng-click="contract = 'Alliance'">
-                        Allianz</div>
-                </div><br><br>
-                <div class="input-group">
-                    <input type="number"
-                        class="form-control"
-                        ng-model="validHours"
-                        placeholder="Vertragslaufzeit">
-                    <span class="input-group-addon">Stunden</span>
+                <div ng-show="existingProposal()">
+                    <contractProposal proposal="existingProposal()" />
                 </div>
-                <br>
-                <input type="radio"
-                    ng-model="payOrDemand"
-                    value="pay"> Zahlung anbieten<br>
-                <input type="radio"
-                    ng-model="payOrDemand"
-                    value="demand"> Zahlung verlangen
-                <div class="input-group">
-                    <input type="number"
-                        class="form-control"
-                        ng-model="costs">
-                    <span class="input-group-addon">Gold</span>
-                </div>
+                <div ng-hide="existingProposal()">
+                    <br>
+                    <div class="btn-group btn-group-vertical"
+                        style="width: 100%">
+                        Vertrag vorschlagen
+                        <div class="btn btn-default"
+                            ng-class="{'btn-primary':proposal.contract == 'None'}"
+                            ng-click="proposal.contract = 'None'">
+                            Keinen Vertrag</div>
+                        <div class="btn btn-default"
+                            ng-class="{'btn-primary':proposal.contract == 'NonAggressionPact'}"
+                            ng-click="proposal.contract = 'NonAggressionPact'">
+                            Nichtangriffspakt</div>
+                        <div class="btn btn-default"
+                            ng-class="{'btn-primary':proposal.contract == 'ProtectionAlliance'}"
+                            ng-click="proposal.contract = 'ProtectionAlliance'">
+                            Schutzbündniss</div>
+                        <div class="btn btn-default"
+                            ng-class="{'btn-primary':proposal.contract == 'Alliance'}"
+                            ng-click="proposal.contract = 'Alliance'">
+                            Allianz</div>
+                    </div><br><br>
+                    <div class="input-group">
+                        <input type="number"
+                            class="form-control"
+                            ng-model="proposal.validHours"
+                            placeholder="Vertragslaufzeit">
+                        <span class="input-group-addon">Stunden</span>
+                    </div>
+                    <br>
+                    <input type="radio"
+                        ng-model="proposal.payOrDemand"
+                        value="pay"> Zahlung anbieten<br>
+                    <input type="radio"
+                        ng-model="proposal.payOrDemand"
+                        value="demand"> Zahlung verlangen
+                    <div class="input-group">
+                        <input type="number"
+                            class="form-control"
+                            ng-model="proposal.costs">
+                        <span class="input-group-addon">Gold</span>
+                    </div>
 
-                <br>
-                <div class="btn btn-default"
-                    style="width:100%"
-                    ng-class="{'btn-warning':threatenWithWar}"
-                    ng-click="threatenWithWar =! threatenWithWar">
-                    <input type="checkbox"
-                        ng-model="threatenWithWar"> Mit Krieg drohen
+                    <br>
+                    <div class="btn btn-default"
+                        style="width:100%"
+                        ng-class="{'btn-warning':proposal.threatenWithWar}"
+                        ng-click="proposal.threatenWithWar =! proposal.threatenWithWar">
+                        <input type="checkbox"
+                            ng-model="proposal.threatenWithWar"> Mit Krieg drohen
+                    </div>
+                    <br><br>
+                    <div class="btn btn-primary pull-right"
+                        ng-click="propose()">Vorschlag übermitteln</div>
+                    <div class="btn btn-danger">Krieg erklären</div>
                 </div>
-                <br><br>
-                <div class="btn btn-primary pull-right"
-                    ng-click="propose()">Vorschlag übermitteln</div>
-                <div class="btn btn-danger">Krieg erklären</div>
             </div>
         </div>
     </div>

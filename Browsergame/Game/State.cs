@@ -23,6 +23,7 @@ namespace Browsergame.Game {
     [KnownType(typeof(NewPlayer))]
     [KnownType(typeof(UnitArrives))]
     [KnownType(typeof(HasUpdateData))]
+    [KnownType(typeof(ContractProposal))]
     class State {
         [DataMember] public Dictionary<long, Player> players = new Dictionary<long, Player>();
         [DataMember] public Dictionary<long, Unit> units = new Dictionary<long, Unit>();

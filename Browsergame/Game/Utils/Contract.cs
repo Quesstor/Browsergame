@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 enum ContractType {
-    War, Truce, NonAggressionPact, ProtectionAlliance, Alliance
+    War, None, NonAggressionPact, ProtectionAlliance, Alliance
 }
 namespace Browsergame.Game.Utils {
     class Contract {

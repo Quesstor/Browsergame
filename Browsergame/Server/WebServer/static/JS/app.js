@@ -1,16 +1,16 @@
 var app = angular.module('app', ['ngRoute', 'ngCookies', 'ngWebSocket']);
 app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.
-    when('/login', {templateUrl: '/templates/login.html',controller: 'loginCtrl'}).
-    when('/game', {templateUrl: '/templates/game.html',controller: 'gameCtrl'}).
-    otherwise({redirectTo: '/login'});
+        when('/login', { templateUrl: '/templates/login.html', controller: 'loginCtrl' }).
+        when('/game', { templateUrl: '/templates/game.html', controller: 'gameCtrl' }).
+        otherwise({ redirectTo: '/login' });
 }]);
 //Modals
 app.directive("audiomodal", function () { return { templateUrl: '/templates/directives/modals/audio.html' } });
 app.directive("optionsmodal", function () { return { templateUrl: '/templates/directives/modals/options.html' } });
 app.directive("playersmodal", function () { return { templateUrl: '/templates/directives/modals/players.html' } });
-app.directive("messagesmodal", function () { return { templateUrl: '/templates/directives/modals/messages.html' , controller: 'messages'} });
-app.directive("negotiationsmodal", function () { return { templateUrl: '/templates/directives/modals/negotiations.html', controller: 'negotiations'  } });
+app.directive("messagesmodal", function () { return { templateUrl: '/templates/directives/modals/messages.html', controller: 'messages' } });
+app.directive("negotiationsmodal", function () { return { templateUrl: '/templates/directives/modals/negotiations.html', controller: 'negotiations' } });
 app.directive("citymodal", function () { return { templateUrl: '/templates/directives/modals/city.html', controller: 'utilCtrl' } });
 //City
 app.directive("cityinfo", function () { return { templateUrl: '/templates/directives/city/cityinfo.html', controller: 'cityinfo' } });
@@ -19,11 +19,10 @@ app.directive("trademanager", function () { return { templateUrl: '/templates/di
 app.directive("buildings", function () { return { templateUrl: '/templates/directives/city/buildings.html', controller: 'buildings' } });
 app.directive("units", function () { return { templateUrl: '/templates/directives/city/units.html', controller: 'units' } });
 //Utils
-app.directive("itemsquare", function () { return { templateUrl: '/templates/directives/util/itemsquare.html', 
-                scope: { item: "=", quant: "=", hidecityquant: "=", itemprice: "=" }, controller: 'itemsquare' } });
-app.directive("unitsquare", function () { return { templateUrl: '/templates/directives/util/unitsquare.html', 
-                scope: { unit: "=", count: "=", compact: "="}, controller: 'unitsquare' } });
+app.directive("itemsquare", function () { return { templateUrl: '/templates/directives/util/itemsquare.html', scope: { item: "=", quant: "=", hidecityquant: "=", itemprice: "=" }, controller: 'itemsquare' } });
+app.directive("unitsquare", function () { return { templateUrl: '/templates/directives/util/unitsquare.html', scope: { unit: "=", count: "=", compact: "=" }, controller: 'unitsquare' } });
 app.directive("price", function () { return { templateUrl: '/templates/directives/util/price.html', scope: { value: '=', hideplayermoney: "=" }, controller: 'utilCtrl' } });
+app.directive("contractproposal", function () { return { templateUrl: '/templates/directives/util/contractproposal.html', scope: { proposal: '=', hidebuttons: '=' }, controller: 'contractproposal' } });
 //Map
 app.directive("citymarker", function () { return { templateUrl: '/templates/directives/map/citymarker.html', scope: { city: '=' }, controller: 'citymarker' } });
 app.directive("unitmarker", function () { return { templateUrl: '/templates/directives/map/unitmarker.html', scope: { unit: '=' }, controller: 'citymarker' } });

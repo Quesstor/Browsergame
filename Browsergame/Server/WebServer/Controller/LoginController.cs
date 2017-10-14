@@ -24,8 +24,6 @@ namespace Browsergame.Server.WebServer.Controller {
                 Event e = new NewPlayer(0, logindata.name, token);
                 EventEngine.AddEvent(e);
                 e.processed.WaitOne();
-                Console.WriteLine("Login done");
-
             }
             HttpResponseMessage response = Request.CreateResponse();
             response.Content = new StringContent(token);

@@ -36,13 +36,17 @@ namespace Browsergame.Game.Event.Instant {
 
         public override bool Conditions() {
             if (playerID == toPlayerID) return false;
+            if (player.HasOpenContractProposalTo(toPlayer)) return false;
             if (player.HasContractWith(toPlayer, contract)) return false;
+            if (costs > 0 && player.Money < costs) return false;
             return true;
         }
 
         public override void Execute() {
             var proposal = new ContractProposal(player, toPlayer, contract, DateTime.Now.AddHours(validHours), costs, threatenWithWar);
-            player.MakeContractProposal(toPlayer, proposal);
+            if(proposal.costs > 0) player.Money -= proposal.costs;
+            player.AddContractProposal(toPlayer, proposal);
+            toPlayer.AddContractProposal(player, proposal);
         }
 
         public override List<Event> FollowUpEvents() { return null; }
@@ -51,6 +55,9 @@ namespace Browsergame.Game.Event.Instant {
             return new HashSet<Subscribable> { toPlayer, player };
         }
 
-        public override HashSet<Subscribable> NeedsOnDemandCalculation() { return null; }
+        public override HashSet<Subscribable> NeedsOnDemandCalculation() {
+            if (costs > 0) return new HashSet<Subscribable> { player };
+            return null;
+        }
     }
 }

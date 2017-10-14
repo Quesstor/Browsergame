@@ -6,24 +6,18 @@
                 <label>Nachrichten</label><br />
             </div>
             <div class="modal-body">
-                <div ng-repeat="proposal in $root.player.contractProposalsToMe" class="alert alert-sm alert-info">
-                    <strong>Politisches Angebot!</strong><br>
-                    {{$root.players[proposal.from].name}} schlägt euch ein <b>{{proposal.contract}}</b> vor.<br>
-                    Dieser wird bis zum {{printDate(proposal.validUntil) | date:'dd.MM.yyyy HH:mm'}} Uhr gelten.<br>
-                    <span ng-show="proposal.costs < 0">Dafür bekommt ihr {{proposal.costs}} Gold bezahlt.</span>
-                    <span ng-show="proposal.costs > 0">Dafür müsst ihr {{proposal.costs}} Gold bezahlen.</span><br>
-                    <span ng-show="proposal.threatenWithWar" class="text-danger">Falls Ihr ablehnt droht euch {{$root.players[proposal.from].name}} mit Krieg!</span>
-                    <br><br>
-                    <span class="btn btn-primary pull-right">Annehmen</span>                    
-                    <span class="btn btn-primary" ng-class="{'btn-danger':proposal.threatenWithWar}">Ablehnen</span>                    
+                <div ng-repeat="proposal in $root.player.contractProposals" ng-if="proposal" class="alert alert-sm alert-info">
+                    Eine Bote von <b>{{$root.players[proposal.from].name}}</b> bring euch folgende Nachricht:<br><br>
+                    <contractproposal proposal="proposal" />                
                 </div>
                 <div ng-repeat="message in $root.player.messages"
                      class="alert alert-info">
                     <div ng-click="playerService.deleteMessage(message);" class="close">&times;</div>
-                    <b>{{message.from?message.from:"Kampfbericht"}}</b>
-                    {{message.timestamp}}
-                    <br />
+                    {{message.timestamp}} 
+                    Eine Bote von <b>{{message.from?$root.players[message.from].name:'der Schlacht'}}</b> bring euch folgende Nachricht:<br><br>                    
                     {{message.message}}
+                    
+                    <contractproposal proposal="message.data.proposal" ng-if="message.data.proposal" hidebuttons="true"/>                                    
                 </div>
             </div>
         </div>

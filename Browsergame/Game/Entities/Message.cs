@@ -12,7 +12,7 @@ namespace Browsergame.Game.Entities {
     class Message : HasUpdateData {
         protected override string EntityName() { return "Message"; }
         [DataMember] private string message;
-        [DataMember] private Dictionary<String, object> jsonData;
+        [DataMember] private Dictionary<String, object> data;
         [DataMember] private DateTime date;
         [DataMember] private bool read;
         [DataMember] private Player from;
@@ -21,7 +21,7 @@ namespace Browsergame.Game.Entities {
             this.message = message;
             this.date = DateTime.Now;
             read = false;
-            this.jsonData = jsonData;
+            this.data = jsonData;
             this.from = from;
         }
 
@@ -31,7 +31,7 @@ namespace Browsergame.Game.Entities {
             data["message"] = message;
             data["read"] = read;
             data["date"] = date;
-            if (jsonData != null) data["jsonData"] = JsonConvert.SerializeObject(jsonData);
+            if (this.data != null) data["data"] = this.data;
             return data;
         }
     }

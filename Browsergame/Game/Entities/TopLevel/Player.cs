@@ -16,8 +16,7 @@ namespace Browsergame.Game.Entities {
         [DataMember] private double money;
         [DataMember] private bool online;
         [DataMember] private Dictionary<Player, HashSet<Contract>> contracts = new Dictionary<Player, HashSet<Contract>>();
-        [DataMember] private Dictionary<Player, ContractProposal> contractProposalsToMe = new Dictionary<Player, ContractProposal>();
-        [DataMember] private Dictionary<Player, ContractProposal> contractProposalsFromMe = new Dictionary<Player, ContractProposal>();
+        [DataMember] private Dictionary<Player, ContractProposal> contractProposals = new Dictionary<Player, ContractProposal>();
         [DataMember] public List<City> cities = new List<City>();
         [DataMember] public List<Unit> units = new List<Unit>();
         [DataMember] private List<Message> messages = new List<Message>();
@@ -76,13 +75,13 @@ namespace Browsergame.Game.Entities {
             };
             if (subscriber == SubscriberLevel.Owner) {
                 data["money"] = money;
-                data["messages"] = messages;
-                data["contractProposalsToMe"] = contractProposalsToMe;
+                data["messages"] = (from m in messages select m.GetSetupData(SubscriberLevel.Owner)).ToList();
+                data["contractProposals"] = contractProposals.ToDictionary(c => c.Key.Id, c => c.Value);
             }
             return data;
         }
         public override void OnDemandCalculation() {
-            return;
+            cities.ForEach(c => c.OnDemandCalculation());
         }
         public bool HasContractWith(Player otherPlayer, ContractType contract) {
             if (!contracts.ContainsKey(otherPlayer)) return false;
@@ -93,20 +92,20 @@ namespace Browsergame.Game.Entities {
             contracts[otherPlayer].Add(contract);
         }
         public bool HasOpenContractProposalTo(Player otherPlayer) {
-            return contractProposalsFromMe.ContainsKey(otherPlayer);
+            if(!contractProposals.ContainsKey(otherPlayer)) return false;
+            return contractProposals[otherPlayer].from == this.Id;
         }
-        public void MakeContractProposal(Player otherPlayer, ContractProposal proposal) {
-            contractProposalsFromMe[otherPlayer] = proposal;
-            SetUpdateDataDict(SubscriberLevel.Owner, "contractProposalsFromMe", otherPlayer.Id, contractProposalsFromMe[otherPlayer]);
-
-            otherPlayer.contractProposalsToMe[this] = proposal;
-            otherPlayer.SetUpdateDataDict(SubscriberLevel.Owner, "contractProposalsToMe", this.Id, otherPlayer.contractProposalsToMe[this]);
+        public ContractProposal GetContractProposal(Player otherPlayer, bool addToUpdateData = true) {
+            if(addToUpdateData) SetUpdateDataDict(SubscriberLevel.Owner, "contractProposals", otherPlayer.Id, contractProposals[otherPlayer]);
+            return contractProposals[otherPlayer];
         }
-        public void CancelContractProposal(Player otherPlayer) {
-            contractProposalsFromMe.Remove(otherPlayer);
-            otherPlayer.contractProposalsToMe.Remove(this);
-            SetUpdateDataDict(SubscriberLevel.Owner, "contractProposalsFromMe", otherPlayer.Id, contractProposalsFromMe[otherPlayer]);
-            otherPlayer.SetUpdateDataDict(SubscriberLevel.Owner, "contractProposalsToMe", this.Id, contractProposalsToMe[this]);
+        public void AddContractProposal(Player otherPlayer, ContractProposal proposal) {
+            contractProposals[otherPlayer] = proposal;
+            SetUpdateDataDict(SubscriberLevel.Owner, "contractProposals", otherPlayer.Id, contractProposals[otherPlayer]);
+        }
+        public void RemoveContractProposal(Player otherPlayer) {
+            contractProposals.Remove(otherPlayer);
+            SetUpdateDataDict<long, object>(SubscriberLevel.Owner, "contractProposals", otherPlayer.Id, null);
         }
     }
 }
