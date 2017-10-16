@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Browsergame.Game.Entities {
+namespace Browsergame.Game.Abstract {
     [DataContract]
     abstract class Entity : Subscribable {
         protected override string EntityName() { return this.GetType().Name; }

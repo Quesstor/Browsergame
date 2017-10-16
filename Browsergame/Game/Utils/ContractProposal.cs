@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Browsergame.Game.Utils {
-    [DataContractAttribute]
+    [DataContract]
     class ContractProposal {
         [DataMember] public readonly long from;
         [DataMember] public readonly long to;

@@ -2,11 +2,8 @@
 using Browsergame.Game.Entities.Settings;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using Browsergame.Game.Utils;
+using Browsergame.Game.Abstract;
 
 namespace Browsergame.Game.Event.Timed {
     [DataContract]

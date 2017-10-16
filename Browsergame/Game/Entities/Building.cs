@@ -1,4 +1,5 @@
-﻿using Browsergame.Game.Entities.Settings;
+﻿using Browsergame.Game.Abstract;
+using Browsergame.Game.Entities.Settings;
 using Browsergame.Game.Utils;
 using System;
 using System.Collections.Generic;

@@ -1,23 +1,13 @@
-﻿<div id="negotiationsModal"
-    class="modal fade"
-    role="dialog">
+﻿<div id="negotiationsModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header coverbg"
-                ng-class="{'coverbgbig':coverbgbig}"
-                style="background:#000 cover; background-position: center; position:relative"
+            <div class="modal-header coverbg" ng-class="{'coverbgbig':coverbgbig}" style="background:#000 cover; background-position: center; position:relative"
                 ng-style="{'background-image':'url(/img/negotiations/default.jpg)'}">
-                <div class="btn-group pull-right"
-                    style="margin-top: 3px;">
-                    <div class="btn"
-                        ng-click="coverbgbig=!coverbgbig"
-                        style="color:white"><span class="glyphicon glyphicon-resize-{{coverbgbig?'small':'full'}}"></span></div>
-                    <div class="btn"
-                        data-dismiss="modal"
-                        style="color:white"><span class="glyphicon glyphicon-remove"></span></div>
+                <div class="btn-group pull-right" style="margin-top: 3px;">
+                    <div class="btn" ng-click="coverbgbig=!coverbgbig" style="color:white"><span class="glyphicon glyphicon-resize-{{coverbgbig?'small':'full'}}"></span></div>
+                    <div class="btn" data-dismiss="modal" style="color:white"><span class="glyphicon glyphicon-remove"></span></div>
                 </div>
-                <div class="nav nav-blackbg"
-                    style="color:white; font-size: 14px; padding:10px 10px 6px 10px;">
+                <div class="nav nav-blackbg" style="color:white; font-size: 14px; padding:10px 10px 6px 10px;">
                     Verhandlungen mit {{$root.selectedPlayer.name}}
                 </div>
             </div>
@@ -27,59 +17,38 @@
                 </div>
                 <div ng-hide="existingProposal()">
                     <br>
-                    <div class="btn-group btn-group-vertical"
-                        style="width: 100%">
+                    <div class="btn-group btn-group-vertical" style="width: 100%">
                         Vertrag vorschlagen
-                        <div class="btn btn-default"
-                            ng-class="{'btn-primary':proposal.contract == 'None'}"
-                            ng-click="proposal.contract = 'None'">
-                            Keinen Vertrag</div>
-                        <div class="btn btn-default"
-                            ng-class="{'btn-primary':proposal.contract == 'NonAggressionPact'}"
-                            ng-click="proposal.contract = 'NonAggressionPact'">
-                            Nichtangriffspakt</div>
-                        <div class="btn btn-default"
-                            ng-class="{'btn-primary':proposal.contract == 'ProtectionAlliance'}"
-                            ng-click="proposal.contract = 'ProtectionAlliance'">
-                            Schutzbündniss</div>
-                        <div class="btn btn-default"
-                            ng-class="{'btn-primary':proposal.contract == 'Alliance'}"
-                            ng-click="proposal.contract = 'Alliance'">
-                            Allianz</div>
+                        <div class="btn btn-default" ng-class="{'btn-primary':proposal.contract == 'None'}" ng-click="proposal.contract = 'None'">
+                            {{existingContract()?'Vertrag auflösen':'Keinen Vertrag'}}</div>
+                        <div class="btn btn-default" ng-class="{'btn-primary':proposal.contract == 'NonAggressionPact'}" ng-click="proposal.contract = 'NonAggressionPact'">
+                            {{existingContract().type == 'NonAggressionPact'?'Keine Vertragsänderung':'Nichtangriffspakt'}}</div>
+                        <div class="btn btn-default" ng-class="{'btn-primary':proposal.contract == 'ProtectionAlliance'}" ng-click="proposal.contract = 'ProtectionAlliance'">
+                            {{existingContract().type == 'ProtectionAlliance'?'Keine Vertragsänderung':'Schutzbündniss'}}</div>
+                        <div class="btn btn-default" ng-class="{'btn-primary':proposal.contract == 'Alliance'}" ng-click="proposal.contract = 'Alliance'">
+                            {{existingContract().type == 'Alliance'?'Keine Vertragsänderung':'Allianz'}}</div>
                     </div><br><br>
                     <div class="input-group">
-                        <input type="number"
-                            class="form-control"
-                            ng-model="proposal.validHours"
-                            placeholder="Vertragslaufzeit">
+                        <input type="number" class="form-control" ng-model="proposal.validHours" placeholder="Vertragslaufzeit">
                         <span class="input-group-addon">Stunden</span>
                     </div>
                     <br>
-                    <input type="radio"
-                        ng-model="proposal.payOrDemand"
-                        value="pay"> Zahlung anbieten<br>
-                    <input type="radio"
-                        ng-model="proposal.payOrDemand"
-                        value="demand"> Zahlung verlangen
+                    <input type="radio" ng-model="proposal.payOrDemand" value="pay"> Zahlung anbieten<br>
+                    <input type="radio" ng-model="proposal.payOrDemand" value="demand"> Zahlung verlangen
                     <div class="input-group">
-                        <input type="number"
-                            class="form-control"
-                            ng-model="proposal.costs">
+                        <input type="number" class="form-control" ng-model="proposal.costs">
                         <span class="input-group-addon">Gold</span>
                     </div>
 
                     <br>
-                    <div class="btn btn-default"
-                        style="width:100%"
-                        ng-class="{'btn-warning':proposal.threatenWithWar}"
-                        ng-click="proposal.threatenWithWar =! proposal.threatenWithWar">
-                        <input type="checkbox"
-                            ng-model="proposal.threatenWithWar"> Mit Krieg drohen
+                    <div class="btn btn-default" style="width:100%" ng-class="{'btn-warning':proposal.threatenWithWar}" ng-click="proposal.threatenWithWar =! proposal.threatenWithWar">
+                        <input type="checkbox" ng-model="proposal.threatenWithWar"> Mit Krieg drohen
                     </div>
                     <br><br>
-                    <div class="btn btn-primary pull-right"
-                        ng-click="propose()">Vorschlag übermitteln</div>
-                    <div class="btn btn-danger">Krieg erklären</div>
+                    <div class="btn btn-primary pull-right" ng-click="propose()">Vorschlag übermitteln</div>
+                    <div class="btn btn-danger">Krieg erklären</div><br>
+                    <span class="text-warning  pull-right" ng-show="existingContract()">Wir euer Vorschlag angenommen so wird der alte Vertrag aufgelöst.</span>
+                    <br>
                 </div>
             </div>
         </div>

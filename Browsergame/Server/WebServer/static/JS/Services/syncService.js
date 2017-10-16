@@ -33,13 +33,16 @@
             else {
                 if(!$rootScope.players[data.player.id])$rootScope.players[data.player.id] = data.player; 
                 else angular.merge($rootScope.players[data.player.id], data.player);
-            }           
+            }    
+            for (var k in $rootScope.player.messages) if(!$rootScope.player.messages[k]) delete $rootScope.player.messages[k];   
         }
         if (data.event) {
             if (!$rootScope.events[data.event.type]) $rootScope.events[data.event.type] = [];
             $rootScope.events[data.event.type].push(data.event);
         }
         if (data.city) {
+            if ($rootScope.cities[data.city.id]) angular.merge($rootScope.cities[data.city.id], data.city);
+            else $rootScope.cities[data.city.id] = data.city;
             for (var k in data.city.buildings) {
                 var building = data.city.buildings[k];
                 angular.merge(building, $rootScope.settings.buildings[building.type]);
@@ -52,8 +55,7 @@
                 var item = data.city.items[k];
                 angular.merge(item, $rootScope.settings.items[item.type]);
             }
-            if ($rootScope.cities[data.city.id]) angular.merge($rootScope.cities[data.city.id], data.city);
-            else $rootScope.cities[data.city.id] = data.city;
+
             mapService.drawAll();
         }
         if (data.unit) {

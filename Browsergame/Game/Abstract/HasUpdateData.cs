@@ -6,9 +6,9 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Browsergame.Game.Utils {
+namespace Browsergame.Game.Abstract {
     [DataContract(IsReference = true)]
-    abstract class HasUpdateData  {
+    abstract class HasUpdateData : HasID  {
         protected Dictionary<SubscriberLevel, UpdateData> updateData = new Dictionary<SubscriberLevel, UpdateData>();
         abstract public UpdateData GetSetupData(SubscriberLevel subscriber);
         abstract protected string EntityName();

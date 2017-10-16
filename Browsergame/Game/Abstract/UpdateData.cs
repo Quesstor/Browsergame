@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-namespace Browsergame.Game.Utils {
+namespace Browsergame.Game.Abstract {
     class UpdateData : IDictionary<string, object> {
         private string key;
         private Dictionary<string, object> dict;

@@ -1,14 +1,9 @@
-﻿using Browsergame.Game.Engine;
-using Browsergame.Game.Entities.Settings;
-using Browsergame.Game.Event;
-using Browsergame.Game.Utils;
+﻿using Browsergame.Game.Entities.Settings;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using System.Device.Location;
+using Browsergame.Game.Abstract;
 
 namespace Browsergame.Game.Entities {
     [DataContract(IsReference = true)]
@@ -165,9 +160,9 @@ namespace Browsergame.Game.Entities {
                         building.OrderedProductions -= productions;
                     }
                     //Produce products
-                    foreach (var production in building.Setting.itemProducts) {
-                        double amount = production.Value * building.Lvl * productions;
-                        items[production.Key].Quant += amount;
+                    foreach (var product in building.Setting.itemProducts) {
+                        double amount = product.Value * building.Lvl * productions;
+                        items[product.Key].Quant += amount;
                     }
                     building.LastProduced = building.LastProduced.AddMilliseconds(TotalMilliseconds);
                 }

@@ -3,16 +3,16 @@
         {{$root.players[proposal.from].name}} schlägt euch ein <b>{{translate[proposal.contract]}}</b> vor.<br>
         Der Vertrag wird bis zum {{printDate(proposal.validUntil) | date:'dd.MM.yyyy HH:mm'}} Uhr gelten.<br>
     </span>
+    <span ng-show="proposal.contract=='None' && existingContract()">
+            {{$root.players[proposal.from].name}} will <b>{{translate[existingContract(proposal.from).type]}}</b> auflösen.
+    </span>
     <span ng-show="proposal.costs > 0">Ihr bekommt {{proposal.costs}} Gold.</span>
     <span ng-show="proposal.costs < 0">Ihr sollt {{-proposal.costs}} Gold bezahlen.</span><br>
-    <div ng-show="proposal.threatenWithWar"
-        class="text-danger">Falls Ihr ablehnt droht euch {{$root.players[proposal.from].name}} mit Krieg!</div>
+    <div ng-show="proposal.threatenWithWar" class="text-danger">Falls Ihr ablehnt droht euch {{$root.players[proposal.from].name}} mit Krieg!</div>
     <br>
     <div ng-hide="hidebuttons">
-        <span class="btn btn-primary pull-right">Annehmen</span>
-        <span class="btn btn-primary"
-            ng-class="{'btn-danger':proposal.threatenWithWar}"
-            ng-click="denyProposal()">Ablehnen</span>
+        <span class="btn btn-primary pull-right" ng-click="acceptProposal()">Annehmen</span>
+        <span class="btn btn-primary" ng-class="{'btn-danger':proposal.threatenWithWar}" ng-click="denyProposal()">Ablehnen</span>
     </div>
 </div>
 <div ng-show="proposal.from == $root.player.id">
@@ -20,13 +20,18 @@
         Ihr schlagt {{$root.players[proposal.to].name}} ein <b>{{translate[proposal.contract]}}</b> vor.<br> Der Vertrag wird
         bis zum {{printDate(proposal.validUntil) | date:'dd.MM.yyyy HH:mm'}} Uhr gelten.<br>
     </span>
+    <span ng-show="proposal.contract=='None' && existingContract()">
+        Ihr wollt den alten Vertrag auflösen.
+    </span>
     <span ng-show="proposal.costs < 0">Ihr verlangt {{-proposal.costs}} Gold.</span>
-    <span ng-show="proposal.costs > 0">Ihr bezahlt {{proposal.costs}} Gold.</span><br>
-    <div ng-show="proposal.threatenWithWar"
-        class="text-danger">Falls {{$root.players[proposal.to].name}} ablehnt droht Ihr mit Krieg!</div>
+    <span ng-show="proposal.costs > 0">Ihr bezahlt {{proposal.costs}} Gold.</span>
+    <div ng-show="proposal.threatenWithWar" class="text-danger">Falls {{$root.players[proposal.to].name}} ablehnt droht Ihr mit Krieg!</div>
     <div ng-hide="hidebuttons">
         <br>
-        <span class="btn btn-primary"
-            ng-click="cancelProposal()">Vorschlag zurückziehen</span>
+        <span class="btn btn-primary" ng-click="cancelProposal()">Vorschlag zurückziehen</span>
     </div>
+</div>
+<div ng-show="existingContract() && !hidebuttons">
+    <br> Es besteht bereits ein {{translate[existingContract().type]}} bis {{printDate(existingContract().until) | date:'dd.MM.yyyy
+    HH:mm'}} Uhr.
 </div>

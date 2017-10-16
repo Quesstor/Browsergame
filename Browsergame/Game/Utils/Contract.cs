@@ -1,21 +1,20 @@
-﻿using Browsergame.Game.Entities;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
+
 enum ContractType {
     War, None, NonAggressionPact, ProtectionAlliance, Alliance
 }
 namespace Browsergame.Game.Utils {
+    [DataContract]
     class Contract {
-        public readonly ContractType type;
-        public readonly Player from;
-        public readonly Player to;
-        public readonly DateTime until;
+        [JsonConverter(typeof(StringEnumConverter))]
+        [DataMember] public readonly ContractType type;
+        [DataMember] public readonly DateTime until;
 
-        public Contract(Player from, Player to, DateTime until) {
-            this.from = from;
-            this.to = to;
+        public Contract(ContractType type, DateTime until) {
+            this.type = type;
             this.until = until;
         }
     }

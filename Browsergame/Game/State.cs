@@ -1,5 +1,5 @@
-﻿using Browsergame.Game.Entities;
-using Browsergame.Game.Event;
+﻿using Browsergame.Game.Abstract;
+using Browsergame.Game.Entities;
 using Browsergame.Game.Event.Instant;
 using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Utils;
@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using System.Device.Location;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Browsergame.Game {
     [DataContract]

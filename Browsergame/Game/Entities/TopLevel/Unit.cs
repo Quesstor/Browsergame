@@ -1,12 +1,7 @@
-﻿using Browsergame.Game.Utils;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using Browsergame.Game.Event;
 using Browsergame.Game.Entities.Settings;
-using System;
+using Browsergame.Game.Abstract;
 
 namespace Browsergame.Game.Entities {
     enum OrderType { Move, Atack }

@@ -1,4 +1,5 @@
-﻿using Browsergame.Game.Entities.Settings;
+﻿using Browsergame.Game.Abstract;
+using Browsergame.Game.Entities.Settings;
 using Browsergame.Game.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;

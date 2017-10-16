@@ -1,12 +1,8 @@
-﻿using Browsergame.Game.Entities;
+﻿using Browsergame.Game.Abstract;
+using Browsergame.Game.Entities;
 using Browsergame.Game.Entities.Settings;
-using Browsergame.Game.Utils;
 using Browsergame.Server.SocketServer;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Browsergame.Game.Event.Instant {
     [RoutableEvent]

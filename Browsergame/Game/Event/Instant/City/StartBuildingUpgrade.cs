@@ -9,6 +9,7 @@ using Browsergame.Game.Event.Timed;
 using Browsergame.Game.Entities.Settings;
 using Browsergame.Game.Utils;
 using Browsergame.Server.SocketServer;
+using Browsergame.Game.Abstract;
 
 namespace Browsergame.Game.Event.Instant {
     [RoutableEvent]

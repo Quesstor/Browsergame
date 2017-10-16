@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Browsergame.Game.Utils;
 using Browsergame.Server.SocketServer;
 using Browsergame.Game.Entities;
+using Browsergame.Game.Abstract;
 
 namespace Browsergame.Game.Event.Instant {
     [RoutableEvent]
@@ -37,7 +35,6 @@ namespace Browsergame.Game.Event.Instant {
         public override bool Conditions() {
             if (playerID == toPlayerID) return false;
             if (player.HasOpenContractProposalTo(toPlayer)) return false;
-            if (player.HasContractWith(toPlayer, contract)) return false;
             if (costs > 0 && player.Money < costs) return false;
             return true;
         }

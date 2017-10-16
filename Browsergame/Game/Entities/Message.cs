@@ -1,11 +1,7 @@
-﻿using Browsergame.Game.Utils;
-using Newtonsoft.Json;
+﻿using Browsergame.Game.Abstract;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Browsergame.Game.Entities {
     [DataContract]
@@ -28,6 +24,7 @@ namespace Browsergame.Game.Entities {
         public override UpdateData GetSetupData(SubscriberLevel subscriber) {
             var data = new UpdateData(EntityName());
             if (from != null) data["from"] = from.Id;
+            data["id"] = Id;
             data["message"] = message;
             data["read"] = read;
             data["date"] = date;
